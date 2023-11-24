@@ -1,0 +1,273 @@
+@media print {
+    body {
+        zoom: 90%;
+    }
+
+    .p {
+        font-size: 9px;
+        margin-left: 37px;
+        margin-top: -35px;
+    }
+
+    .title {
+        font-size: 12px;
+        margin-top: -12px;
+        margin-bottom: 1rem;
+        margin: 0px;
+    }
+
+    .pDaikin {
+        font-size: 10px;
+        margin-left: -10px;
+    }
+
+    .styleArrow {
+        position: absolute;
+        right: 113px;
+        width: 26px;
+        top: -30px;
+    }
+
+    .styleArrow2 {
+        position: absolute;
+        right: 113px;
+        width: 26px;
+        top: 273px;
+    }
+
+
+    .styleArrow3 {
+        position: absolute;
+        right: 113px;
+        width: 26px;
+        top: 390px;
+    }
+
+    .styleArrow4 {
+        position: absolute;
+        right: 113px;
+        width: 26px;
+        top: 529px;
+    }
+
+
+    .styleArrow5 {
+        position: absolute;
+        right: 113px;
+        width: 26px;
+        top: 645px;
+    }
+
+    .styleArrow6 {
+        position: absolute;
+        right: 113px;
+        width: 26px;
+        top: 785px;
+    }
+
+    .styleArrow7 {
+        position: absolute;
+        right: 113px;
+        width: 26px;
+        top: 904px;
+    }
+
+    .styleArrow8 {
+        position: absolute;
+        right: 110px;
+        width: 26px;
+        top: 1021px;
+    }
+
+    .styleArrow9 {
+        position: absolute;
+        right: 110px;
+        width: 26px;
+        top: 1134px;
+    }
+
+    .styleForDD {
+        margin-top: -7pc;
+    }
+
+    #SignRequest,
+    #SignPU,
+    #SignDD,
+    #SignEN,
+    #SignSQC,
+    #SignQC,
+    #SignDIL,
+    #SignDIL2,
+    #SignQA {
+        position: relative;
+    }
+
+    #SignRequest::after {
+        content: url('/public/asset/Image/Arrow1.png');
+        position: absolute;
+        bottom: -325px;
+        left: 75px;
+    }
+
+    #SignPU::after,
+    #SignEN::after,
+    #SignDIL::after,
+    #SignDIL2::after {
+        content: url('/public/asset/Image/Arrow4.png');
+        position: absolute;
+        bottom: -36px;
+        left: 75px;
+    }
+
+    #SignDD::after,
+    #SignSQC::after,
+    #SignQC::after {
+        content: url('/public/asset/Image/Arrow3.png');
+        position: absolute;
+        bottom: -63px;
+        left: 75px;
+    }
+
+
+    #SignQA::after {
+        content: url('/public/asset/Image/Arrow6.png');
+        position: absolute;
+        bottom: -90px;
+        left: 75px;
+    }
+}
+
+
+@media screen {
+    .p {
+        font-size: 9px;
+        margin-left: 37px;
+    }
+
+    .title {
+        font-size: 12px;
+        margin-top: -12px;
+        margin-bottom: 1rem;
+        margin: 0px;
+    }
+
+    .pDaikin {
+        font-size: 10px;
+        margin-left: -10px;
+    }
+
+    .styleArrow {
+        position: absolute;
+        right: 167px;
+        width: 26px;
+        top: -21px;
+    }
+
+    .styleArrow2 {
+        position: absolute;
+        right: 167px;
+        width: 26px;
+        top: 273px;
+    }
+
+
+    .styleArrow3 {
+        position: absolute;
+        right: 167px;
+        width: 26px;
+        top: 390px;
+    }
+
+    .styleArrow4 {
+        position: absolute;
+        right: 167px;
+        width: 26px;
+        top: 529px;
+    }
+
+
+    .styleArrow5 {
+        position: absolute;
+        right: 167px;
+        width: 26px;
+        top: 645px;
+    }
+
+    .styleArrow6 {
+        position: absolute;
+        right: 167px;
+        width: 26px;
+        top: 785px;
+    }
+
+    .styleArrow7 {
+        position: absolute;
+        right: 167px;
+        width: 26px;
+        top: 904px;
+    }
+
+    .styleArrow8 {
+        position: absolute;
+        right: 165px;
+        width: 26px;
+        top: 1021px;
+    }
+
+    .styleArrow9 {
+        position: absolute;
+        right: 165px;
+        width: 26px;
+        top: 1134px;
+    }
+
+    .styleForDD {
+        margin-top: -6pc;
+    }
+
+    #SignRequest,
+    #SignPU,
+    #SignDD,
+    #SignEN,
+    #SignSQC,
+    #SignQC,
+    #SignDIL,
+    #SignDIL2,
+    #SignQA {
+        position: relative;
+    }
+
+    #SignRequest::after {
+        content: url('/public/asset/Image/Arrow1.png');
+        position: absolute;
+        bottom: -325px;
+        left: 75px;
+    }
+
+    #SignPU::after,
+    #SignEN::after,
+    #SignDIL::after,
+    #SignQC::after,
+    #SignDIL2::after {
+        content: url('/public/asset/Image/Arrow4.png');
+        position: absolute;
+        bottom: -36px;
+        left: 75px;
+    }
+
+    #SignDD::after,
+    #SignSQC::after {
+        content: url('/public/asset/Image/Arrow3.png');
+        position: absolute;
+        bottom: -63px;
+        left: 75px;
+    }
+
+
+    #SignQA::after {
+        content: url('/public/asset/Image/Arrow6.png');
+        position: absolute;
+        bottom: -90px;
+        left: 75px;
+    }
+}

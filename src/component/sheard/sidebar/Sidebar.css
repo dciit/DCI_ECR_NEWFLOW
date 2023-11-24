@@ -1,0 +1,40 @@
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+ul li a:hover {
+    cursor: pointer;
+}
+
+#colorText {
+    color: white;
+}
+
+.styleSidebar {
+    background-color: #343a40;
+    margin-left: 15px;
+    width: 69%;
+}
+
+.styleicon {
+    margin-left: 10px;
+}
+
+.bgMainItem {
+    color: wheat;
+    background-color: cornflowerblue;
+}
+
+.styleli {
+    margin-left: 25px;
+    margin-top: -9px;
+}
+
+.styleWidthSide {
+    width: 12%;
+}
+
+.styleAreaLi {
+    margin-top: 5px;
+}

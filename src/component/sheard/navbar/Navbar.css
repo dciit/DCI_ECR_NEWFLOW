@@ -1,0 +1,73 @@
+    .navbarstyle {
+        width: 100%;
+        text-align: right;
+        color: white;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .navbarImage {
+        width: 32%;
+    }
+
+    #colorText {
+        color: white;
+    }
+
+    .styleLogin {
+        margin-left: 14px;
+        font-size: 20px;
+    }
+
+    .styleText {
+        margin-right: 10px;
+        font-size: 20px;
+    }
+
+    .styTextmarginleft {
+        margin-left: 10px;
+    }
+
+    .styleImage {
+        border-radius: 50%;
+        height: 40px;
+        width: 40px;
+        margin-right: 10px;
+    }
+
+    .stylelb {
+        font-size: 47px;
+        font-weight: 1000;
+        color: rgb(245 238 238);
+        text-align: center;
+        margin-left: 19px;
+        margin-top: -15px;
+    }
+
+    .styleTextP {
+        color: #f5eeee;
+        margin-top: -21px;
+    }
+
+
+    .gradiantTitle {
+        font-size: 17px;
+        font-weight: bold;
+        background: linear-gradient(45deg, #ffa69e, #faf3dd, #b8f2e6, #aed9e0, #5e6472);
+        background-size: 40%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradient 5s infinite;
+        margin-top: -10px;
+    }
+
+    @keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        100% {
+            background-position: 100% 50%;
+        }
+    }
