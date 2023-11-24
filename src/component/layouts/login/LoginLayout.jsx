@@ -11,7 +11,7 @@ function LoginLayout() {
                 <img src='/public/asset/Image/image-1.png' className='image-1' />
                 <div>
                     <h1 className='styleH'>ECR System</h1>
-                    <p className='styletextP'>Engineering Change Request (ECR)</p>
+                    <h5 className='styletextP'>Engineering Change Request (ECR)</h5>
                     <Login />
                 </div>
                 <img src='/public/asset/Image/image-2.png' className='image-2' />

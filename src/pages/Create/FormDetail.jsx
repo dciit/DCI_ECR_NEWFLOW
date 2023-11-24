@@ -83,8 +83,6 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 function FormDetail(props) {
 
-
-
     //*********************SECTION CREATE************************ */
     // const empCode = localStorage.getItem("name");
     const empCode = Cookies.get('code')
@@ -185,21 +183,21 @@ function FormDetail(props) {
         // })
 
 
-        getDataSrv.getDict().then((res) => {
-            setDictQC(res.data.filter(item => item.dictType == 'QCD_CHECK_ITEM'));
-        })
+        // getDataSrv.getDict().then((res) => {
+        //     setDictQC(res.data.filter(item => item.dictType == 'QCD_CHECK_ITEM'));
+        // })
 
-        getDataSrv.getDict().then((res) => {
-            setcbChchanges(res.data.filter(item => item.dictType == 'CUS_CHECK'));
-        })
+        // getDataSrv.getDict().then((res) => {
+        //     setcbChchanges(res.data.filter(item => item.dictType == 'CUS_CHECK'));
+        // })
 
-        getDataSrv.getDict().then((res) => {
-            setcbCustomer(res.data.filter(item => item.dictType == 'CUS_NAME'));
-        })
+        // getDataSrv.getDict().then((res) => {
+        //     setcbCustomer(res.data.filter(item => item.dictType == 'CUS_NAME'));
+        // })
 
-        getDataSrv.getDict().then((res) => {
-            setCBDistribution(res.data.filter(item => item.dictType == 'DISTRIBUTION'));
-        })
+        // getDataSrv.getDict().then((res) => {
+        //     setCBDistribution(res.data.filter(item => item.dictType == 'DISTRIBUTION'));
+        // })
 
     }
     //*********************END SECTION CEREATE******************** */
@@ -450,7 +448,8 @@ function FormDetail(props) {
         if (confirm(txtAlertUpdate) == true) {
             getDataSrv.postUpdateData(dataModaldt[0]).then((res) => {
                 try {
-                    initFiles();
+                    // initFiles();
+                    refresh();
                     close(false);
                 }
                 catch (error) {
@@ -576,7 +575,8 @@ function FormDetail(props) {
                 }
             });
         } else {
-            alert("กรุณาใส่เหตุผล");
+            alert("กรุณาใส่เหตุผลการตีกลับ (Return)");
+            this.txtCancel.focus();
         }
     };
     //****************************END FUNCTION RECEIVE************ */
@@ -893,7 +893,7 @@ function FormDetail(props) {
                                 <Typography>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <h5 style={{ color: 'rgb(22 54 85)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
+                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
                                             <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428' }} value={dataModaldt[0]?.pU_Receive_Remark}
                                                 onChange={(e) => {
                                                     dataModaldt[0].pU_Receive_Remark = e.target.value;
@@ -927,7 +927,7 @@ function FormDetail(props) {
                                 <Typography>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <h5 style={{ color: 'rgb(22 54 85)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
+                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
                                             <Form.Control as="textarea" disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} rows={5} style={{ color: '#db7428' }} value={dataModaldt[0]?.dD_Remark_Receive}
                                                 onChange={(e) => {
                                                     dataModaldt[0].dD_Remark_Receive = e.target.value;
@@ -988,7 +988,7 @@ function FormDetail(props) {
                                 <Typography>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <h5 style={{ color: 'rgb(22 54 85)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
+                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
                                             <Form.Control as="textarea" disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} rows={5} style={{ color: '#db7428' }} value={dataModaldt[0]?.eN_Remark_Receive}
                                                 onChange={(e) => {
                                                     dataModaldt[0].eN_Remark_Receive = e.target.value;
@@ -1018,7 +1018,7 @@ function FormDetail(props) {
                                 <Typography>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <h5 style={{ color: 'rgb(22 54 85)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
+                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
                                             <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428' }} value={dataModaldt[0]?.sqC_Remark_Receive}
                                                 onChange={(e) => {
                                                     dataModaldt[0].sqC_Remark_Receive = e.target.value;
@@ -1048,7 +1048,7 @@ function FormDetail(props) {
                                 <Typography>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <h5 style={{ color: 'rgb(22 54 85)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
+                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
                                             <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428' }} value={dataModaldt[0]?.qC_Remark_Receive}
                                                 onChange={(e) => {
                                                     dataModaldt[0].qC_Remark_Receive = e.target.value;
@@ -1073,9 +1073,9 @@ function FormDetail(props) {
                                                     <div class="col-md-12" style={{ fontSize: '12px' }}>
                                                         {
                                                             dictQC.slice(0, 6).map((item, index) => {
-                                                                var isChecked = dataModaldt[0]?.qC_Remark2.split(',').includes(item?.dictCode);
-                                                                return <div key={item?.dictCode} style={{ display: 'flex' }} >
-                                                                    <input checked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxQCEdit(item?.dictCode, event.target.checked, 'checkbox')} disabled={position == "ISSUED" ? false : true} />    <div style={{ display: 'none' }}> {item?.dictCode} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.dictDesc}</div> <br></br></div>
+                                                                var isChecked = dataModaldt[0]?.qC_Remark2.split(',').includes(item?.dict_Code);
+                                                                return <div key={item?.dict_Code} style={{ display: 'flex' }} >
+                                                                    <input checked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxQCEdit(item?.dict_Code, event.target.checked, 'checkbox')} disabled={position == "ISSUED" ? false : true} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.dict_Desc}</div> <br></br></div>
                                                             })
                                                         }
 
@@ -1084,22 +1084,22 @@ function FormDetail(props) {
                                                         {/* QCD71-QCD72 */}
                                                         <div style={{ display: 'flex' }} >
                                                             {
-                                                                <><input checked={dataModaldt[0]?.qC_Remark2.split(',').includes(dictQC[11]?.dictCode)} onChange={(event) => handleCheckBoxQCEdit(dictQC[11]?.dictCode, event.target.checked, 'checkbox')} type="checkbox" disabled={position == "ISSUED" ? false : true} /><div style={{ marginLeft: '13px', fontSize: '12px' }}></div>
-                                                                    {dictQC[11]?.dictDesc}
-                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input onChange={(event) => handleCheckBoxQCEdit(dictQC[6]?.dictCode, event.target.checked, 'radio')} checked={dataModaldt[0]?.qC_Remark2.split(',').includes(dictQC[6]?.dictCode)} type="radio" name={'matrerial'} disabled={position == "ISSUED" ? false : true} />
-                                                                    {dictQC[6]?.dictDesc}
-                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input checked={dataModaldt[0]?.qC_Remark2.split(',').includes(dictQC[9]?.dictCode)} type="radio" name={'matrerial'} onChange={(event) => handleCheckBoxQCEdit(dictQC[9]?.dictCode, event.target.checked, 'radio')} disabled={position == "ISSUED" ? false : true} /> {dictQC[9]?.dictDesc} </>
+                                                                <><input checked={dataModaldt[0]?.qC_Remark2.split(',').includes(dictQC[11]?.dict_Code)} onChange={(event) => handleCheckBoxQCEdit(dictQC[11]?.dict_Code, event.target.checked, 'checkbox')} type="checkbox" disabled={position == "ISSUED" ? false : true} /><div style={{ marginLeft: '13px', fontSize: '12px' }}></div>
+                                                                    {dictQC[11]?.dict_Desc}
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input onChange={(event) => handleCheckBoxQCEdit(dictQC[6]?.dict_Code, event.target.checked, 'radio')} checked={dataModaldt[0]?.qC_Remark2.split(',').includes(dictQC[6]?.dict_Code)} type="radio" name={'matrerial'} disabled={position == "ISSUED" ? false : true} />
+                                                                    {dictQC[6]?.dict_Desc}
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input checked={dataModaldt[0]?.qC_Remark2.split(',').includes(dictQC[9]?.dict_Code)} type="radio" name={'matrerial'} onChange={(event) => handleCheckBoxQCEdit(dictQC[9]?.dict_Code, event.target.checked, 'radio')} disabled={position == "ISSUED" ? false : true} /> {dictQC[9]?.dict_Desc} </>
                                                             }
                                                         </div >
                                                         {/* END QCD71-QCD72 */}
 
                                                         {/* QCD73-QCD74 */}
-                                                        <div key={dictQC[7]?.dictCode} style={{ display: 'flex' }} >
+                                                        <div key={dictQC[7]?.dict_Code} style={{ display: 'flex' }} >
                                                             {
                                                                 <> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Customer :
-                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input onChange={(event) => handleCheckBoxQCEdit(dictQC[8]?.dictCode, event.target.checked, 'radio')} checked={dataModaldt[0]?.qC_Remark2.split(',').includes(dictQC[8]?.dictCode)} type="radio" name={'pallet'} disabled={position == "ISSUED" ? false : true} />
-                                                                    {dictQC[8]?.dictDesc}
-                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input onChange={(event) => handleCheckBoxQCEdit(dictQC[10]?.dictCode, event.target.checked, 'radio')} checked={dataModaldt[0]?.qC_Remark2.split(',').includes(dictQC[10]?.dictCode)} type="radio" name={'pallet'} disabled={position == "ISSUED" ? false : true} /> {dictQC[10]?.dictDesc}
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input onChange={(event) => handleCheckBoxQCEdit(dictQC[8]?.dict_Code, event.target.checked, 'radio')} checked={dataModaldt[0]?.qC_Remark2.split(',').includes(dictQC[8]?.dict_Code)} type="radio" name={'pallet'} disabled={position == "ISSUED" ? false : true} />
+                                                                    {dictQC[8]?.dict_Desc}
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input onChange={(event) => handleCheckBoxQCEdit(dictQC[10]?.dict_Code, event.target.checked, 'radio')} checked={dataModaldt[0]?.qC_Remark2.split(',').includes(dictQC[10]?.dict_Code)} type="radio" name={'pallet'} disabled={position == "ISSUED" ? false : true} /> {dictQC[10]?.dict_Desc}
                                                                 </>
                                                             }
                                                         </div >
@@ -1107,8 +1107,8 @@ function FormDetail(props) {
 
                                                         {
                                                             dictQC.slice(11).map((item, index) => {
-                                                                var isChecked = dataModaldt[0]?.qC_Remark2.split(',').includes(dictQC[7]?.dictCode);
-                                                                return <div key={dictQC[7]?.dictCode} style={{ display: 'flex' }} > <input checked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxQCEdit(dictQC[7]?.dictCode, event.target.checked, 'checkbox')} disabled={position == "ISSUED" ? false : true} />    <div style={{ display: 'none' }}> {dictQC[7]?.dictCode} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{dictQC[7]?.dictDesc}</div> <br></br></div>
+                                                                var isChecked = dataModaldt[0]?.qC_Remark2.split(',').includes(dictQC[7]?.dict_Code);
+                                                                return <div key={dictQC[7]?.dict_Code} style={{ display: 'flex' }} > <input checked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxQCEdit(dictQC[7]?.dict_Code, event.target.checked, 'checkbox')} disabled={position == "ISSUED" ? false : true} />    <div style={{ display: 'none' }}> {dictQC[7]?.dict_Code} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{dictQC[7]?.dict_Desc}</div> <br></br></div>
                                                             })
                                                         }
                                                     </div>
@@ -1128,7 +1128,7 @@ function FormDetail(props) {
                                 <Typography>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <h5 style={{ color: 'rgb(22 54 85)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
+                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
                                             <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428' }} value={dataModaldt[0]?.diL_Remark_Receive}
                                                 onChange={(e) => {
                                                     dataModaldt[0].diL_Remark_Receive = e.target.value;
@@ -1218,7 +1218,7 @@ function FormDetail(props) {
                                 <Typography>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <h5 style={{ color: 'rgb(22 54 85)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
+                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
                                             <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428' }} value={dataModaldt[0]?.qA_Remark_Receive}
                                                 onChange={(e) => {
                                                     dataModaldt[0].qA_Remark_Receive = e.target.value;
@@ -1234,8 +1234,8 @@ function FormDetail(props) {
                                                 <span><b>1.การแจ้งลูกค้าข้อมูลการเปลี่ยนแปลง (QA/LG)</b></span>
                                                 {
                                                     cbChchanges.map((item, index) => {
-                                                        var isChecked = dataModaldt[0]?.chChangesQA.split(',').includes(item?.dictCode);
-                                                        return <div key={item?.dictCode} style={{ display: 'flex', marginLeft: '2pc' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleChChangesCus(index, event.target.checked)} disabled={position == "ISSUED" ? false : true} />    <div style={{ display: 'none' }}> {item?.dictCode} </div> <div style={{ marginLeft: '13px' }}>{item?.dictDesc}</div> <br></br></div>
+                                                        var isChecked = dataModaldt[0]?.chChangesQA.split(',').includes(item?.dict_Code);
+                                                        return <div key={item?.dict_Code} style={{ display: 'flex', marginLeft: '2pc' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleChChangesCus(index, event.target.checked)} disabled={position == "ISSUED" ? false : true} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px' }}>{item?.dict_Desc}</div> <br></br></div>
                                                     })
                                                 }
                                             </div>
@@ -1250,8 +1250,8 @@ function FormDetail(props) {
                                             <div className='styleCustomer'>
                                                 {
                                                     cbCustomer.map((item, index) => {
-                                                        var isChecked = dataModaldt[0]?.customerForQA.split(',').includes(item?.dictCode);
-                                                        return <div key={item?.dictCode} style={{ display: 'flex', marginLeft: '0.5pc' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCustomer(index, event.target.checked)} disabled={position == "ISSUED" ? false : true} />    <div style={{ display: 'none' }}> {item?.dictCode} </div> <div style={{ marginLeft: '9px' }}>{item?.dictDesc}</div> <br></br></div>
+                                                        var isChecked = dataModaldt[0]?.customerForQA.split(',').includes(item?.dict_Code);
+                                                        return <div key={item?.dict_Code} style={{ display: 'flex', marginLeft: '0.5pc' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCustomer(index, event.target.checked)} disabled={position == "ISSUED" ? false : true} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '9px' }}>{item?.dict_Desc}</div> <br></br></div>
                                                     })
                                                 }
                                             </div>
@@ -1309,8 +1309,8 @@ function FormDetail(props) {
                                             <div className='Distribution'>
                                                 {
                                                     cbDistribution.map((item, index) => {
-                                                        var isChecked = dataModaldt[0]?.distribution.split(',').includes(item?.dictCode);
-                                                        return <div key={item?.dictCode} style={{ display: 'flex', marginLeft: '2pc' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleDistribution(index, event.target.checked)} disabled={position == "ISSUED" ? false : true} />    <div style={{ display: 'none' }}> {item?.dictCode} </div> <div style={{ marginLeft: '13px' }}>{item?.dictDesc}</div> <br></br></div>
+                                                        var isChecked = dataModaldt[0]?.distribution.split(',').includes(item?.dict_Code);
+                                                        return <div key={item?.dict_Code} style={{ display: 'flex', marginLeft: '2pc' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleDistribution(index, event.target.checked)} disabled={position == "ISSUED" ? false : true} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px' }}>{item?.dict_Desc}</div> <br></br></div>
                                                     })
                                                 }
                                             </div>
@@ -1323,8 +1323,8 @@ function FormDetail(props) {
                         <hr></hr>
                         <Row className='styleRowText'>
                             <Col xs={12} md={10}>
-                                <p style={{ fontSize: '20px', fontWeight: '600', color: 'red' }}>Remark (เหตุผลการ Cancel)</p>
-                                <Form.Control as="textarea" style={{ color: 'red' }} rows={5}
+                                <p style={{ fontSize: '20px', fontWeight: '600', color: 'red' }}>เหตุผลการตีกลับ (Return)</p>
+                                <Form.Control as="textarea" id='txtCancel' style={{ color: 'red' }} rows={5}
                                     onChange={(event) => setRemarkCancel(event.target.value)} />
                             </Col>
                             <Col xs={12} md={2} style={{ marginTop: '6%' }}>
@@ -1665,20 +1665,24 @@ function FormDetail(props) {
                             {/* END RECEIVE  */}
                             {/*  ISSUED  */}
                             {
+                                console.log(dataModaldt)
+                            }
+                            {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0024" && item.rolE_VIEW == "True"
-                                }).length ?
-                                    <>
-                                        <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                            ตีกลับ (Return)
-                                        </Button>
-                                    </> : ""
+                                }).length ? dataModaldt[0]?.eN_CheckBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
                             }
 
                             {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0028" && item.rolE_VIEW == "True"
-                                }).length ? <>
+                                }).length ? dataModaldt[0]?.eN_CheckBit != "F" &&
+                                <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
                                         ออกเอกสาร (Issued)
                                     </Button>
@@ -1693,21 +1697,21 @@ function FormDetail(props) {
                             {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0025" && item.rolE_VIEW == "True"
-                                }).length ?
-                                    <>
-                                        <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                            ตีกลับ (Return)
-                                        </Button>
-                                    </> : ""
+                                }).length ? dataModaldt[0]?.eN_ApprovedBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
                             }
 
                             {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0029" && item.rolE_VIEW == "True"
-                                }).length ?
-                                    <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        อนุมัติ (MG Approved)
-                                    </Button>
+                                }).length ? dataModaldt[0]?.eN_ApprovedBit != "F" &&
+                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                    อนุมัติ (MG Approved)
+                                </Button>
                                     :
                                     ""
                             }
@@ -1718,6 +1722,355 @@ function FormDetail(props) {
                             {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0026" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.sqC_ReceiveBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
+                            }
+
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0030" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.sqC_ReceiveBit != "F" &&
+                                <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                    อนุมัติ (GM Approved)
+                                </Button>
+                                    :
+                                    ""
+                            }
+                            {/* END APPROVED */}
+                            {/* ****************************END BUTTON SECTION EN **************************/}
+
+
+
+                            {/* **************************** BUTTON SECTION SQC **************************/}
+                            {/* RECEIVE  */}
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0031" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.sqC_IssuedBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
+                            }
+
+
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0035" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.sqC_IssuedBit != "F" &&
+                                <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
+                                    รับเอกสาร (Receive)
+                                </Button>
+                                    :
+                                    ""
+                            }
+                            {/* END RECEIVE  */}
+
+                            {/*  ISSUED  */}
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0032" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.sqC_CheckBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
+                            }
+
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0036" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.sqC_CheckBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
+                                        ออกเอกสาร (Issued)
+                                    </Button>
+                                </>
+                                    : ""
+
+                            }
+                            {/* END ISSUED  */}
+
+
+                            {/* ******** CHECK **********/}
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0033" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.sqC_ApprovedBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
+                            }
+
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0037" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.sqC_ApprovedBit != "F" &&
+                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                    อนุมัติ (MG Approved)
+                                </Button>
+                                    :
+                                    ""
+                            }
+                            {/* ********END CHECK **********/}
+
+
+                            {/* APPROVED */}
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0034" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.qC_ReceiveBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
+                            }
+
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0038" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.qC_ReceiveBit != "F" &&
+                                <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                    อนุมัติ (GM Approved)
+                                </Button>
+                                    :
+                                    ""
+                            }
+                            {/* END APPROVED */}
+                            {/* ****************************END BUTTON SECTION SQC **************************/}
+
+
+
+                            {/* **************************** BUTTON SECTION QC **************************/}
+                            {/* RECEIVE  */}
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0039" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.qC_IssuedBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
+                            }
+
+
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0043" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.qC_IssuedBit != "F" &&
+                                <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
+                                    รับเอกสาร (Receive)
+                                </Button>
+                                    :
+                                    ""
+                            }
+                            {/* END RECEIVE  */}
+
+                            {/*  ISSUED  */}
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0040" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.qC_CheckBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
+                            }
+
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0044" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.qC_CheckBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
+                                        ออกเอกสาร (Issued)
+                                    </Button>
+                                </>
+                                    : ""
+
+                            }
+                            {/* END ISSUED  */}
+
+
+                            {/* ******** CHECK **********/}
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0041" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.qC_ApprovedBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
+                            }
+
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0045" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.qC_ApprovedBit != "F" &&
+                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                    อนุมัติ (MG Approved)
+                                </Button>
+                                    :
+                                    ""
+                            }
+                            {/* ********END CHECK **********/}
+
+
+                            {/* APPROVED */}
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0042" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.diL_RECEIVEBIT != "F" &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
+                            }
+
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0046" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.diL_RECEIVEBIT != "F" &&
+                                <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                    อนุมัติ (GM Approved)
+                                </Button>
+                                    :
+                                    ""
+                            }
+                            {/* END APPROVED */}
+                            {/* ****************************END BUTTON SECTION QC **************************/}
+
+
+
+                            {/* **************************** BUTTON SECTION DIL **************************/}
+                            {/* RECEIVE  */}
+                            {
+
+                            }
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0047" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
+                            }
+
+
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0048" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
+                                <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
+                                    รับเอกสาร (Receive)
+                                </Button>
+                                    :
+                                    ""
+                            }
+                            {/* END RECEIVE  */}
+                            {/* **************************** BUTTON SECTION DIL **************************/}
+
+
+
+
+                            {/* **************************** BUTTON SECTION QA **************************/}
+                            {/* RECEIVE  */}
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0049" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
+                            }
+
+
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0053" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
+                                <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
+                                    รับเอกสาร (Receive)
+                                </Button>
+                                    :
+                                    ""
+                            }
+                            {/* END RECEIVE  */}
+
+                            {/*  ISSUED  */}
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0050" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.qA_CheckBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
+                            }
+
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0054" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.qA_CheckBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
+                                        ออกเอกสาร (Issued)
+                                    </Button>
+                                </>
+                                    : ""
+                            }
+                            {/* END ISSUED  */}
+
+
+                            {/* ******** CHECK **********/}
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0051" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.qA_ApprovedBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
+                            }
+
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0055" && item.rolE_VIEW == "True"
+                                }).length ? dataModaldt[0]?.qA_ApprovedBit != "F" &&
+                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                    อนุมัติ (MG Approved)
+                                </Button>
+                                    :
+                                    ""
+                            }
+                            {/* ********END CHECK **********/}
+
+                            {
+                                section
+                            }
+                            {/* APPROVED */}
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0052" && item.rolE_VIEW == "True"
                                 }).length ?
                                     <>
                                         <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -1728,17 +2081,16 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0030" && item.rolE_VIEW == "True"
-                                }).length ? <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                    อนุมัติ (GM Approved)
-                                </Button>
+                                    return item.menuCode == "BTN0056" && item.rolE_VIEW == "True"
+                                }).length ?
+                                    <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                        อนุมัติ (GM Approved)
+                                    </Button>
                                     :
                                     ""
                             }
                             {/* END APPROVED */}
-                            {/* ****************************END BUTTON SECTION EN **************************/}
-
-
+                            {/* ****************************END BUTTON SECTION QA **************************/}
 
                         </Stack>
                     </div>

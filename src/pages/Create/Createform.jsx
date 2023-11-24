@@ -58,24 +58,6 @@ function Createform() {
 
 
     function loadPage() {
-        // setddlStatus(sectionArray[buffIndexSection]);
-        // if (buffIndexSection != '999') {
-        //     setindexddlStatus(buffIndexSection) /// วิธีหา Index จาก value โดยใช้ IndexOf
-        // } else {
-        //     setindexddlStatus('999')
-        // }
-
-
-        // getDataSrvHD.getECRList(DocNo, sectionArray[buffIndexSection]).then((res) => {
-        //     try {
-        //         setGetdata(res.data)
-        //     }
-        //     catch (error) {
-        //         console.log(error);
-        //         return error;
-        //     }
-        // });
-
         getDataSrvHD.getECRList(DocNo, selectSection).then((res) => {
             try {
                 setGetdata(res.data)
@@ -172,6 +154,7 @@ function Createform() {
     const [buffIndexSection, setBuffIndexSection] = useState(grp(ddlStatus));
     const handleChange = (event) => {
         setSelectSection(event.target.value);
+        console.log(setSelectSection)
         // if (event.target.value != 'ALL') {
         //     setBuffIndexSection(sectionArray.indexOf(event.target.value))
         // } else {
