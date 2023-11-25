@@ -59,7 +59,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 
 function ModelAttachFile(props) {
-    const { show, close, item, section } = props;
+    const { show, close, item } = props;
     // const empCode = localStorage.getItem("name");
     const empCode = Cookies.get('code')
     const ref = useRef();
@@ -96,10 +96,13 @@ function ModelAttachFile(props) {
         ref.current.value = null;
     }
 
+    let sectionFile = showFile[0]?.section
+    let secPermission = permission[0]?.grpRoleSect
+
 
     const handleSubmission = () => {
         getDataFile.postFile({
-            ECRNO: item.ecrno, SECTION: section, DOCNAME: item.title, ACTION: 'UPDATE', LOGBY: empCode, FileAttached: selectedFile, StatusFile: 'INSERT'
+            ECRNO: item.ecrno, SECTION: secPermission, DOCNAME: item.title, ACTION: 'UPDATE', LOGBY: empCode, FileAttached: selectedFile, StatusFile: 'INSERT'
         }).then((res) => {
             try {
                 // if (Object.keys(res.data).length) {
@@ -135,11 +138,12 @@ function ModelAttachFile(props) {
         close(false);
     }
 
+
+
+
     return (
         <>
-            {
-                JSON.stringify(close)
-            }
+
             <BootstrapDialog
                 open={show}
             >
@@ -223,12 +227,15 @@ function ModelAttachFile(props) {
                                                         <a href={`http://localhost:5173/asset/FileAttech/${item.pathfilename}`}> <LuLink></LuLink>
                                                         </a>
                                                     </StyledTableCell>
+
                                                     {
                                                         permission.filter((item) => {
                                                             return item.menuCode == "BTN0003" && item.rolE_VIEW == "True"
-                                                        }).length ? <StyledTableCell align="center" onClick={() => handleDelete(item.docid)}><Link><FcFullTrash></FcFullTrash></Link></StyledTableCell>
+                                                        }).length ? item.section == secPermission ?
+                                                            <StyledTableCell align="center" onClick={() => handleDelete(item.docid)}><Link><FcFullTrash></FcFullTrash></Link></StyledTableCell>
                                                             :
                                                             <StyledTableCell />
+                                                            : ""
                                                     }
                                                 </StyledTableRow>
                                             })

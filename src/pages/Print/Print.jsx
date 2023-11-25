@@ -8,8 +8,6 @@ import { useParams } from 'react-router-dom';
 
 
 
-
-
 function Print() {
 
     useEffect(() => {
@@ -76,7 +74,7 @@ function Print() {
                 JSON.stringify(dataModaldt) // คำสั่งเพื่อเปิดดูข้อมูลที่ส่งมา
             } */}
 
-            <div ref={componentRef} style={{ width: '95%', height: window.innerHeight }}>
+            <div ref={componentRef} style={{ width: '90%', height: window.innerHeight }}>
                 <br></br>
                 <div style={{ paddingLeft: '3pc' }}>
                     <br></br><br></br>
@@ -202,15 +200,6 @@ function Print() {
                             </table>
                         </div>
                         <div class="col-md-2">
-                            {/* <img className='styleArrow' src="/public/asset/Image/Arrow1.png" />
-                            <img className='styleArrow2' src="/public/asset/Image/Arrow4.png" />
-                            <img className='styleArrow3' src="/public/asset/Image/Arrow3.png" />
-                            <img className='styleArrow4' src="/public/asset/Image/Arrow4.png" />
-                            <img className='styleArrow5' src="/public/asset/Image/Arrow3.png" />
-                            <img className='styleArrow6' src="/public/asset/Image/Arrow4.png" />
-                            <img className='styleArrow7' src="/public/asset/Image/Arrow4.png" />
-                            <img className='styleArrow8' src="/public/asset/Image/Arrow4.png" />
-                            <img className='styleArrow9' src="/public/asset/Image/Arrow6.png" /> */}
                         </div>
                     </div>
 
