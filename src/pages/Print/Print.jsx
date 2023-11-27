@@ -70,19 +70,15 @@ function Print() {
             </div>
 
 
-            {/* {
-                JSON.stringify(dataModaldt) // คำสั่งเพื่อเปิดดูข้อมูลที่ส่งมา
-            } */}
-
             <div ref={componentRef} style={{ width: '90%', height: window.innerHeight }}>
                 <br></br>
                 <div style={{ paddingLeft: '3pc' }}>
                     <br></br><br></br>
                     <div class="row">
-                        <div class="col-md-4"><p style={{ marginTop: '-1pc', fontSize: '7px' }}>Safety First (Zero Accident) 5S (Seiri,Seiton,Seiso,Seiketsu,Shitsuke)</p></div>
-                        <div class="col-md-6"><p style={{ fontSize: '15px' }}>ENGINEERING CHANGE REQUEST (1/2)</p></div>
+                        <div class="col-md-4"><p style={{ marginTop: '-1pc', fontSize: '10px' }}>Safety First (Zero Accident) 5S (Seiri,Seiton,Seiso,Seiketsu,Shitsuke)</p></div>
+                        <div class="col-md-6"><p style={{ fontSize: '18px' }}>ENGINEERING CHANGE REQUEST (1/2)</p></div>
                         <div class="col-md-2"><p style={{ fontSize: '13px' }}>ECR NO. <ins>{dataModaldt[0]?.ecR_NO}</ins></p></div>
-                        <p className='title'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TITLE : <ins>{dataModaldt[0]?.title}</ins></p>
+                        <p className='title' style={{ fontSize: '16px' }}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TITLE : <ins>{dataModaldt[0]?.title}</ins></p>
                     </div>
                     <p className='title'>1. CHANGE OUTLINE</p>
 
@@ -148,15 +144,15 @@ function Print() {
                         <div class="col-md-2" style={{ padding: '0' }}>
                             <table id='SignRequest' style={{ width: '90%', marginLeft: '-8px' }}>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Request Section : PU/DD</td>
+                                    <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Request Section : PU/DD</td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Date : {dataModaldt[0]?.create_IssuedDate}</td>
+                                    <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Date : {dataModaldt[0]?.create_IssuedDate}</td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Issued</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Checked</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Issued</b></center></td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
                                     <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.create_ApprovedBy}<br></br>{dataModaldt[0]?.create_ApprovedDate}</center></td>
@@ -172,6 +168,7 @@ function Print() {
                     <div class="row" style={{ marginTop: '-1pc' }}>
                         <div class="col-md-10"></div>
                         <div class="col-md-2" className='styleForDD'>
+                            <p style={{ fontSize: '11px', margin: '0' }}>FOR DD SECTION</p>
                             {
                                 cbForDD.map((item, index) => {
                                     var isChecked = dataModaldt[0]?.for_DDSection.split(',').includes(item?.req_FORCODE);
@@ -232,15 +229,15 @@ function Print() {
                         <div class="col-md-2" style={{ padding: '0', marginTop: '-26px' }}>
                             <table id='SignPU' style={{ width: '90%', marginLeft: '-8px' }}>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Accepted Section : PU</td>
+                                    <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Accepted Section : PU</td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Date : {dataModaldt[0]?.pU_IssuedDate}</td>
+                                    <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Date : {dataModaldt[0]?.pU_IssuedDate}</td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Issued</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Checked</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Issued</b></center></td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
                                     <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.pU_ApprovedBy}<br></br>{dataModaldt[0]?.pU_ApprovedDate}</center></td>
@@ -256,7 +253,7 @@ function Print() {
                         <div class="col-md-10"  >
                             <div style={{ width: '100%', padding: '10px', border: '1px solid black', margin: '0' }}>
                                 <div class="row">
-                                    <div class="col-md-9" style={{ fontSize: '12px' }}>
+                                    <div class="col-md-10" style={{ fontSize: '12px' }}>
                                         <div >
                                             <p style={{ marginTop: '-7px' }}>หัวข้อการตรวจเช็คคุณภาพ และผล (Quality Check Item and Result) :</p>
                                             <ins>2.2  Design Development</ins> :  1).ประเมินคุณสมบัติของ Part ( Mechanical , Chemical )<br></br>
@@ -271,7 +268,7 @@ function Print() {
 
                                         </div>
                                     </div>
-                                    <div class="col-md-3" style={{ width: '100%', padding: '10px', border: '1px solid black', marginLeft: '-10px' }} >
+                                    <div class="col-md-2" style={{ width: '100%', padding: '10px', border: '1px solid black', marginLeft: '-10px', fontSize: '12px' }} >
                                         ดำเนินการข้อ 2.1 เฉพาะ <br></br>
                                         ในกรณี 1 : ข้อ 2  , ข้อ 3 <br></br>
                                         ในกรณี 2 : ข้อ 1  , ข้อ 2
@@ -283,15 +280,15 @@ function Print() {
                         <div class="col-md-2" style={{ marginTop: '15px', padding: '0' }}>
                             <table id='SignDD' style={{ width: '90%', marginLeft: '-8px' }}>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Accepted Section : DD</td>
+                                    <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Accepted Section : DD</td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Date : {dataModaldt[0]?.dD_IssuedDate}</td>
+                                    <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Date : {dataModaldt[0]?.dD_IssuedDate}</td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Issued</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Checked</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Issued</b></center></td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
                                     <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.dD_ApprovedBy}<br></br>{dataModaldt[0]?.dD_ApprovedDate}</center></td>
@@ -317,15 +314,15 @@ function Print() {
                         <div class="col-md-2" style={{ padding: '0', marginTop: '-19px' }}>
                             <table id='SignEN' style={{ width: '90%', marginLeft: '-8px' }}>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Accepted Section : EN</td>
+                                    <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Accepted Section : EN</td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Date : {dataModaldt[0]?.eN_IssuedDate}</td>
+                                    <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Date : {dataModaldt[0]?.eN_IssuedDate}</td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Issued</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Checked</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Issued</b></center></td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
                                     <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.eN_ApprovedBy}<br></br>{dataModaldt[0]?.eN_ApprovedDate}</center></td>
@@ -350,15 +347,15 @@ function Print() {
                         <div class="col-md-2" style={{ marginTop: '1pc', padding: '0' }}>
                             <table id='SignSQC' style={{ width: '90%', marginLeft: '-8px' }}>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Accepted Section : SQC</td>
+                                    <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Accepted Section : SQC</td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Date : {dataModaldt[0]?.sqC_IssuedDate}</td>
+                                    <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Date : {dataModaldt[0]?.sqC_IssuedDate}</td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Issued</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Checked</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Issued</b></center></td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
                                     <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.sqC_ApprovedBy}<br></br>{dataModaldt[0]?.sqC_ApprovedDate}</center></td>
@@ -437,15 +434,15 @@ function Print() {
                         <div class="col-md-2" style={{ marginTop: '3pc', padding: '0' }}>
                             <table id='SignQC' style={{ width: '90%', marginLeft: '-8px' }}>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Accepted Section : QC</td>
+                                    <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Accepted Section : QC</td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Date : {dataModaldt[0]?.qC_IssuedDate}</td>
+                                    <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Date : {dataModaldt[0]?.qC_IssuedDate}</td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Issued</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Checked</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Issued</b></center></td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
                                     <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.qC_ApprovedBy}<br></br>{dataModaldt[0]?.qC_ApprovedDate}</center></td>
@@ -473,18 +470,18 @@ function Print() {
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-2" style={{ marginTop: '-36px', padding: '0' }}>
+                        <div class="col-md-2" style={{ marginTop: '-27px', padding: '0' }}>
                             <table id='SignDIL' style={{ width: '90%', marginLeft: '-8px' }}>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Accepted Section : DIL</td>
+                                    <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Accepted Section : DIL</td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Date : {dataModaldt[0]?.sqC_IssuedDate}</td>
+                                    <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Date : {dataModaldt[0]?.sqC_IssuedDate}</td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Issued</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Checked</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Issued</b></center></td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
                                     <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.sqC_ApprovedBy}<br></br>{dataModaldt[0]?.sqC_ApprovedDate}</center></td>
@@ -509,15 +506,15 @@ function Print() {
                         <div class="col-md-2" style={{ padding: '0' }}>
                             <table id='SignDIL2' style={{ width: '90%', marginLeft: '-8px' }}>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Accepted Section : DIL</td>
+                                    <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Accepted Section : DIL</td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Date : {dataModaldt[0]?.sqC_IssuedDate}</td>
+                                    <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Date : {dataModaldt[0]?.sqC_IssuedDate}</td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Issued</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Checked</b></center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Issued</b></center></td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
                                     <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.sqC_ApprovedBy}<br></br>{dataModaldt[0]?.sqC_ApprovedDate}</center></td>
@@ -547,18 +544,23 @@ function Print() {
                                             })
                                         }
                                     </div>
-                                    <div style={{ display: 'flex' }}>
-                                        ชื่อลูกค้าที่แจ้ง :
-                                        {
-                                            cbCustomer.map((item, index) => {
-                                                var isChecked = dataModaldt[0]?.qA_CustomerName.split(',').includes(item?.req_QACUSTOMERCODE);
-                                                return <div key={item?.req_QACUSTOMERCODE} style={{ display: 'flex' }} >
-                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} />    <div style={{ display: 'none' }}> {item?.req_QACUSTOMERCODE} </div> <div style={{ marginLeft: '13px', fontSize: '11px' }}>{item?.req_QACUSTOMERNAME}</div> <br></br></div>
-                                            })
-                                        }
-                                        {dataModaldt[0]?.qA_OtherCustomer}
+                                    <div class="row" style={{ display: 'flex' }}>
+                                        <div class="col-md-2">
+                                            ชื่อลูกค้าที่แจ้ง :
+                                        </div>
+                                        <div class="col-md-10" style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'wrap' }}>
+                                            {
+                                                cbCustomer.map((item, index) => {
+                                                    var isChecked = dataModaldt[0]?.qA_CustomerName.split(',').includes(item?.req_QACUSTOMERCODE);
+                                                    return <div key={item?.req_QACUSTOMERCODE} style={{ display: 'flex' }} >
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} />    <div style={{ display: 'none' }}> {item?.req_QACUSTOMERCODE} </div> <div style={{ marginLeft: '13px', fontSize: '11px' }}>{item?.req_QACUSTOMERNAME}</div> <br></br></div>
+                                                })
+                                            }
+                                            {dataModaldt[0]?.qA_OtherCustomer}
+                                        </div>
                                     </div >
 
+                                    <br></br>
                                     <div style={{ display: 'flex' }}>
                                         <p>วันที่แจ้ง : {dataModaldt[0]?.qA_InformationDate}</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <p>Information by : {dataModaldt[0]?.qA_InformatonBy}</p>
@@ -571,15 +573,15 @@ function Print() {
                                 <div className='col-md-12'>
                                     <table id='SignQA' style={{ width: '90%', marginLeft: '-8px' }}>
                                         <tr style={{ border: '1px solid black' }}>
-                                            <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Accepted Section : QA</td>
+                                            <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Accepted Section : QA</td>
                                         </tr>
                                         <tr style={{ border: '1px solid black' }}>
-                                            <td style={{ border: '1px solid black', fontSize: '12px' }} colspan="3">Date : {dataModaldt[0]?.qA_IssuedDate}</td>
+                                            <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Date : {dataModaldt[0]?.qA_IssuedDate}</td>
                                         </tr>
                                         <tr style={{ border: '1px solid black' }}>
-                                            <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                            <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                            <td style={{ border: '1px solid black', fontSize: '10px', width: '4pc' }}><center><b>Issued</b></center></td>
+                                            <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                            <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Checked</b></center></td>
+                                            <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Issued</b></center></td>
                                         </tr>
                                         <tr style={{ border: '1px solid black' }}>
                                             <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.qA_ApprovedBy}<br></br>{dataModaldt[0]?.qA_ApprovedDate}</center></td>
@@ -593,18 +595,27 @@ function Print() {
                     </div>
 
 
-
                     <p style={{ fontSize: '12px' }}><ins>Set Meeting :</ins> กรณี ❶ : PU   กรณี ❷ : DD</p>
-                    <div style={{ display: 'flex' }}>
-                        <p style={{ fontSize: '11px' }}>DISTRIBUTION</p>
-                        {
-                            cbdistribution.map((item, index) => {
-                                var isChecked = dataModaldt[0]?.distribution.split(',').includes(item?.req_DISTRIBUTIONCODE);
-                                return <div key={item?.req_DISTRIBUTIONCODE} style={{ display: 'flex' }} >
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} />    <div style={{ display: 'none' }}> {item?.req_DISTRIBUTIONCODE} </div> <div style={{ marginLeft: '13px', fontSize: '11px' }}>{item?.req_DISTRIBUTIONNAME}</div> <br></br></div>
-                            })
-                        }
+                    <div class="row">
+                        <div class="col-md-10" style={{ display: 'flex' }}>
+                            <div class="col-md-1">
+                                <p style={{ fontSize: '11px' }}>DISTRIBUTION</p>
+                            </div>
+                            <div class="col-md-11" style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+                                {
+                                    cbdistribution.map((item, index) => {
+                                        var isChecked = dataModaldt[0]?.distribution.split(',').includes(item?.req_DISTRIBUTIONCODE);
+                                        return <div key={item?.req_DISTRIBUTIONCODE} style={{ display: 'flex' }} >
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} />    <div style={{ display: 'none' }}> {item?.req_DISTRIBUTIONCODE} </div> <div style={{ marginLeft: '13px', fontSize: '11px' }}>{item?.req_DISTRIBUTIONNAME}</div> <br></br></div>
+                                    })
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-2" style={{ padding: '0' }}>
+                        </div>
                     </div>
+
+
 
 
                     <div>

@@ -219,10 +219,9 @@ function Createform() {
     return (<>
         <div className='stylePagee'>
             <div class="card ">
-                <h5 class="card-header bg-info text-white border-0">สร้างเอกสาร ECR</h5>
+                <h5 class="card-header bg-info text-white border-0">สร้างเอกสาร ECR</h5>  {/* 😉🤣😍😒😁🤞👏💋🌹🎂✔🤳💖😢😎🎶🤳💕 */}
                 <div class="card-body">
                     <div class="row">
-                        😉🤣😍😒😁🤞👏💋🌹🎂✔🤳💖😢😎🎶🤳💕
                         <div class="col-1">Search :</div>
                         <div class="col-2">
                             <input type="text" class="form-control" onChange={(event) => handleChangeSearch(event.target.value)} />
@@ -377,11 +376,11 @@ function Createform() {
                                     <td>
                                         <div>
                                             <center>
-                                                <img src='/public/asset/Image/Chat2.png' onClick={() => {
+                                                <span className='content'>{item.count}</span>
+                                                <img style={{ marginBottom: '20px' }} src='/public/asset/Image/Chat60.png' onClick={() => {
                                                     setEcrnoSelected(item)
                                                     setOpenModalChat(true);
                                                 }} />
-                                                <span className='content'>{item.count}</span>
                                             </center>
                                         </div>
                                     </td>

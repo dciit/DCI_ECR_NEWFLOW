@@ -540,6 +540,7 @@ function FormDetail(props) {
         let createBySection = (ecrCreateBySection == 'Design') ? 'DD' : 'PU';
 
         let _section = (createBySection == section) ? (ecrCreateStatus == 'U' || ecrCreateStatus == 'R') ? 'CREATE' : section : section;
+
         getDataSrvHD.getCheck(ecrno, empCode, _section).then((res) => {
             try {
                 refresh();
@@ -1457,7 +1458,7 @@ function FormDetail(props) {
                             {/* --------******* CHECK********------- */}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0009" && item.rolE_VIEW == "True"
+                                    return (item.menuCode == "BTN0009" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") || (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
                                 }).length ? (
                                     (dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
                                     dataModaldt[0]?.pU_ApprovedBit != "F"
@@ -1473,7 +1474,7 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0013" && item.rolE_VIEW == "True"
+                                    return (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") || (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
                                 }).length ? (
                                     (dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
                                     dataModaldt[0]?.pU_ApprovedBit != "F"
@@ -1492,7 +1493,9 @@ function FormDetail(props) {
                             {/* --------******* APPROVED ********------- */}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0010" && item.rolE_VIEW == "True"
+                                    return (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") ||
+                                        (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
+                                        (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
                                 }).length ? (
                                     dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" || dataModaldt[0]?.dD_ReceiveBit != "F")
                                 )
@@ -1506,7 +1509,9 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0014" && item.rolE_VIEW == "True"
+                                    return (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") ||
+                                        (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
+                                        (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
                                 }).length ? (
                                     dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" || dataModaldt[0]?.dD_ReceiveBit != "F")
                                 )
@@ -1620,7 +1625,9 @@ function FormDetail(props) {
                             {/* APPROVED */}
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") || (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    return (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0].create_CheckBit == "F") ||
+                                        (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0].create_CheckBit == "F") ||
+                                        (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
                                 }).length ? (
                                     (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.eN_ReceiveBit == "U") ||
                                     dataModaldt[0]?.pU_ReceiveBit == "U"
@@ -1635,7 +1642,9 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") || (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    return (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0].create_CheckBit == "F") ||
+                                        (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0].create_CheckBit == "F") ||
+                                        (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
                                 }).length ? (
                                     (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.eN_ReceiveBit == "U") ||
                                     dataModaldt[0]?.pU_ReceiveBit == "U"

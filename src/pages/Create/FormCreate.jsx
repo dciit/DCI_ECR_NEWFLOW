@@ -105,6 +105,19 @@ function FormCreate(props) {
     };
     //*********************END Collapsible ************************ */
 
+    const group = (val) => {
+        var varGroup = '';
+
+        if (val == 'DD') {
+            varGroup = "Design"
+        }
+        else {
+            varGroup = "Purchasing";
+        }
+        return varGroup;
+    }
+
+    const grpSection = group(permission[0]?.grpRoleSect);
 
 
     //*********************SECTION CREATE************************ */
@@ -244,7 +257,7 @@ function FormCreate(props) {
         var lineOt = lineOther != "" ? lineOther : "-";
 
         getDataSrv.postInputData({
-            Ecrno: nbr[0]?.runningNumber, TitleNane: title, Section: ddlSection, Item: cbitem, ItemOther: itOther, Notificaion: noti, DRNo: drno, Model: selectItem(cbMODEL), ModelOther: modelot, Line: selectItem(cbLINE), LineOther: lineOt, EmpCode: empCode, PartNo: partNo, PartName: partName, Remark: remark, DueDate: duedate, Method: methodRemark, SecForDD: secForDD
+            Ecrno: nbr[0]?.runningNumber, TitleNane: title, Section: grpSection, Item: cbitem, ItemOther: itOther, Notificaion: noti, DRNo: drno, Model: selectItem(cbMODEL), ModelOther: modelot, Line: selectItem(cbLINE), LineOther: lineOt, EmpCode: empCode, PartNo: partNo, PartName: partName, Remark: remark, DueDate: duedate, Method: methodRemark, SecForDD: secForDD
         }).then((res) => {
             try {
                 refresh();
@@ -301,20 +314,9 @@ function FormCreate(props) {
                                     <TextField id="txtTitle" variant="standard" style={{ width: '95%' }} onChange={(event) => setTitle(event.target.value)} />
                                     <br></br><br></br>
                                 </Col>
-                                <Col xs={12} md={3}>
-                                    <label> Section :</label> &nbsp;&nbsp;&nbsp;
-                                    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                                        <InputLabel id="demo-select-small-label">Section</InputLabel>
-                                        <Select
-                                            labelId="demo-select-small-label"
-                                            id="demo-select-small"
-                                            value={ddlSection}
-                                            label="Section"
-                                            onChange={handleChangeSection}>
-                                            <MenuItem value={'Purchasing'}>Purchasing</MenuItem>
-                                            <MenuItem value={'Design'}>Design</MenuItem>
-                                        </Select>
-                                    </FormControl>
+                                <Col xs={12} md={3} style={{ display: 'flex' }}>
+                                    <Form.Label>Section</Form.Label>
+                                    <Form.Control type="text" className='FormControl' value={grpSection} style={{ marginTop: '5px', marginLeft: '11px' }} />
                                 </Col>
                             </Row>
 
@@ -328,13 +330,13 @@ function FormCreate(props) {
 
 
 
-                        <Accordion expanded={expanded === 'panel1'} onChange={handleChangeCollapse('panel1')}>
+                        <Accordion expanded={expanded === 'panel1'} >
                             <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
                                 <Typography>ส่วนที่ 1 Create ECR</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Typography>
-                                    {isVisible ? (
+                                    {grpSection == "Purchasing" ? (
                                         <Row className='styleRow'>
                                             <Col xs={12} md={12}>
                                                 <div className='styleCard'>
@@ -389,7 +391,7 @@ function FormCreate(props) {
                                         </Row>
                                     }
 
-                                    {isVisible ? (
+                                    {grpSection == "Purchasing" ? (
                                         <Row className='styleRow'>
                                             <Col xs={12} md={4}>
                                                 <div className='styleCard'>

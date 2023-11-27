@@ -3,12 +3,6 @@
         zoom: 90%;
     }
 
-    article {
-        width: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-
     .p {
         font-size: 9px;
         margin-left: 37px;
@@ -24,10 +18,10 @@
 
     .pDaikin {
         font-size: 10px;
-        margin-left: -10px;
+        margin-left: -20px;
     }
 
-    .styleArrow {
+    /* .styleArrow {
         position: absolute;
         right: 113px;
         width: 26px;
@@ -90,10 +84,10 @@
         right: 110px;
         width: 26px;
         top: 1134px;
-    }
+    } */
 
     .styleForDD {
-        margin-top: -7pc;
+        margin-top: -6pc;
     }
 
     #SignRequest,
@@ -111,7 +105,7 @@
     #SignRequest::after {
         content: url('/public/asset/Image/Arrow1.png');
         position: absolute;
-        bottom: -325px;
+        bottom: -350px;
         left: 75px;
     }
 
@@ -130,15 +124,15 @@
     #SignQC::after {
         content: url('/public/asset/Image/Arrow3.png');
         position: absolute;
-        bottom: -63px;
+        bottom: -60px;
         left: 75px;
     }
 
 
     #SignQA::after {
-        content: url('/public/asset/Image/Arrow6.png');
+        content: url('/public/asset/Image/Arrow3.png');
         position: absolute;
-        bottom: -90px;
+        bottom: -60px;
         left: 75px;
     }
 }
@@ -162,7 +156,7 @@
         margin-left: -10px;
     }
 
-    .styleArrow {
+    /* .styleArrow {
         position: absolute;
         right: 167px;
         width: 26px;
@@ -225,7 +219,7 @@
         right: 165px;
         width: 26px;
         top: 1134px;
-    }
+    } */
 
     .styleForDD {
         margin-top: -6pc;
@@ -246,7 +240,7 @@
     #SignRequest::after {
         content: url('/public/asset/Image/Arrow1.png');
         position: absolute;
-        bottom: -325px;
+        bottom: -360px;
         left: 75px;
     }
 
@@ -265,7 +259,7 @@
     #SignSQC::after {
         content: url('/public/asset/Image/Arrow3.png');
         position: absolute;
-        bottom: -63px;
+        bottom: -60px;
         left: 75px;
     }
 

@@ -34,9 +34,6 @@ function Navbars() {
                         <Nav className="me-auto">
                             <Nav.Link href="/home" id='colorText'>Dashboard</Nav.Link>
                         </Nav>
-                        <Nav className="me-auto">
-                            <Nav.Link href="/Test" id='colorText'>Test</Nav.Link>
-                        </Nav>
                     </Navbar.Collapse>
                 </Container>
                 <div className='navbarstyle'>
