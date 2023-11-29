@@ -14,6 +14,7 @@ import FormCreate from './FormCreate.jsx';
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 import moment from 'moment';
+import { yellow } from '@mui/material/colors';
 
 
 function Createform() {
@@ -154,7 +155,6 @@ function Createform() {
     const [buffIndexSection, setBuffIndexSection] = useState(grp(ddlStatus));
     const handleChange = (event) => {
         setSelectSection(event.target.value);
-        console.log(setSelectSection)
         // if (event.target.value != 'ALL') {
         //     setBuffIndexSection(sectionArray.indexOf(event.target.value))
         // } else {
@@ -322,7 +322,15 @@ function Createform() {
                                         let name = item[`${items}${iApp}by`]; // by
                                         let date = item[`${items}${iApp}date`]; // date
                                         let status = item[`${items}${iApp}bit`]; //bit
-                                        // console.log(getdata)
+                                        let hold = item[`${items}${iApp}SumDate`];
+                                        let holdDate = item[`${items}${iApp}SumDate`]; //sumdate
+                                        if (holdDate > 0) {
+                                            holdDate = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
+                                        }
+                                        else {
+                                            holdDate = ""
+                                        }
+                                        // console.log(holdDate)
                                         let color = 'rgb(246 239 239)';
                                         if (status == 'F') {
                                             color = 'rgb(19 255 19)';
@@ -342,6 +350,16 @@ function Createform() {
                                             }
                                         }
 
+                                        let colorHoldDate = 'rgb(231 178 15)'
+                                        console.log(hold)
+                                        if (hold >= 3) {
+                                            colorHoldDate = 'red'
+                                        }
+                                        else {
+                                            colorHoldDate = 'rgb(231 178 15)'
+                                        }
+
+
                                         iECR.app.push({
                                             name: name,
                                             date: date,
@@ -349,6 +367,8 @@ function Createform() {
                                             color: color,
                                             title: iApp,
                                             icon: icon,
+                                            holdDate: holdDate,
+                                            colorHoldDate: colorHoldDate
                                         });
                                     });
                                     oEcr.push(iECR);
@@ -394,7 +414,7 @@ function Createform() {
                                                     return <div style={{ display: 'flex' }}>
                                                         <div style={{ backgroundColor: vApp.color, width: '25%', borderBottom: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 'bolder' }}> <div>{vApp.title.substring(0, 1).toUpperCase()}  {vApp.icon}</div>
                                                         </div>
-                                                        <div style={{ width: '75%', fontSize: '11px ', height: '75px', display: 'flex', justifyContent: 'center', alignItems: 'center', borderBottom: '1px solid black' }}>{vApp.name} <br></br>{vApp.date}</div>
+                                                        <div style={{ width: '75%', fontSize: '11px ', height: '75px', display: 'flex', justifyContent: 'center', alignItems: 'center', borderBottom: '1px solid black' }}>{vApp.name}<br></br>{vApp.date}<br></br><div style={{ color: vApp.colorHoldDate, fontSize: '12px', fontWeight: '700' }}>  {vApp.holdDate}</div></div>
                                                     </div>
                                                 })
                                             }</td>

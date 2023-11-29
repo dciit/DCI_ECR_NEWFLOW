@@ -178,28 +178,6 @@ function FormDetail(props) {
                 return error;
             }
         });
-
-        // getDataSrv.getDict().then((res) => {
-        //     setCBItemSecDD(res.data.filter(item => item.dictType == 'DD_CHECK_ITEM'));
-        // })
-
-
-        // getDataSrv.getDict().then((res) => {
-        //     setDictQC(res.data.filter(item => item.dictType == 'QCD_CHECK_ITEM'));
-        // })
-
-        // getDataSrv.getDict().then((res) => {
-        //     setcbChchanges(res.data.filter(item => item.dictType == 'CUS_CHECK'));
-        // })
-
-        // getDataSrv.getDict().then((res) => {
-        //     setcbCustomer(res.data.filter(item => item.dictType == 'CUS_NAME'));
-        // })
-
-        // getDataSrv.getDict().then((res) => {
-        //     setCBDistribution(res.data.filter(item => item.dictType == 'DISTRIBUTION'));
-        // })
-
     }
     //*********************END SECTION CEREATE******************** */
 
@@ -367,8 +345,6 @@ function FormDetail(props) {
 
 
 
-
-
     function handleCheckBoxQCEdit(qcCode, checked, type) {
         var qc = [];  // ประกาศตัวแปรที่เป็น Arry
         if (dataModaldt[0].qC_Remark2 != "") {   // เช็คว่าตำแหน่งแรกต้องไม่เท่ากับค่าว่าง
@@ -518,7 +494,12 @@ function FormDetail(props) {
         //data[0] = { ...data[0], qA_InformationDate: dataModaldt[0].qA_InformationDate }
         setDataModaldt(data);
         setDataModaldt([...dataModaldt]);
+        if (dataModaldt[0]?.qA_InformationDate == "") {
+            data[0] = { ...data[0], qA_InformationDate: informationDate }
+        }
+        else {
 
+        }
 
         getDataSrvDT.postIssued(dataModaldt[0]).then((res) => {
             try {
@@ -899,7 +880,7 @@ function FormDetail(props) {
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
-                        <Accordion expanded={expanded === 'PU'} onChange={handleChangeCollapse('PU')}>
+                        <Accordion expanded={expanded === 'PU'} disabled={dataModaldt[0]?.create_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('PU')}>
                             <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
                                 <Typography>ส่วนที่ 2 PU</Typography>
                             </AccordionSummary>
@@ -933,7 +914,7 @@ function FormDetail(props) {
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
-                        <Accordion expanded={expanded === 'DD'} onChange={handleChangeCollapse('DD')}>
+                        <Accordion expanded={expanded === 'DD'} disabled={dataModaldt[0]?.pU_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('DD')}>
                             <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
                                 <Typography>ส่วนที่ 3 DD</Typography>
                             </AccordionSummary>
@@ -994,7 +975,7 @@ function FormDetail(props) {
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
-                        <Accordion expanded={expanded === 'EN'} onChange={handleChangeCollapse('EN')}>
+                        <Accordion expanded={expanded === 'EN'} disabled={dataModaldt[0]?.dD_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('EN')}>
                             <AccordionSummary aria-controls="panel4d-content" id="panel4d-header">
                                 <Typography>ส่วนที่ 4 EN</Typography>
                             </AccordionSummary>
@@ -1024,7 +1005,7 @@ function FormDetail(props) {
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
-                        <Accordion expanded={expanded === 'SQC'} onChange={handleChangeCollapse('SQC')}>
+                        <Accordion expanded={expanded === 'SQC'} disabled={dataModaldt[0]?.eN_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('SQC')}>
                             <AccordionSummary aria-controls="panel5d-content" id="panel5d-header">
                                 <Typography>ส่วนที่ 5 SQC</Typography>
                             </AccordionSummary>
@@ -1054,7 +1035,7 @@ function FormDetail(props) {
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
-                        <Accordion expanded={expanded === 'QC'} onChange={handleChangeCollapse('QC')}>
+                        <Accordion expanded={expanded === 'QC'} disabled={dataModaldt[0]?.sqC_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('QC')}>
                             <AccordionSummary aria-controls="panel6d-content" id="panel6d-header">
                                 <Typography>ส่วนที่ 6 QCD</Typography>
                             </AccordionSummary>
@@ -1134,7 +1115,7 @@ function FormDetail(props) {
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
-                        <Accordion expanded={expanded === 'DIL'} onChange={handleChangeCollapse('DIL')}>
+                        <Accordion expanded={expanded === 'DIL'} disabled={dataModaldt[0]?.qC_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('DIL')}>
                             <AccordionSummary aria-controls="panel7d-content" id="panel7d-header">
                                 <Typography>ส่วนที่ 7 DIL</Typography>
                             </AccordionSummary>
@@ -1224,7 +1205,7 @@ function FormDetail(props) {
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
-                        <Accordion expanded={expanded === 'QA'} onChange={handleChangeCollapse('QA')}>
+                        <Accordion expanded={expanded === 'QA'} disabled={dataModaldt[0]?.diL_RECEIVEBIT == "F" ? false : true} onChange={handleChangeCollapse('QA')}>
                             <AccordionSummary aria-controls="panel8d-content" id="panel8d-header">
                                 <Typography>ส่วนที่ 8 QA</Typography>
                             </AccordionSummary>
@@ -1282,13 +1263,14 @@ function FormDetail(props) {
                                         </Col>
                                     </Row>
 
+
                                     <br></br>
                                     <Row>
                                         <Col xs={12} md={3}>
                                             <p>วันที่แจ้ง</p>
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
-                                                    value={dayjs(informationDate)}
+                                                    value={dayjs(dataModaldt[0]?.qA_InformationDate == "" ? moment() : moment(dataModaldt[0]?.qA_InformationDate).format('YYYY-MM-DD'))}
                                                     slotProps={{
                                                         textField: {
                                                             format: 'YYYY-MM-DD',
@@ -1333,6 +1315,9 @@ function FormDetail(props) {
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
+
+
+
 
                         <hr></hr>
                         <Row className='styleRowText'>

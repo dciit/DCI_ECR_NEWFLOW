@@ -57,15 +57,24 @@ label {
 }
 
 .image-1 {
-    margin-right: -14px;
+    /* margin-right: -14px;
     z-index: 1;
     height: 56%;
-    margin-top: 132px;
+    margin-top: 132px; */
+
+    z-index: 1;
+    margin-right: -5%;
+    margin-top: 8%;
 }
 
 .image-2 {
-    margin-top: 17pc;
-    margin-left: -73px;
+    /* margin-top: 17pc;
+    margin-left: -73px; */
+
+    margin-left: -6%;
+    z-index: 1;
+    margin-top: 15%;
+    opacity: 0.6;
 }
 
 .styletextP {
