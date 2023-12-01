@@ -10,6 +10,7 @@ import Chat from "./pages/Chat/Chat";
 import Detail from "./pages/Create/FormDetail";
 import AddPermissions from "./pages/Home/AddPermissions";
 import Test from "./pages/Create/Test";
+import PrintComponent from "./pages/Print/PrintComponent";
 let logintrue = false
 logintrue = localStorage.getItem('logintrue', false)
 
@@ -22,7 +23,7 @@ const Routess = () => {
                 {/* Frontend */}
                 <Route path="*" element={<LoginLayout />} />
                 <Route path="/Login" element={<LoginLayout />} />
-
+                <Route path={BASE_PATH + '/PrintPage/:ecrno'} element={<PrintComponent />} />
                 <Route element={<Backend />}>
                     <Route path={BASE_PATH + '/createform'} element={<Createform />} />
                     <Route path={BASE_PATH + '/home'} element={<Home />} />

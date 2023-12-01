@@ -5,13 +5,33 @@ import { Button } from 'react-bootstrap';
 import './Print.css';
 import getREPORT from '../../service/getReport.js'
 import { useParams } from 'react-router-dom';
-
-
+import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+import { PDFViewer } from '@react-pdf/renderer';
+// const styles = StyleSheet.create({
+//     page: {
+//         flexDirection: 'row',
+//         backgroundColor: '#E4E4E4'
+//     },
+//     section: {
+//         margin: 10,
+//         padding: 10,
+//         flexGrow: 1
+//     }
+// });
 
 function Print() {
 
     useEffect(() => {
         getTestParameter();
+        // setTimeout(() => {
+        //     var printContents = document.getElementById('AAA').innerHTML;
+        //     var originalContents = document.body.innerHTML;
+
+        //     // document.body.innerHTML = printContents;
+        //     console.log(printContents)
+        //     window.print();
+        // }, 500);
+
     }, [])
 
     const { ecrno } = useParams()
@@ -64,6 +84,16 @@ function Print() {
     //***************************END FUNCTON TEST*************************** */
 
     return (
+        // <PDFViewer>
+        //     <Document>
+        //         <Page size="A4" style={styles.page}>
+        //             <View style={styles.section}>
+        //                 <Text>Section #1</Text>
+        //             </View>
+        //         </Page>
+        //     </Document>
+        // </PDFViewer>
+
         <div>
             <div>
                 {
@@ -74,13 +104,13 @@ function Print() {
 
             <div ref={componentRef} style={{ width: '90%', height: window.innerHeight }}>
                 <br></br>
-                <div style={{ paddingLeft: '3pc' }}>
+                <div id="AAA" style={{ paddingLeft: '3pc' }}>
                     <br></br><br></br>
                     <div class="row">
                         <div class="col-md-4"><p style={{ marginTop: '-1pc', fontSize: '10px' }}>Safety First (Zero Accident) 5S (Seiri,Seiton,Seiso,Seiketsu,Shitsuke)</p></div>
                         <div class="col-md-6"><p style={{ fontSize: '18px' }}>ENGINEERING CHANGE REQUEST (1/2)</p></div>
                         <div class="col-md-2"><p style={{ fontSize: '13px' }}>ECR NO. <ins>{dataModaldt[0]?.ecR_NO}</ins></p></div>
-                        <p className='title' style={{ fontSize: '16px' }}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TITLE : <ins>{dataModaldt[0]?.title}</ins></p>
+                        <p id="title" className='title' style={{ fontSize: '16px' }}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TITLE : <ins>{dataModaldt[0]?.title}</ins></p>
                     </div>
                     <p className='title'>1. CHANGE OUTLINE</p>
 

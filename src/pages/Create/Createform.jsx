@@ -18,7 +18,8 @@ import { yellow } from '@mui/material/colors';
 import Filee from '../../../public/asset/Image/File.png'
 import Print from '../../../public/asset/Image/Print2.png'
 import Chatt from '../../../public/asset/Image/Chat60.png'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useHref } from 'react-router';
 
 function Createform() {
     const navigate = useNavigate();
@@ -50,7 +51,15 @@ function Createform() {
     }
 
     const PrintECR = (ecrno) => {
-        navigate(`/ECR/Print/${ecrno}`);
+        console.log(1)
+        // let link = document.getElementById('linkprint');
+        // let href = useHref('./ECR/home');
+        // console.log(href)
+        // window.open(href, '_blank');
+        //  navigate(`/ECR/Print/${ecrno}`);
+        //window.setHeader('Content-type', 'text/javascript')
+        // window.open(`/ECR/PrintPage/${ecrno}`, "_blank")
+        navigate(`/ECR/PrintPage/${ecrno}`);
     }
 
     const handleShow = () => {
@@ -435,7 +444,10 @@ function Createform() {
                                         <img src={Print} />
                                     </a>
                                     </td> */}
-                                    <td> <Button style={{ backgroundColor: 'white', borderColor: 'white' }} onClick={() => PrintECR(item.ecrno)}> <img src={Print} /></Button>
+                                    <td>
+                                        <Button style={{ backgroundColor: 'white', borderColor: 'white' }} onClick={() => PrintECR(item.ecrno)}> <img src={Print} /></Button>
+                                        <Link id='linkprint' to={`/ECR/PrintPage/${item.ecrno}`} target="_blank">
+                                        </Link>
                                     </td>
                                     {
                                         oEcr.map((vSec, iSec) => {
