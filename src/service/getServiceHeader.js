@@ -2,8 +2,9 @@ import http from "../constant/_configAxios"
 
 
 const getECRList = (docNo, status) => {
-    return http.APIHEADER.get(`getECRList/${docNo}/${status}`);
+    return http.APIHEADER.get(`getECRList/${encodeURIComponent(docNo)}/${status}`);
 }
+
 
 const getCheck = (docNo, status, section) => {
     return http.APIHEADER.get(`getCheck/${docNo}/${status}/${section}`);

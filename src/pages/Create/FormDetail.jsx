@@ -138,8 +138,8 @@ function FormDetail(props) {
     const [test, settest] = useState('');
     const [showDtSec, setshowDtSec] = useState(false);
     const { show, close, ecrno, refresh, statusCreateAppBit } = props;
-    let section = permission[0].grpRoleSect;
-    let position = permission[0].grpRole;
+    let section = permission[0]?.grpRoleSect;
+    let position = permission[0]?.grpRole;
 
     useEffect(() => {
         if (show) {

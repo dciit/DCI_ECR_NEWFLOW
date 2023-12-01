@@ -30,6 +30,7 @@ const Routess = () => {
                     <Route path={BASE_PATH + '/Print/:ecrno'} element={<Print />} />
                     <Route path={BASE_PATH + '/Chat/:ecrno'} element={<Chat />} />
                     <Route path={BASE_PATH + '/ModalDetail'} element={<Detail />} />
+                    <Route path={BASE_PATH + '/PrintTest'} element={<Test />} />
                 </Route>
             </Routes>
         </BrowserRouter >

@@ -6,10 +6,12 @@ import 'bootstrap/js/dist/collapse'
 import './Sidebar.css'
 import SrvPermissiom from '../../../service/getPermisson.js'
 import { useDispatch } from 'react-redux'
+import Cookies from 'js-cookie';
 
 
 function Sidebars() {
-    const empCode = localStorage.getItem("code");
+    // const empCode = localStorage.getItem("code");
+    const empCode = Cookies.get('code')
     const [data, setData] = useState([]);
     const dispatch = useDispatch();
     useEffect(() => {
@@ -47,6 +49,7 @@ function Sidebars() {
                         {/* HEAD TITLE */}
                         {
                             data.filter((el, ind) => {
+                                console.log(el)
                                 return el.menuType == "HEAD" || el.menuType == "SUB"
                             }).map((item, index) => {
                                 return item.menuType == "HEAD" ?

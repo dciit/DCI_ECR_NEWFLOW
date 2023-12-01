@@ -2,7 +2,7 @@ import React from 'react'
 
 function Test() {
     return (
-        <div><h1>เช็คสถานะ ECR</h1></div>
+        <div><h1>Hello</h1></div>
     )
 }
 

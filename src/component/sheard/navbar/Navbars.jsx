@@ -33,7 +33,9 @@ function Navbars() {
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link href="/home" id='colorText'>Dashboard</Nav.Link>
+                            <Nav.Link href="/ECR/home" id='colorText'>Dashboard</Nav.Link>
+
+                            <Nav.Link href="/ECR/PrintTest" id='colorText'>Test</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

@@ -18,8 +18,11 @@ import { yellow } from '@mui/material/colors';
 import Filee from '../../../public/asset/Image/File.png'
 import Print from '../../../public/asset/Image/Print2.png'
 import Chatt from '../../../public/asset/Image/Chat60.png'
+import { useNavigate } from 'react-router-dom';
 
 function Createform() {
+    const navigate = useNavigate();
+
     //const section = localStorage.getItem("section");
     // const section = Cookies.get('section')
     const section = Cookies.get('section')
@@ -46,7 +49,9 @@ function Createform() {
         return icon;
     }
 
-
+    const PrintECR = (ecrno) => {
+        navigate(`/ECR/Print/${ecrno}`);
+    }
 
     const handleShow = () => {
         setOpenModalCreate(true)
@@ -116,7 +121,21 @@ function Createform() {
         }
         return varGrpSection;
     }
+
     const [ddlStatus, setddlStatus] = useState(grpSection(permission[0]?.grpRoleSect));
+
+
+    const showSection = (val) => {
+        var varShowSection = '';
+
+        if (val == 'Design') {
+            varShowSection = "DD"
+        }
+        else {
+            varShowSection = "PU"
+        }
+        return varShowSection;
+    }
 
 
     const grp = (val) => {
@@ -157,11 +176,6 @@ function Createform() {
     const [buffIndexSection, setBuffIndexSection] = useState(grp(ddlStatus));
     const handleChange = (event) => {
         setSelectSection(event.target.value);
-        // if (event.target.value != 'ALL') {
-        //     setBuffIndexSection(sectionArray.indexOf(event.target.value))
-        // } else {
-        //     setBuffIndexSection('999')
-        // }
     };
     //****************************END ddl Status ************ */
 
@@ -171,25 +185,6 @@ function Createform() {
     // ส่ง DocNo กับ Status ไป API
     const [DocNo, setDocNo] = useState(('%'));
     const getSearch = (event) => {
-        // setddlStatus(sectionArrayAll[buffIndexSection]);
-        // if (buffIndexSection != '999') {
-        //     setindexddlStatus(buffIndexSection) /// วิธีหา Index จาก value โดยใช้ IndexOf
-        // } else {
-        //     setindexddlStatus('999')
-        // }
-
-        // getDataSrvHD.getECRList(DocNo, sectionArray[buffIndexSection]).then((res) => {
-        //     try {
-        //         setGetdata(res.data)
-        //     }
-        //     catch (error) {
-        //         console.log(error);
-        //         return error;
-        //     }
-        // });
-
-
-
         getDataSrvHD.getECRList(DocNo, selectSection).then((res) => {
             try {
                 setGetdata(res.data)
@@ -415,7 +410,11 @@ function Createform() {
                                     </td>
                                     <td>{item.ecrno}</td>
                                     <td>{item.title}</td>
-                                    <td>{item.section}</td>
+                                    <td>
+                                        {
+                                            showSection(item.section)
+                                        }
+                                    </td>
                                     <td><img src={Filee} onClick={() => {
                                         setEcrnoSelected(item)
                                         setOpenAttrFile(true);
@@ -432,9 +431,11 @@ function Createform() {
                                             </center>
                                         </div>
                                     </td>
-                                    <td><a href={`/Print/${item.ecrno}`} target="_blank" rel="noreferrer">
+                                    {/* <td><a href={`/ECR/Print/${item.ecrno}`} target="_blank" rel="noreferrer">
                                         <img src={Print} />
                                     </a>
+                                    </td> */}
+                                    <td> <Button style={{ backgroundColor: 'white', borderColor: 'white' }} onClick={() => PrintECR(item.ecrno)}> <img src={Print} /></Button>
                                     </td>
                                     {
                                         oEcr.map((vSec, iSec) => {

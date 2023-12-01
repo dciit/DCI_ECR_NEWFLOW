@@ -66,7 +66,9 @@ function Print() {
     return (
         <div>
             <div>
-                <Button variant="success" onClick={handlePrint} style={{ position: 'absolute', left: '266px', top: '125px' }}>Print</Button>
+                {
+                    dataModaldt[0]?.qA_ApprovedBit == "F" ? <Button variant="success" onClick={handlePrint} style={{ position: 'absolute', left: '266px', top: '125px' }}>Print</Button> : ""
+                }
             </div>
 
 
