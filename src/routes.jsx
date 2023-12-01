@@ -15,20 +15,21 @@ logintrue = localStorage.getItem('logintrue', false)
 
 
 const Routess = () => {
+    const BASE_PATH = 'ECR'
     return (
         <BrowserRouter>
             <Routes>
                 {/* Frontend */}
+                <Route path="*" element={<LoginLayout />} />
                 <Route path="/Login" element={<LoginLayout />} />
 
                 <Route element={<Backend />}>
-                    <Route path="/home" element={<Home />} />
-                    <Route path="/AddPermissions" element={<AddPermissions />} />
-                    <Route path="/createform" element={<Createform />} />
-                    <Route path="/Print/:ecrno" element={<Print />} />
-                    <Route path="/Chat/:ecrno" element={<Chat />} />
-                    <Route path="/ModalDetail" element={<Detail />} />
-                    <Route path="/Test" element={<Test />} />
+                    <Route path={BASE_PATH + '/createform'} element={<Createform />} />
+                    <Route path={BASE_PATH + '/home'} element={<Home />} />
+                    <Route path={BASE_PATH + '/AddPermissions'} element={<AddPermissions />} />
+                    <Route path={BASE_PATH + '/Print/:ecrno'} element={<Print />} />
+                    <Route path={BASE_PATH + '/Chat/:ecrno'} element={<Chat />} />
+                    <Route path={BASE_PATH + '/ModalDetail'} element={<Detail />} />
                 </Route>
             </Routes>
         </BrowserRouter >

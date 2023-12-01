@@ -6,8 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { BsFillLockFill, BsFillPersonFill } from "react-icons/bs";
 import './Login.css'
 import jsCookie from 'js-cookie';
-
-
+import DAIKIN_logo from '../../../public/asset/Image/DAIKIN_logo.svg.png'
+import User from '../../../public/asset/Image/user.jpg'
 function Login() {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
@@ -27,7 +27,7 @@ function Login() {
                     jsCookie.set("code", res.data[0].EmpCode, { expires: 7 })
                     jsCookie.set("name", res.data[0].ShortName, { expires: 7 })
                     jsCookie.set("section", res.data[0].DEPT_Short, { expires: 7 })
-                    navigate("/createform");
+                    navigate("/ECR/createform");
                     location.reload();
                 }
                 else {
@@ -44,9 +44,9 @@ function Login() {
     return (
         <form className="card p4 col-md-12" onSubmit={login}>
             <div className='styleImg'>
-                <img src="/public/asset/Image/DAIKIN_logo.svg.png" height={40} />
+                <img src={DAIKIN_logo} height={40} />
             </div>
-            <img src="/public/asset/Image/user.jpg" className='styleImgUser' />
+            <img src={User} className='styleImgUser' />
             <div className="form-group mt-3">
                 <div>
                     <p className='styleP'>Login ด้วย Username / Password เข้าเครื่องคอม</p>

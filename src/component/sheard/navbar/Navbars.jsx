@@ -12,6 +12,7 @@ const dep = localStorage.getItem("DEPT_Long");
 const empCode = Cookies.get('code')
 const user_name = Cookies.get('name')
 const img_user = "http://dcidmc.dci.daikin.co.jp/PICTURE/" + empCode + ".jpg"
+import ENTool from '../../../../public/asset/Image/ENTool.png'
 
 function Navbars() {
     const logout = () => {
@@ -26,7 +27,7 @@ function Navbars() {
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
                 <Container>
                     <div style={{ width: '31%' }}>
-                        <label className='stylelb'><img src="/public/asset/Image/ENTool.png" />ECR</label>
+                        <label className='stylelb'><img src={ENTool} />ECR</label>
                         <p className='gradiantTitle'>Engineering Change Request</p>
                     </div>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -44,7 +45,7 @@ function Navbars() {
                         <span className='styleText'>{user_name}</span>
                     </span>
 
-                    <a className='styleLogin' href="/Login" id='colorText' >
+                    <a className='styleLogin' href="/ECR/Login" id='colorText' >
                         <LuLogOut />
                         <span onClick={logout}>Log out</span>
                     </a>

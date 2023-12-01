@@ -15,7 +15,9 @@ import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 import moment from 'moment';
 import { yellow } from '@mui/material/colors';
-
+import Filee from '../../../public/asset/Image/File.png'
+import Print from '../../../public/asset/Image/Print2.png'
+import Chatt from '../../../public/asset/Image/Chat60.png'
 
 function Createform() {
     //const section = localStorage.getItem("section");
@@ -287,25 +289,25 @@ function Createform() {
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '6%' }}>On Process</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}></th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>DocNo</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>Title</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '200px' }}>Title</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>Section</th>
                             <th colSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>Detail</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>CREATE</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>PU</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>DD</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>EN</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>SQC</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>QC</th>
-                            <th colSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>DIL</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>QA</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>CREATE</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>PU</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>DD</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>EN</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>SQC</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>QC</th>
+                            <th colSpan={8} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>DIL</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>QA</th>
                         </tr>
 
-                        <tr style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>
+                        <tr colSpan={20} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>
                             <th>File</th>
                             <th>Remark</th>
                             <th>Print</th>
-                            <th>(DIL Design Section)</th>
-                            <th>(DIL Quality Control Section)</th>
+                            <th colSpan={4}>(DIL Design Section)</th>
+                            <th colSpan={4}>(DIL Quality Control Section)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -331,32 +333,56 @@ function Createform() {
                                             holdDate = ""
                                         }
                                         // console.log(holdDate)
-                                        let color = 'rgb(246 239 239)';
+                                        let color = 'rgb(254 253 239)';
                                         if (status == 'F') {
-                                            color = 'rgb(19 255 19)';
+                                            if (items == 'cre') {
+                                                color = 'rgb(85 234 116)';
+                                            }
+                                            else if (items == 'pu') {
+                                                color = 'rgb(52 232 129)';
+                                            }
+                                            else if (items == 'dd') {
+                                                color = 'rgb(39 239 39)';
+                                            }
+                                            else if (items == 'en') {
+                                                color = '#66FF00';
+                                            }
+                                            else if (items == 'sqc') {
+                                                color = '#00FF66';
+                                            }
+                                            else if (items == 'qc') {
+                                                color = '#00FF99';
+                                            }
+                                            else if (items == 'dil_dd' || items == 'dil_qc') {
+                                                color = '#66FFCC';
+                                            }
+                                            else if (items == 'qa') {
+                                                color = '#CCFFCC';
+                                            }
                                         } else if (status == 'R') {
                                             color = 'red'
                                         }
                                         else {
-                                            color = 'rgb(246 239 239)'
+                                            color = 'rgb(254 253 239)'
                                         }
                                         let icon = '';
                                         if (status == "F" || status == "R") {
                                             if (iApp == "received" || iApp == "issued" || iApp == "check") {
-                                                icon = <IoArrowDown style={{ color: "rgb(28 3 217)" }} />
+                                                // icon = <IoArrowDown style={{ color: "rgb(28 3 217)" }} />
+                                                icon = <IoArrowForward style={{ color: "rgb(28 3 217)" }} />
                                             }
                                             else {
                                                 icon = <IoArrowForward style={{ color: "rgb(147 12 158)" }} />
                                             }
                                         }
 
-                                        let colorHoldDate = 'rgb(231 178 15)'
-                                        console.log(hold)
+                                        let colorHoldDate = 'rgb(54 145 245)'
+
                                         if (hold >= 3) {
                                             colorHoldDate = 'red'
                                         }
                                         else {
-                                            colorHoldDate = 'rgb(231 178 15)'
+                                            colorHoldDate = 'rgb(54 145 245)'
                                         }
 
 
@@ -372,6 +398,7 @@ function Createform() {
                                         });
                                     });
                                     oEcr.push(iECR);
+                                    // console.log(oEcr)
                                 });
 
                                 var status = ''
@@ -389,15 +416,16 @@ function Createform() {
                                     <td>{item.ecrno}</td>
                                     <td>{item.title}</td>
                                     <td>{item.section}</td>
-                                    <td><img src='/public/asset/Image/File.png' onClick={() => {
+                                    <td><img src={Filee} onClick={() => {
                                         setEcrnoSelected(item)
                                         setOpenAttrFile(true);
-                                    }} /></td>
+                                    }} />
+                                    </td>
                                     <td>
                                         <div>
                                             <center>
                                                 <span className='content'>{item.count}</span>
-                                                <img style={{ marginBottom: '20px' }} src='/public/asset/Image/Chat60.png' onClick={() => {
+                                                <img style={{ marginBottom: '20px' }} src={Chatt} onClick={() => {
                                                     setEcrnoSelected(item)
                                                     setOpenModalChat(true);
                                                 }} />
@@ -405,21 +433,51 @@ function Createform() {
                                         </div>
                                     </td>
                                     <td><a href={`/Print/${item.ecrno}`} target="_blank" rel="noreferrer">
-                                        <img src="/public/asset/Image/Print2.png" />
-                                    </a></td>
+                                        <img src={Print} />
+                                    </a>
+                                    </td>
                                     {
                                         oEcr.map((vSec, iSec) => {
-                                            return <td>{
-                                                vSec.app.map((vApp, iApp) => {
-                                                    return <div style={{ display: 'flex' }}>
-                                                        <div style={{ backgroundColor: vApp.color, width: '25%', borderBottom: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 'bolder' }}> <div>{vApp.title.substring(0, 1).toUpperCase()}  {vApp.icon}</div>
-                                                        </div>
-                                                        <div style={{ width: '75%', fontSize: '11px ', height: '75px', display: 'flex', justifyContent: 'center', alignItems: 'center', borderBottom: '1px solid black' }}>{vApp.name}<br></br>{vApp.date}<br></br><div style={{ color: vApp.colorHoldDate, fontSize: '12px', fontWeight: '700' }}>  {vApp.holdDate}</div></div>
-                                                    </div>
-                                                })
-                                            }</td>
+                                            return <>
+                                                {
+                                                    vSec.app.map((vApp, iApp) => {
+                                                        return <td style={{ backgroundColor: vApp.color }}>
+                                                            <div style={{ borderBottom: '1px solid black', fontWeight: 'bolder', height: '32px', width: '90px' }}>{vApp.title.substring(0, 1).toUpperCase()} {vApp.icon}</div>
+
+                                                            <div style={{ fontSize: '12px ', height: '50px', justifyContent: 'center', alignItems: 'center' }}>
+                                                                <br></br>
+                                                                <div>
+                                                                    {vApp.name}
+                                                                </div>
+                                                                <div style={{ fontSize: '10px' }}>
+                                                                    {vApp.date}
+                                                                </div>
+                                                                <div style={{ color: vApp.colorHoldDate, fontSize: '12px', fontWeight: '700' }}>  {vApp.holdDate}</div></div>
+
+                                                        </td>
+                                                    })
+                                                }
+                                            </>
                                         })
                                     }
+
+
+
+                                    {/* {
+                                        oEcr.map((vSec, iSec) => {
+                                            return <td>
+                                                {
+                                                    vSec.app.map((vApp, iApp) => {
+                                                        return <div style={{ display: 'flex' }}>
+                                                            <div style={{ backgroundColor: vApp.color, width: '25%', borderBottom: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 'bolder' }}> <div>{vApp.title.substring(0, 1).toUpperCase()}  {vApp.icon}</div>
+                                                            </div>
+                                                            <div style={{ width: '75%', fontSize: '11px ', height: '75px', display: 'flex', justifyContent: 'center', alignItems: 'center', borderBottom: '1px solid black' }}>{vApp.name}<br></br>{vApp.date}<br></br><div style={{ color: vApp.colorHoldDate, fontSize: '12px', fontWeight: '700' }}>  {vApp.holdDate}</div></div>
+                                                        </div>
+                                                    })
+                                                }
+                                            </td>
+                                        })
+                                    } */}
                                 </tr>
                             })
                         }
