@@ -9,9 +9,14 @@ const getPermissionMenu = (empCode) => {
     return http.APIPERMISSION.get(`getPermissionMenu/${empCode}`);
 }
 
+const postAddPermission = (param) => {
+    return http.APIPERMISSION.post(`postAddPermission`, param);
+}
+
 
 
 export default {
     getPermission,
-    getPermissionMenu
+    getPermissionMenu,
+    postAddPermission
 }

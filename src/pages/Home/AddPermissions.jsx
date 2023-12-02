@@ -1,17 +1,57 @@
 import React, { useEffect, useState } from 'react'
-import getDataSrvHD from '../../service/getServiceHeader.js'
+import getDataSrvPermiss from '../../service/getPermisson.js'
 import './AddPermissions.css'
 import Button from 'react-bootstrap/Button';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-
-
+import { useSelector } from 'react-redux';
+import TextField from '@mui/material/TextField';
+import Cookies from 'js-cookie';
+import Form from 'react-bootstrap/Form';
 
 
 function AddPermissions() {
+    const empCode = Cookies.get('code')
+    const permission = useSelector((state) => state.reducer.permission);
+    const [selectSection, setSelectSection] = useState(permission[0]?.grpRoleSect);
+    const [selectStep, setSelectStep] = useState('ADMIN');
+    const [txtEmpCode, settxtEmpCode] = useState('');
 
+
+    useEffect(() => {
+
+    }, [])
+
+
+    const handleChangeSec = (event) => {
+        setSelectSection(event.target.value);
+    };
+
+    const handleChangeStep = (event) => {
+        setSelectStep(event.target.value);
+    };
+
+    const sectionArray = ['ADMIN', 'PU ', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
+    const stepArray = ['ADMIN', 'RECEIVED', 'ISSUED ', 'CHECK', 'APPROVED']
+
+
+    //***************************FUNCTON INPUT DATA INSERT HEAD , DETAIL*************************** */
+    const AddPermission = () => {
+        getDataSrvPermiss.postAddPermission({
+            section: selectSection, step: selectStep, issued: empCode, empCode: txtEmpCode
+        }).then((res) => {
+            try {
+                refresh();
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+    //***************************END FUNCTON INPUT DATA*************************** */
 
 
 
@@ -23,34 +63,49 @@ function AddPermissions() {
                     <div class="card-body">
                         <div class="row">
                             <div class="col-2">
-                                {/* <input type="text" class="form-control" onChange={(event) => setDocNo(event.target.value)} /> */}
-                                Emp Code :  <input type="text" class="form-control" />
+                                <TextField id="outlined-basic" label="EmpCode" variant="outlined" onChange={(event) => settxtEmpCode(event.target.value)} />
                             </div>
                             <div class="col-2">
-                                Name : <input type="text" class="form-control" />
+                                <FormControl fullWidth>
+                                    <InputLabel id="demo-simple-select-label">Section</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={selectSection}
+                                        label="Section"
+                                        onChange={handleChangeSec}>
+                                        {
+                                            sectionArray.map((item, index) =>
+                                                <MenuItem value={item}>{item}</MenuItem>
+                                            )
+                                        }
+                                    </Select>
+                                </FormControl>
                             </div>
                             <div class="col-2">
-                                SurName : <input type="text" class="form-control" />
+                                <FormControl fullWidth>
+                                    <InputLabel id="demo-simple-select-label">Step</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={selectStep}
+                                        label="Step"
+                                        onChange={handleChangeStep}>
+                                        {
+                                            stepArray.map((item, index) =>
+                                                <MenuItem value={item}>{item}</MenuItem>
+                                            )
+                                        }
+                                    </Select>
+                                </FormControl>
                             </div>
-                            <div class="col-2">
-                                Positon : <input type="text" class="form-control" />
+                            <div class="col-6">
+                                <Button autoFocus variant="success" onClick={AddPermission}>Save</Button>
                             </div>
-                            <div class="col-2">
-                                Group : <input type="text" class="form-control" />
-                            </div>
-                            {/* <div class="col-6">
-                            </div> */}
                         </div>
-                    </div>
-                    <div class="col-12 offset-11" >
-                        <button type="submit" class="btn btn-success mb-2" >Add</button>
                     </div>
                 </div>
             </div>
-
-
-
-
         </>
     )
 }

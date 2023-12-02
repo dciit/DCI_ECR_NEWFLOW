@@ -122,8 +122,8 @@
     #SignDD::after,
     #SignSQC::after,
     #SignQC::after {
-        /* content: url('/public/asset/Image/Arrow3.png'); */
-        content: url('http://dciweb.dci.daikin.co.jp/ECR/asset/Image/Arrow3.png');
+        content: url('/public/asset/Image/Arrow3.png');
+        /* content: url('http://dciweb.dci.daikin.co.jp/ECR/asset/Image/Arrow3.png'); */
         position: absolute;
         bottom: -60px;
         left: 75px;
@@ -131,8 +131,8 @@
 
 
     #SignQA::after {
-        /* content: url('/public/asset/Image/Arrow3.png'); */
-        content: url('http://dciweb.dci.daikin.co.jp/ECR/asset/Image/Arrow3.png');
+        content: url('/public/asset/Image/Arrow3.png');
+        /* content: url('http://dciweb.dci.daikin.co.jp/ECR/asset/Image/Arrow3.png'); */
         position: absolute;
         bottom: -60px;
         left: 75px;

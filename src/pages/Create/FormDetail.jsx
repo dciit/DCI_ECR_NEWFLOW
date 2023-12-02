@@ -1356,7 +1356,9 @@ function FormDetail(props) {
                         <Stack direction={'row'} gap={3}>
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && creSec == roleSec
+                                    console.log(permission)
+                                    return (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && creSec == roleSec) ||
+                                        (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && permission[0]?.grpRoleSect == "ADMIN")
                                 }).length ? (dataModaldt[0]?.create_CheckBit == "U" || dataModaldt[0]?.create_CheckBit == "R") && <>
                                     <Button variant="danger" onClick={() => getDeleteDoc(dataModaldt[0]?.ecR_NO)}>
                                         ลบเอกสาร (Delete)
@@ -1366,7 +1368,8 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0006" && item.rolE_VIEW == "True" && creSec == roleSec
+                                    return (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && creSec == roleSec) ||
+                                        (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && permission[0]?.grpRoleSect == "ADMIN")
                                 }).length ? (dataModaldt[0]?.create_CheckBit == "U" || dataModaldt[0]?.create_CheckBit == "R") && <><Button autoFocus variant="primary" onClick={() => upDateData(dataModaldt[0].ecR_NO)}>
                                     แก้ไขเอกสาร (Update)
                                 </Button></>

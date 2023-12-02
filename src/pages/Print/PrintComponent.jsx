@@ -82,7 +82,7 @@ function PrintComponent() {
         });
     };
     //***************************END FUNCTON TEST*************************** */
-
+    console.log(dataModaldt)
     return (
         // <PDFViewer>
         //     <Document>

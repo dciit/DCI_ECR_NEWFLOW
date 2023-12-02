@@ -232,7 +232,6 @@ function FormCreate(props) {
 
     //***************************FUNCTON INPUT DATA INSERT HEAD , DETAIL*************************** */
     const postInputData = () => {
-        setbtnAddFile(true);
         /// ************สั้น************
         const selectItem = (cb) => {
             return cb.filter((item) => item.checked).map((item) => {
@@ -256,17 +255,25 @@ function FormCreate(props) {
         var modelot = modelOther != "" ? modelOther : "-";
         var lineOt = lineOther != "" ? lineOther : "-";
 
-        getDataSrv.postInputData({
-            Ecrno: nbr[0]?.runningNumber, TitleNane: title, Section: grpSection, Item: cbitem, ItemOther: itOther, Notificaion: noti, DRNo: drno, Model: selectItem(cbMODEL), ModelOther: modelot, Line: selectItem(cbLINE), LineOther: lineOt, EmpCode: empCode, PartNo: partNo, PartName: partName, Remark: remark, DueDate: duedate, Method: methodRemark, SecForDD: secForDD
-        }).then((res) => {
-            try {
-                refresh();
-            }
-            catch (error) {
-                console.log(error);
-                return error;
-            }
-        });
+        if (title != "") {
+            setbtnAddFile(true);
+
+            getDataSrv.postInputData({
+                Ecrno: nbr[0]?.runningNumber, TitleNane: title, Section: grpSection, Item: cbitem, ItemOther: itOther, Notificaion: noti, DRNo: drno, Model: selectItem(cbMODEL), ModelOther: modelot, Line: selectItem(cbLINE), LineOther: lineOt, EmpCode: empCode, PartNo: partNo, PartName: partName, Remark: remark, DueDate: duedate, Method: methodRemark, SecForDD: secForDD
+            }).then((res) => {
+                try {
+                    refresh();
+                    // close(false)
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        }
+        else {
+            alert("กรุณากรอกชื่อ Title");
+        }
     };
     //***************************END FUNCTON INPUT DATA*************************** */
 
@@ -344,7 +351,6 @@ function FormCreate(props) {
                                                     <div>
                                                         {
                                                             cbPU.map((item, index) => {
-                                                                console.log(item);
                                                                 return <div key={item?.dictCode} style={{ display: 'flex' }} > <input type="checkbox" value={item} onClick={(event) => handleCheckBoxPU(index, event.target.checked)} />    <div style={{ display: 'none' }}> {item?.dictCode} </div> <div style={{ marginLeft: '13px' }}>{item?.dictDesc}</div> <br></br></div>
                                                             })
                                                         }

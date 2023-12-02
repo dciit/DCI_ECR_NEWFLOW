@@ -51,15 +51,14 @@ function Createform() {
     }
 
     const PrintECR = (ecrno) => {
-        console.log(1)
         // let link = document.getElementById('linkprint');
         // let href = useHref('./ECR/home');
         // console.log(href)
         // window.open(href, '_blank');
         //  navigate(`/ECR/Print/${ecrno}`);
-        //window.setHeader('Content-type', 'text/javascript')
         // window.open(`/ECR/PrintPage/${ecrno}`, "_blank")
-        navigate(`/ECR/PrintPage/${ecrno}`);
+        navigate(`/ECR/PrintPage/${ecrno}`,
+        );
     }
 
     const handleShow = () => {
@@ -248,7 +247,6 @@ function Createform() {
                                             <MenuItem value={item}>{item}</MenuItem>
                                         )
                                     }
-
                                 </Select>
                             </FormControl>
                         </div>
@@ -336,29 +334,29 @@ function Createform() {
                                         else {
                                             holdDate = ""
                                         }
-                                        // console.log(holdDate)
+
                                         let color = 'rgb(254 253 239)';
                                         if (status == 'F') {
                                             if (items == 'cre') {
-                                                color = 'rgb(85 234 116)';
+                                                color = 'rgb(193 231 216)';
                                             }
                                             else if (items == 'pu') {
-                                                color = 'rgb(52 232 129)';
+                                                color = 'rgb(155 246 210)';
                                             }
                                             else if (items == 'dd') {
-                                                color = 'rgb(39 239 39)';
+                                                color = 'rgb(110 247 193)';
                                             }
                                             else if (items == 'en') {
-                                                color = '#66FF00';
+                                                color = 'rgb(44 255 171)';
                                             }
                                             else if (items == 'sqc') {
-                                                color = '#00FF66';
+                                                color = 'rgb(165 244 184)';
                                             }
                                             else if (items == 'qc') {
-                                                color = '#00FF99';
+                                                color = 'rgb(178 251 166)';
                                             }
                                             else if (items == 'dil_dd' || items == 'dil_qc') {
-                                                color = '#66FFCC';
+                                                color = 'rgb(198 246 190)';
                                             }
                                             else if (items == 'qa') {
                                                 color = '#CCFFCC';
@@ -402,7 +400,7 @@ function Createform() {
                                         });
                                     });
                                     oEcr.push(iECR);
-                                    // console.log(oEcr)
+
                                 });
 
                                 var status = ''
@@ -457,7 +455,7 @@ function Createform() {
                                                         return <td style={{ backgroundColor: vApp.color }}>
                                                             <div style={{ borderBottom: '1px solid black', fontWeight: 'bolder', height: '32px', width: '90px' }}>{vApp.title.substring(0, 1).toUpperCase()} {vApp.icon}</div>
 
-                                                            <div style={{ fontSize: '12px ', height: '50px', justifyContent: 'center', alignItems: 'center' }}>
+                                                            <div style={{ fontSize: '11px ', height: '50px', justifyContent: 'center', alignItems: 'center' }}>
                                                                 <br></br>
                                                                 <div>
                                                                     {vApp.name}
@@ -465,7 +463,7 @@ function Createform() {
                                                                 <div style={{ fontSize: '10px' }}>
                                                                     {vApp.date}
                                                                 </div>
-                                                                <div style={{ color: vApp.colorHoldDate, fontSize: '12px', fontWeight: '700' }}>  {vApp.holdDate}</div></div>
+                                                                <div style={{ color: vApp.colorHoldDate, fontSize: '10px', fontWeight: '700' }}>  {vApp.holdDate}</div></div>
 
                                                         </td>
                                                     })
