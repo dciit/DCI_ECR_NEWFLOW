@@ -20,6 +20,7 @@ import Print from '../../../public/asset/Image/Print2.png'
 import Chatt from '../../../public/asset/Image/Chat60.png'
 import { Link, useNavigate } from 'react-router-dom';
 import { useHref } from 'react-router';
+import { FcFinePrint, FcPrint, FcSms, FcDocument } from "react-icons/fc";
 
 function Createform() {
     const navigate = useNavigate();
@@ -36,6 +37,13 @@ function Createform() {
     const permission = useSelector((state) => state.reducer.permission);
     const permissionActive = useSelector((state) => state.reducer.permissionActive);
     const [selectSection, setSelectSection] = useState(permission[0]?.grpRoleSect);
+
+    const [ECRNo, setECRNO] = useState('');
+    const [Title, setTitle] = useState('');
+    const [Model, setModel] = useState('');
+    const [PartName, setPartName] = useState('');
+    const [DrawingNo, setDrawingNo] = useState('');
+    const [BRNo, setBRNO] = useState('');
 
 
     const IconCheck = (val) => {
@@ -74,7 +82,7 @@ function Createform() {
 
 
     function loadPage() {
-        getDataSrvHD.getECRList(DocNo, selectSection).then((res) => {
+        getDataSrvHD.getECRListLoad(selectSection).then((res) => {
             try {
                 setGetdata(res.data)
             }
@@ -83,6 +91,15 @@ function Createform() {
                 return error;
             }
         });
+        // getDataSrvHD.getECRList(DocNo, selectSection).then((res) => {
+        //     try {
+        //         setGetdata(res.data)
+        //     }
+        //     catch (error) {
+        //         console.log(error);
+        //         return error;
+        //     }
+        // });
     }
 
 
@@ -193,7 +210,7 @@ function Createform() {
     // ส่ง DocNo กับ Status ไป API
     const [DocNo, setDocNo] = useState(('%'));
     const getSearch = (event) => {
-        getDataSrvHD.getECRList(DocNo, selectSection).then((res) => {
+        getDataSrvHD.postECRList({ section: selectSection, ecrno: ECRNo, title: Title, model: Model, partName: PartName, drawingNo: DrawingNo, brno: BRNo }).then((res) => {
             try {
                 setGetdata(res.data)
             }
@@ -202,6 +219,16 @@ function Createform() {
                 return error;
             }
         });
+
+        // getDataSrvHD.getECRList(DocNo, selectSection).then((res) => {
+        //     try {
+        //         setGetdata(res.data)
+        //     }
+        //     catch (error) {
+        //         console.log(error);
+        //         return error;
+        //     }
+        // });
     };
 
 
@@ -226,13 +253,13 @@ function Createform() {
             <div class="card ">
                 <h5 class="card-header bg-info text-white border-0">สร้างเอกสาร ECR</h5>  {/* 😉🤣😍😒😁🤞👏💋🌹🎂✔🤳💖😢😎🎶🤳💕 */}
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-1">Search :</div>
+                    <div class="row mb-3">
+                        {/* <div class="col-1">Search :</div>
                         <div class="col-2">
                             <input type="text" class="form-control" onChange={(event) => handleChangeSearch(event.target.value)} />
-                        </div>
-                        <div class="col-1">Section :</div> &nbsp;&nbsp;&nbsp;
-                        <div className='divddl'>
+                        </div> */}
+                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Section :</label>
+                        <div class="col-sm-2">
                             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                                 <InputLabel id="demo-select-small-label">Status</InputLabel>
                                 <Select
@@ -251,12 +278,73 @@ function Createform() {
                             </FormControl>
                         </div>
                         <div class="col-1">
-                            <button type="submit" class="btn btn-primary mb-2" onClick={getSearch}>Search</button>
+
                         </div>
                         <div class="col-4">
                         </div>
 
                         <div class="col-2">
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-3">
+                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">ECR No :</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setECRNO(event.target.value)} />
+                        </div>
+
+                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Title :</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setTitle(event.target.value)} />
+                        </div>
+
+                        <div class="col-sm-6">
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-3">
+                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Model</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setModel(event.target.value)} />
+                        </div>
+
+                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Part Name :</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setPartName(event.target.value)} />
+                        </div>
+                        <div class="col-sm-9">
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-3">
+                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Drawing No :</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setDrawingNo(event.target.value)} />
+                        </div>
+
+                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">BR No :</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setBRNO(event.target.value)} />
+                        </div>
+
+                        <div class="col-sm-9">
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-3">
+                        <div class="col-sm-2">
+
+                        </div>
+
+                        <div class="col-sm-1">
+                            <button type="submit" class="btn btn-primary mb-2" onClick={getSearch}>Search</button>
+                        </div>
+
+                        <div class="col-sm-2">
                             {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0001" && item.rolE_VIEW == "True"
@@ -265,7 +353,12 @@ function Createform() {
                                     ""
                             }
                         </div>
+
+                        <div class="col-sm-9">
+                        </div>
                     </div>
+
+
                 </div>
             </div>
             <br></br>
@@ -411,39 +504,47 @@ function Createform() {
 
 
                                 return <tr>
-                                    <td style={{ backgroundColor: (status != '' ? 'rgb(251 237 23)' : 'rgb(72 229 23)') }}><h5 style={{ color: (status != '' ? 'red' : 'rgb(60 3 255)') }}>{(status != '' ? status : 'FINISH')}</h5>
+                                    <td style={{ backgroundColor: (status != '' ? 'rgb(255 252 106)' : 'rgb(72 229 23)') }}><p style={{ color: (status != '' ? 'red' : 'rgb(60 3 255)') }}>{(status != '' ? status : 'FINISH')}</p>
                                     </td>
-                                    <td><center><Button variant="primary" onClick={() => handleShowDetail(item.ecrno)} >Report</Button></center>
-                                    </td>
-                                    <td>{item.ecrno}</td>
-                                    <td>{item.title}</td>
+                                    {/* <td><center><Button variant="primary" onClick={() => handleShowDetail(item.ecrno)} >Report</Button></center> */}
                                     <td>
+                                        <Link underline="hover">
+                                            <center><FcFinePrint style={{ width: '35px', height: '45px' }} onClick={() => handleShowDetail(item.ecrno)} /></center>
+                                        </Link>
+                                    </td>
+                                    <td style={{ fontSize: '12px' }}>{item.ecrno}</td>
+                                    <td style={{ fontSize: '12px' }}>{item.title}</td>
+                                    <td style={{ fontSize: '12px' }}>
                                         {
                                             showSection(item.section)
                                         }
                                     </td>
-                                    <td><img src={Filee} onClick={() => {
-                                        setEcrnoSelected(item)
-                                        setOpenAttrFile(true);
-                                    }} />
+                                    <td>
+                                        <FcDocument style={{
+                                            width: '30px', height: '40px'
+                                        }} onClick={() => {
+                                            setEcrnoSelected(item)
+                                            setOpenAttrFile(true);
+                                        }} />
                                     </td>
                                     <td>
-                                        <div>
+                                        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'row-reverse' }}>
+                                            <span className='content'>{item.count}</span>
                                             <center>
-                                                <span className='content'>{item.count}</span>
-                                                <img style={{ marginBottom: '20px' }} src={Chatt} onClick={() => {
+                                                <FcSms style={{
+                                                    width: '28px', height: '35px'
+                                                }} onClick={() => {
                                                     setEcrnoSelected(item)
                                                     setOpenModalChat(true);
                                                 }} />
                                             </center>
                                         </div>
                                     </td>
-                                    {/* <td><a href={`/ECR/Print/${item.ecrno}`} target="_blank" rel="noreferrer">
-                                        <img src={Print} />
-                                    </a>
-                                    </td> */}
+
                                     <td>
-                                        <Button style={{ backgroundColor: 'white', borderColor: 'white' }} onClick={() => PrintECR(item.ecrno)}> <img src={Print} /></Button>
+                                        <Button style={{ backgroundColor: 'white', borderColor: 'white' }} onClick={() => PrintECR(item.ecrno)}> <FcPrint style={{
+                                            width: '32px', height: '40px'
+                                        }} /></Button>
                                         <Link id='linkprint' to={`/ECR/PrintPage/${item.ecrno}`} target="_blank">
                                         </Link>
                                     </td>
@@ -471,24 +572,6 @@ function Createform() {
                                             </>
                                         })
                                     }
-
-
-
-                                    {/* {
-                                        oEcr.map((vSec, iSec) => {
-                                            return <td>
-                                                {
-                                                    vSec.app.map((vApp, iApp) => {
-                                                        return <div style={{ display: 'flex' }}>
-                                                            <div style={{ backgroundColor: vApp.color, width: '25%', borderBottom: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 'bolder' }}> <div>{vApp.title.substring(0, 1).toUpperCase()}  {vApp.icon}</div>
-                                                            </div>
-                                                            <div style={{ width: '75%', fontSize: '11px ', height: '75px', display: 'flex', justifyContent: 'center', alignItems: 'center', borderBottom: '1px solid black' }}>{vApp.name}<br></br>{vApp.date}<br></br><div style={{ color: vApp.colorHoldDate, fontSize: '12px', fontWeight: '700' }}>  {vApp.holdDate}</div></div>
-                                                        </div>
-                                                    })
-                                                }
-                                            </td>
-                                        })
-                                    } */}
                                 </tr>
                             })
                         }

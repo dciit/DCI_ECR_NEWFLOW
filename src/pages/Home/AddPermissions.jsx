@@ -10,6 +10,8 @@ import { useSelector } from 'react-redux';
 import TextField from '@mui/material/TextField';
 import Cookies from 'js-cookie';
 import Form from 'react-bootstrap/Form';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
 
 
 function AddPermissions() {
@@ -43,9 +45,11 @@ function AddPermissions() {
             section: selectSection, step: selectStep, issued: empCode, empCode: txtEmpCode
         }).then((res) => {
             try {
-                refresh();
+                // refresh();
+                alert("Add Permission สำเร็จ")
             }
             catch (error) {
+                // alert("มีสิทธิในระบบแล้ว");
                 console.log(error);
                 return error;
             }

@@ -1,9 +1,16 @@
 import http from "../constant/_configAxios"
 
 
-const getECRList = (docNo, status) => {
-    return http.APIHEADER.get(`getECRList/${encodeURIComponent(docNo)}/${status}`);
+// const getECRList = (docNo, status) => {
+//     return http.APIHEADER.get(`getECRList/${encodeURIComponent(docNo)}/${status}`);
+// }
+
+
+const postECRList = (param) => {
+    return http.APIHEADER.post(`postECRList`, param);
 }
+
+
 
 
 const getCheck = (docNo, status, section) => {
@@ -20,9 +27,17 @@ const getStatusCreate = (docNo) => {
 }
 
 
+const getECRListLoad = (section) => {
+    return http.APIHEADER.get(`getECRListLoad/${section}`);
+}
+
+
+
 export default {
-    getECRList,
+    // getECRList,
     getCheck,
     getApproved,
     getStatusCreate,
+    getECRListLoad,
+    postECRList
 };
