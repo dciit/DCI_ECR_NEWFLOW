@@ -21,6 +21,7 @@ import Chatt from '../../../public/asset/Image/Chat60.png'
 import { Link, useNavigate } from 'react-router-dom';
 import { useHref } from 'react-router';
 import { FcFinePrint, FcPrint, FcSms, FcDocument } from "react-icons/fc";
+import { LegendToggleOutlined } from '@mui/icons-material';
 
 function Createform() {
     const navigate = useNavigate();
@@ -36,7 +37,7 @@ function Createform() {
     const [statusCreateAppBit, setStatusCreateAppBit] = useState('');
     const permission = useSelector((state) => state.reducer.permission);
     const permissionActive = useSelector((state) => state.reducer.permissionActive);
-    const [selectSection, setSelectSection] = useState(permission[0]?.grpRoleSect);
+    const [selectStatus, setselectStatus] = useState("0");
 
     const [ECRNo, setECRNO] = useState('');
     const [Title, setTitle] = useState('');
@@ -46,25 +47,8 @@ function Createform() {
     const [BRNo, setBRNO] = useState('');
 
 
-    const IconCheck = (val) => {
-        var icon = '';
-        if (val == 'U') {
-            icon = <IoHourglassOutline style={{ color: "rgb(237 180 34)", fontSize: "30px" }} />
-        } else if (val == 'F' || val != '') {
-            icon = <IoShieldCheckmark style={{ color: "#11c045", fontSize: "30px" }} />
-        } if (val == 'R') {
-            icon = <IoArrowBackCircleSharp style={{ color: "rgb(248 6 23)", fontSize: "33px" }} />
-        }
-        return icon;
-    }
 
     const PrintECR = (ecrno) => {
-        // let link = document.getElementById('linkprint');
-        // let href = useHref('./ECR/home');
-        // console.log(href)
-        // window.open(href, '_blank');
-        //  navigate(`/ECR/Print/${ecrno}`);
-        // window.open(`/ECR/PrintPage/${ecrno}`, "_blank")
         navigate(`/ECR/PrintPage/${ecrno}`,
         );
     }
@@ -82,7 +66,7 @@ function Createform() {
 
 
     function loadPage() {
-        getDataSrvHD.getECRListLoad(selectSection).then((res) => {
+        getDataSrvHD.getECRListLoad(selectSection, selectStatus).then((res) => {
             try {
                 setGetdata(res.data)
             }
@@ -91,21 +75,10 @@ function Createform() {
                 return error;
             }
         });
-        // getDataSrvHD.getECRList(DocNo, selectSection).then((res) => {
-        //     try {
-        //         setGetdata(res.data)
-        //     }
-        //     catch (error) {
-        //         console.log(error);
-        //         return error;
-        //     }
-        // });
     }
 
 
     //// **************DAILOG DETAIL  *************************
-    const handleCloseDetail = () => setShowDetail(false);
-
 
     const [loadStatusCreate, setLoadStatusCreate] = useState(false);
     useEffect(() => {
@@ -113,6 +86,7 @@ function Createform() {
             setOpenModalDetail(true);
         }
     }, [loadStatusCreate])
+
 
     const handleShowDetail = (ecrno) => {
         setLoadStatusCreate(false);
@@ -128,9 +102,6 @@ function Createform() {
             }
         });
     };
-
-
-
     /// ****************** END DAILOG DETAIL   *****************
 
 
@@ -163,45 +134,61 @@ function Createform() {
     }
 
 
+    // const grp = (val) => {
+    //     var varGrp = '';
+
+    //     if (val == 'ADMIN') {
+    //         varGrp = "0"
+    //     }
+    //     else if (val == 'PU') {
+    //         varGrp = "1"
+    //     }
+    //     else if (val == 'DD') {
+    //         varGrp = "2"
+    //     }
+    //     else if (val == 'EN') {
+    //         varGrp = "3"
+    //     }
+    //     else if (val == 'SQC') {
+    //         varGrp = "4"
+    //     }
+    //     else if (val == 'QC') {
+    //         varGrp = "5"
+    //     }
+    //     else if (val == 'DIL') {
+    //         varGrp = "6"
+    //     }
+    //     else if (val == 'QA') {
+    //         varGrp = "7"
+    //     }
+    //     else {
+    //         varGrp = '999'
+    //     }
+    //     return varGrp;
+    // }
+
     const grp = (val) => {
         var varGrp = '';
 
         if (val == 'ADMIN') {
-            varGrp = "0"
-        }
-        else if (val == 'PU') {
-            varGrp = "1"
-        }
-        else if (val == 'DD') {
-            varGrp = "2"
-        }
-        else if (val == 'EN') {
-            varGrp = "3"
-        }
-        else if (val == 'SQC') {
-            varGrp = "4"
-        }
-        else if (val == 'QC') {
-            varGrp = "5"
-        }
-        else if (val == 'DIL') {
-            varGrp = "6"
-        }
-        else if (val == 'QA') {
-            varGrp = "7"
-        }
-        else {
-            varGrp = '999'
+            varGrp = "ALL"
         }
         return varGrp;
     }
 
+    const [selectSection, setSelectSection] = useState(grp(permission[0]?.grpRoleSect));
 
-    const [indexddlStatus, setindexddlStatus] = useState(grp(ddlStatus));
-    const [buffIndexSection, setBuffIndexSection] = useState(grp(ddlStatus));
+
     const handleChange = (event) => {
         setSelectSection(event.target.value);
     };
+
+
+    const handleChangeStatus = (event) => {
+        setselectStatus(event.target.value);
+    };
+
+
     //****************************END ddl Status ************ */
 
 
@@ -210,7 +197,7 @@ function Createform() {
     // ส่ง DocNo กับ Status ไป API
     const [DocNo, setDocNo] = useState(('%'));
     const getSearch = (event) => {
-        getDataSrvHD.postECRList({ section: selectSection, ecrno: ECRNo, title: Title, model: Model, partName: PartName, drawingNo: DrawingNo, brno: BRNo }).then((res) => {
+        getDataSrvHD.postECRList({ section: selectSection, ecrno: ECRNo, title: Title, model: Model, partName: PartName, drawingNo: DrawingNo, brno: BRNo, status: selectStatus }).then((res) => {
             try {
                 setGetdata(res.data)
             }
@@ -219,16 +206,6 @@ function Createform() {
                 return error;
             }
         });
-
-        // getDataSrvHD.getECRList(DocNo, selectSection).then((res) => {
-        //     try {
-        //         setGetdata(res.data)
-        //     }
-        //     catch (error) {
-        //         console.log(error);
-        //         return error;
-        //     }
-        // });
     };
 
 
@@ -242,32 +219,26 @@ function Createform() {
         }
     }
     //****************************END BUTTON SEARCH ************ *
-
-
-
     const sectionArray = ['CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
     const sectionArrayAll = ['ALL', 'CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
-    const stepArrat = ['receive', "issue", 'check', 'approve'];
+
+
+
     return (<>
         <div className='stylePagee'>
             <div class="card ">
                 <h5 class="card-header bg-info text-white border-0">สร้างเอกสาร ECR</h5>  {/* 😉🤣😍😒😁🤞👏💋🌹🎂✔🤳💖😢😎🎶🤳💕 */}
                 <div class="card-body">
                     <div class="row mb-3">
-                        {/* <div class="col-1">Search :</div>
-                        <div class="col-2">
-                            <input type="text" class="form-control" onChange={(event) => handleChangeSearch(event.target.value)} />
-                        </div> */}
                         <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Section :</label>
                         <div class="col-sm-2">
                             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                                <InputLabel id="demo-select-small-label">Status</InputLabel>
+                                <InputLabel id="demo-select-small-label">Section</InputLabel>
                                 <Select
                                     labelId="demo-select-small-label"
                                     id="demo-select-small"
-                                    // value={buffIndexSection != '999' ? sectionArrayAll[buffIndexSection] : 'ALL'}
                                     value={selectSection}
-                                    label="Status"
+                                    label="Section"
                                     onChange={handleChange}>
                                     {
                                         sectionArrayAll.map((item, index) =>
@@ -277,13 +248,24 @@ function Createform() {
                                 </Select>
                             </FormControl>
                         </div>
-                        <div class="col-1">
 
-                        </div>
-                        <div class="col-4">
+                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Status :</label>
+                        <div class="col-sm-2">
+                            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                                <InputLabel id="demo-select-small-label">Status</InputLabel>
+                                <Select
+                                    labelId="demo-select-small-label"
+                                    id="demo-select-small"
+                                    value={selectStatus}
+                                    label="Status"
+                                    onChange={handleChangeStatus}>
+                                    <MenuItem value='0'>On Process</MenuItem>
+                                    <MenuItem value='1'>Finish</MenuItem>
+                                </Select>
+                            </FormControl>
                         </div>
 
-                        <div class="col-2">
+                        <div class="col-6">
                         </div>
                     </div>
 
@@ -294,49 +276,50 @@ function Createform() {
                             <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setECRNO(event.target.value)} />
                         </div>
 
-                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Title :</label>
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setTitle(event.target.value)} />
-                        </div>
-
-                        <div class="col-sm-6">
-                        </div>
-                    </div>
-
-
-                    <div class="row mb-3">
-                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Model</label>
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setModel(event.target.value)} />
-                        </div>
-
-                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Part Name :</label>
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setPartName(event.target.value)} />
-                        </div>
-                        <div class="col-sm-9">
-                        </div>
-                    </div>
-
-
-                    <div class="row mb-3">
-                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Drawing No :</label>
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setDrawingNo(event.target.value)} />
-                        </div>
-
                         <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">BR No :</label>
                         <div class="col-sm-2">
                             <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setBRNO(event.target.value)} />
                         </div>
 
-                        <div class="col-sm-9">
+
+                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Drawing No :</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setDrawingNo(event.target.value)} />
+                        </div>
+
+
+
+                        <div class="col-sm-3">
                         </div>
                     </div>
 
 
                     <div class="row mb-3">
+                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Title :</label>
                         <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setTitle(event.target.value)} />
+                        </div>
+
+
+                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Model :</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setModel(event.target.value)} />
+                        </div>
+
+
+                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Part Name :</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setPartName(event.target.value)} />
+                        </div>
+
+
+                        <div class="col-sm-3">
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
 
                         </div>
 
@@ -348,13 +331,13 @@ function Createform() {
                             {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0001" && item.rolE_VIEW == "True"
-                                }).length ? <Button variant="primary" onClick={handleShow} >สร้างเอกสาร ECR ใหม่</Button>
+                                }).length ? <Button variant="success" onClick={handleShow}>สร้างเอกสาร ECR ใหม่</Button>
                                     :
                                     ""
                             }
                         </div>
 
-                        <div class="col-sm-9">
+                        <div class="col-sm-6">
                         </div>
                     </div>
 
@@ -368,8 +351,8 @@ function Createform() {
                     จำนวนเอกสาร = <span style={{ color: 'blue' }}>{getdata[0]?.summary}</span>
                 </div>
                 <div class="col-4"></div>
-                <div class="col-3"></div>
-                <div class="col-3">
+                <div class="col-1"></div>
+                <div class="col-5">
                     <span><b>R</b> = Receive</span> &nbsp;&nbsp;&nbsp;
                     <span><b>I</b> = Issued</span> &nbsp;&nbsp;&nbsp;
                     <span><b>C</b> = Checked</span> &nbsp;&nbsp;&nbsp;
@@ -381,23 +364,23 @@ function Createform() {
                 <table className='tableCreateform'>
                     <thead>
                         <tr>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '6%' }}>On Process</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}></th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>DocNo</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '200px' }}>Title</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>Section</th>
-                            <th colSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>Detail</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>CREATE</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>PU</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>DD</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>EN</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>SQC</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>QC</th>
-                            <th colSpan={8} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>DIL</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>QA</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '6%', fontSize: '12px' }}>On Process</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}></th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>DocNo</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '200px', fontSize: '12px' }}>Title</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Section</th>
+                            <th colSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Detail</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>CREATE</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>PU</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>DD</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>EN</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>SQC</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>QC</th>
+                            <th colSpan={8} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>DIL</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>QA</th>
                         </tr>
 
-                        <tr colSpan={20} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)' }}>
+                        <tr colSpan={20} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>
                             <th>File</th>
                             <th>Remark</th>
                             <th>Print</th>
@@ -421,6 +404,7 @@ function Createform() {
                                         let status = item[`${items}${iApp}bit`]; //bit
                                         let hold = item[`${items}${iApp}SumDate`];
                                         let holdDate = item[`${items}${iApp}SumDate`]; //sumdate
+
                                         if (holdDate > 0) {
                                             holdDate = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
                                         }
@@ -556,15 +540,15 @@ function Createform() {
                                                         return <td style={{ backgroundColor: vApp.color }}>
                                                             <div style={{ borderBottom: '1px solid black', fontWeight: 'bolder', height: '32px', width: '90px' }}>{vApp.title.substring(0, 1).toUpperCase()} {vApp.icon}</div>
 
-                                                            <div style={{ fontSize: '11px ', height: '50px', justifyContent: 'center', alignItems: 'center' }}>
+                                                            <div style={{ fontSize: '10px ', height: '50px', justifyContent: 'center', alignItems: 'center' }}>
                                                                 <br></br>
                                                                 <div>
                                                                     {vApp.name}
                                                                 </div>
-                                                                <div style={{ fontSize: '10px' }}>
+                                                                <div style={{ fontSize: '9px' }}>
                                                                     {vApp.date}
                                                                 </div>
-                                                                <div style={{ color: vApp.colorHoldDate, fontSize: '10px', fontWeight: '700' }}>  {vApp.holdDate}</div></div>
+                                                                <div style={{ color: vApp.colorHoldDate, fontSize: '11px', fontWeight: '700' }}>  {vApp.holdDate}</div></div>
 
                                                         </td>
                                                     })
@@ -583,7 +567,6 @@ function Createform() {
 
         <ModelAttachFile
             show={openAttrFile}
-            // onHide={setOpenAttrFile}
             close={setOpenAttrFile}
             item={ecrnoSelected}
             section={section}
@@ -602,16 +585,12 @@ function Createform() {
             close={setOpenModalDetail}
             ecrno={ecrnoSelected}
             refresh={loadPage}
-            // section={permission[0]?.grpRoleSect}
-            // position={permission[0]?.grpRole}
-            // step={permission[0]?.grpRole}
             statusCreateAppBit={statusCreateAppBit[0]?.createapproved}
         />
 
 
         <Chat
             show={openModalChat}
-            // onHide={() => setOpenModalChat(false)}
             close={setOpenModalChat}
             item={ecrnoSelected}
         />

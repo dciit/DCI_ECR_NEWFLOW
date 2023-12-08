@@ -14,9 +14,32 @@ const postAddPermission = (param) => {
 }
 
 
+const getEmployee = () => {
+    return http.APIPERMISSION.get(`getEmployee`);
+}
+
+
+const postAddNotifyTo = (param) => {
+    return http.APIPERMISSION.post(`postAddNotifyTo`, param);
+}
+
+
+const getNotifyTo = (ecrno) => {
+    return http.APIPERMISSION.get(`getNotifyTo/${ecrno}`);
+}
+
+
+const getDeleteNotify = (code) => {
+    return http.APIPERMISSION.get(`getDeleteNotify/${code}`);
+}
+
 
 export default {
     getPermission,
     getPermissionMenu,
-    postAddPermission
+    postAddPermission,
+    getEmployee,
+    postAddNotifyTo,
+    getNotifyTo,
+    getDeleteNotify
 }

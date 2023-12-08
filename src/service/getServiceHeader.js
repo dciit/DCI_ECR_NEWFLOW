@@ -27,8 +27,8 @@ const getStatusCreate = (docNo) => {
 }
 
 
-const getECRListLoad = (section) => {
-    return http.APIHEADER.get(`getECRListLoad/${section}`);
+const getECRListLoad = (section, status) => {
+    return http.APIHEADER.get(`getECRListLoad/${section}/${status}`);
 }
 
 

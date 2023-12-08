@@ -41,19 +41,24 @@ function AddPermissions() {
 
     //***************************FUNCTON INPUT DATA INSERT HEAD , DETAIL*************************** */
     const AddPermission = () => {
-        getDataSrvPermiss.postAddPermission({
-            section: selectSection, step: selectStep, issued: empCode, empCode: txtEmpCode
-        }).then((res) => {
-            try {
-                // refresh();
-                alert("Add Permission สำเร็จ")
-            }
-            catch (error) {
-                // alert("มีสิทธิในระบบแล้ว");
-                console.log(error);
-                return error;
-            }
-        });
+        if (txtEmpCode != "") {
+            getDataSrvPermiss.postAddPermission({
+                section: selectSection, step: selectStep, issued: empCode, empCode: txtEmpCode
+            }).then((res) => {
+                try {
+                    // refresh();
+                    alert("Add Permission สำเร็จ")
+                }
+                catch (error) {
+                    // alert("มีสิทธิในระบบแล้ว");
+                    console.log(error);
+                    return error;
+                }
+            });
+        }
+        else {
+            alert("กรุณากรอก รหัสพนักงาน");
+        }
     };
     //***************************END FUNCTON INPUT DATA*************************** */
 

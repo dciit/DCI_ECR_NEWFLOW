@@ -26,7 +26,7 @@ function Navbars() {
         <>
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
                 <Container>
-                    <div style={{ width: '31%' }}>
+                    <div style={{ width: '45%' }}>
                         <label className='stylelb'><img src={ENTool} />ECR</label>
                         <p className='gradiantTitle'>Engineering Change Request</p>
                     </div>

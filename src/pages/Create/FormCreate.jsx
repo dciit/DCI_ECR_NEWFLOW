@@ -588,7 +588,7 @@ function FormCreate(props) {
                             }
                         </Stack>
                         <div>
-                            <Button autoFocus variant="primary" onClick={postInputData}>
+                            <Button autoFocus variant="success" onClick={postInputData}>
                                 Save
                             </Button>
                         </div>

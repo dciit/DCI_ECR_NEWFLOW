@@ -224,7 +224,7 @@ function ModelAttachFile(props) {
                                                     <StyledTableCell align="center">{item.addfileby}</StyledTableCell>
                                                     <StyledTableCell align="center">{item.addfiledate}</StyledTableCell>
                                                     <StyledTableCell align="center">
-                                                        <a href={`http://localhost:5173/asset/FileAttech/${item.pathfilename}`}> <LuLink></LuLink>
+                                                        <a href={`http://dciweb.dci.daikin.co.jp/ECR/asset/FileAttech/${item.pathfilename}`}> <LuLink></LuLink>
                                                         </a>
                                                     </StyledTableCell>
 

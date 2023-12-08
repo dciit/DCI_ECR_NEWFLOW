@@ -49,7 +49,6 @@ function Sidebars() {
                         {/* HEAD TITLE */}
                         {
                             data.filter((el, ind) => {
-                                console.log(el)
                                 return el.menuType == "HEAD" || el.menuType == "SUB"
                             }).map((item, index) => {
                                 return item.menuType == "HEAD" ?

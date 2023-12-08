@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import getDataSrv from '../../service/getdataService.js';
 import getDataSrvHD from '../../service/getServiceHeader.js';
 import getDataSrvDT from '../../service/getServiceDetail.js';
+import getDataSrvPermiss from '../../service/getPermisson.js'
 import './FormDetail.css';
 import Button from 'react-bootstrap/Button';
 import { styled } from '@mui/material/styles';
@@ -30,6 +31,13 @@ import moment from 'moment'
 import { Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import TableRow from '@mui/material/TableRow';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+
 
 
 
@@ -82,7 +90,6 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 //*********************END Collapsible ************************ */
 
 function FormDetail(props) {
-
     //*********************SECTION CREATE************************ */
     // const empCode = localStorage.getItem("name");
     const empCode = Cookies.get('code')
@@ -135,8 +142,11 @@ function FormDetail(props) {
     const [otherCus, setOtherCus] = useState('');
     const [informationDate, setInformationDate] = useState(moment().format('YYYY-MM-DD'));
     const [informationBy, setInformationBy] = useState('');
-    const [test, settest] = useState('');
+    const [employeeArray, setEmployeeArray] = useState([]);
+    const [employee, setemployee] = useState('');
+    const [step, setStep] = useState('ISSUED');
     const [showDtSec, setshowDtSec] = useState(false);
+    const [tableNotify, setTableNotify] = useState([]);
     const { show, close, ecrno, refresh, statusCreateAppBit } = props;
     let section = permission[0]?.grpRoleSect;
     let position = permission[0]?.grpRole;
@@ -172,6 +182,27 @@ function FormDetail(props) {
                         setshowDtSec(false);
                     }
                 }
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+
+        getDataSrvPermiss.getEmployee().then((res) => {
+            try {
+                setEmployeeArray(res.data);
+                console.log(res.data);
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+
+        getDataSrvPermiss.getNotifyTo(ecrno).then((res) => {
+            try {
+                setTableNotify(res.data);
             }
             catch (error) {
                 console.log(error);
@@ -575,11 +606,45 @@ function FormDetail(props) {
         }
     };
     //****************************END FUNCTION RECEIVE************ */
+    const stepArray = ['ISSUED', 'CHECK', 'APPROVED'];
+
+    const handleChangeEmployee = (event) => {
+        setemployee(event.target.value);
+        console.log(event.target.value)
+    };
+
+    const handleChangeStep = (event) => {
+        setStep(event.target.value);
+        console.log(event.target.value)
+    };
+
+    const postAddNotifyTo = (ecR_NO) => {
+        getDataSrvPermiss.postAddNotifyTo({ employeeCode: employee, employeeFullName: employee, ecrno: ecR_NO, step: step, createBy: empCode }).then((res) => {
+            try {
+                initFiles();
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+
+
+    const getDeleteNotify = (code) => {
+        getDataSrvPermiss.getDeleteNotify(code).then((res) => {
+            try {
+                initFiles();
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
 
 
 
-
-    const sectionArray = ['CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
     return (
         <div>
             <BootstrapDialog
@@ -886,9 +951,100 @@ function FormDetail(props) {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Typography>
+                                    <h5 style={{ color: 'rgb(50 80 251)' }}>Receive</h5>
+                                    <hr></hr>
+                                    <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                        <Col xs={12} md={4}>
+                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                                <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={employee}
+                                                    label="EmpCode"
+                                                    onChange={handleChangeEmployee}>
+                                                    {
+                                                        employeeArray.map((item, index) =>
+                                                            <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                        )
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                        </Col>
+                                        <Col xs={12} md={4}>
+                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                                <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={step}
+                                                    label="Status"
+                                                    onChange={handleChangeStep}>
+                                                    {
+                                                        stepArray.map((item, index) =>
+                                                            <MenuItem value={item}>{item}</MenuItem>
+                                                        )
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                        </Col>
+                                        <Col xs={12} md={4}>
+                                            {
+                                                permission.filter((item) => {
+                                                    return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
+                                                }).length ? <>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO)}>
+                                                        + เพิ่มผู้ดำเนินการ
+                                                    </Button>
+                                                </> : ""
+                                            }
+                                        </Col>
+                                    </Row>
+
+                                    <br></br>
+                                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
+                                        <table className='notify'>
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Code</th>
+                                                    <th>Full Name</th>
+                                                    <th>Position</th>
+                                                    <th>E-mail</th>
+                                                    <th>Status</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    tableNotify?.map((item, index) => {
+                                                        return <tr key={item.ecrno}>
+                                                            <td align="center" style={{ textAlign: 'center' }}>{item.no}</td>
+                                                            <td align="center" style={{ textAlign: 'center' }}>{item.employeeCode}</td>
+                                                            <td align="center" style={{ textAlign: 'center', fontSize: '10px' }}>{item.employeeFullName}</td>
+                                                            <td align="center" style={{ textAlign: 'center', fontSize: '10px' }}>{item.position}</td>
+                                                            <td align="center" style={{ textAlign: 'center' }}>{item.email}</td>
+                                                            <td align="center" style={{ textAlign: 'center', fontSize: '10px' }}>{item.step}</td>
+                                                            <td align="center" style={{ textAlign: 'center', padding: '0px' }}>
+                                                                {
+                                                                    permission.filter((item) => {
+                                                                        return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
+                                                                    }).length ? <>
+                                                                        <Button autoFocus variant="danger" style={{ padding: '0px 2px 0px 2px', fontSize: '11px' }} onClick={() => getDeleteNotify(item.employeeCode)}>
+                                                                            ลบ
+                                                                        </Button>
+                                                                    </> : ""
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </Row>
+
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
                                             <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428' }} value={dataModaldt[0]?.pU_Receive_Remark}
                                                 onChange={(e) => {
                                                     dataModaldt[0].pU_Receive_Remark = e.target.value;
@@ -897,10 +1053,11 @@ function FormDetail(props) {
                                         </Col>
                                     </Row>
 
+                                    <hr></hr>
                                     <br></br>
+
                                     <h6>2). QUALITY CHECK CONTENT (DCI) and Other</h6>
 
-                                    <hr></hr>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
                                             <Form.Label>2.1 &nbsp;&nbsp; PU Section : Effect Part stock control & Supplier (เฉพาะในกรณี 2 เท่านั้น)</Form.Label>
@@ -1356,7 +1513,6 @@ function FormDetail(props) {
                         <Stack direction={'row'} gap={3}>
                             {
                                 permission.filter((item) => {
-                                    console.log(permission)
                                     return (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && creSec == roleSec) ||
                                         (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && permission[0]?.grpRoleSect == "ADMIN")
                                 }).length ? (dataModaldt[0]?.create_CheckBit == "U" || dataModaldt[0]?.create_CheckBit == "R") && <>

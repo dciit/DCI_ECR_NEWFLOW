@@ -150,3 +150,49 @@ table.tbCreateform {
     justify-content: space-between;
     padding: 9px;
 }
+
+.notify {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 90%;
+    font-size: 11px;
+}
+
+.notify td,
+.notify th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    font-size: 11px;
+}
+
+.notify tr:nth-child(even) {
+    background-color: #f2f2f2;
+    font-size: 11px;
+}
+
+.notify tr:hover {
+    background-color: #ddd;
+    font-size: 11px;
+}
+
+.notify th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: #98a9bb;
+    color: white;
+    font-size: 11px;
+}
+
+/* .notify table,
+.notify td,
+.notify th {
+    border: 1px solid;
+    padding: 0px;
+}
+
+.notify table {
+    width: 100%;
+    border-collapse: collapse;
+} */
