@@ -680,7 +680,7 @@ function FormDetail(props) {
                             </Col>
                             <Col xs={12} md={4}>
                                 <Form.Label>ECR NO :</Form.Label>
-                                <Form.Control type="text" className='FormControl' value={dataModaldt[0]?.ecR_NO} readOnly />
+                                <Form.Control type="text" className='FormControl' style={{ backgroundColor: 'rgb(255 141 0)', color: 'white' }} value={dataModaldt[0]?.ecR_NO} readOnly />
                             </Col>
                         </Row>
                         <hr></hr>
@@ -688,16 +688,23 @@ function FormDetail(props) {
                         <Row className='styleChangeItem'>
                             <Col xs={12} md={9} style={{ display: 'flex' }}>
                                 <h6>TITLE</h6> &nbsp; &nbsp;
-                                <TextField id="txtTitle" variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.title)}
-                                    onChange={(e) => {
-                                        dataModaldt[0].title = e.target.value;
-                                        setDataModaldt([...dataModaldt]);
-                                    }} />
+                                {
+                                    dataModaldt[0]?.create_CheckBit != "F" ?
+                                        <>
+                                            <TextField id="txtTitle" variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.title)}
+                                                onChange={(e) => {
+                                                    dataModaldt[0].title = e.target.value;
+                                                    setDataModaldt([...dataModaldt]);
+                                                }} />
+                                        </> : <TextField id="txtTitle" variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.title)}
+                                            readOnly />
+                                }
+
                                 <br></br><br></br>
                             </Col>
                             <Col xs={12} md={3}>
                                 <span style={{ marginRight: '72%' }}><b>Section</b> </span> &nbsp; &nbsp;
-                                <Form.Control type="text" className='FormControl' value={dataModaldt[0]?.section} readOnly />
+                                <Form.Control type="text" className='FormControl' value={dataModaldt[0]?.section} style={{ backgroundColor: '#b9edf3' }} readOnly />
                             </Col>
                         </Row>
 
@@ -870,7 +877,7 @@ function FormDetail(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={6} md={4}>
                                             <Form.Label>PART NO (DRAWING) </Form.Label>
-                                            <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.partno)} disabled={position == "ISSUED" ? false : true}
+                                            <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.partno)} disabled={position == "ISSUED" ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].partno = event.target.value;
                                                     setpartNo([...dataModaldt])
@@ -878,7 +885,7 @@ function FormDetail(props) {
                                         </Col>
                                         <Col xs={6} md={4}>
                                             <Form.Label>PART NAME</Form.Label>
-                                            <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.partName)} disabled={position == "ISSUED" ? false : true}
+                                            <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.partName)} disabled={position == "ISSUED" ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].partName = event.target.value;
                                                     setpartName([...dataModaldt])
@@ -886,7 +893,7 @@ function FormDetail(props) {
                                         </Col>
                                         <Col xs={6} md={4}>
                                             <Form.Label>REMARK</Form.Label>
-                                            <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.remarkCreate)} disabled={position == "ISSUED" ? false : true}
+                                            <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.remarkCreate)} disabled={position == "ISSUED" ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].remarkCreate = event.target.value;
                                                     setremark([...dataModaldt])
@@ -897,7 +904,7 @@ function FormDetail(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={6} md={8}>
                                             <Form.Label>วัตถุประสงค์,วิธีการ,ข้อมูลการส่งมอบ (Purposr,Method & Delivery Schedule)</Form.Label>
-                                            <Form.Control as="textarea" rows={5} id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.method)} disabled={position == "ISSUED" ? false : true}
+                                            <Form.Control as="textarea" rows={5} id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.method)} disabled={position == "ISSUED" ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].method = event.target.value;
                                                     setMethod([...dataModaldt])
@@ -927,19 +934,19 @@ function FormDetail(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={6} md={4}>
                                             <Form.Label>Create By</Form.Label>
-                                            <Form.Control type="text" value={dataModaldt[0]?.createBy} readOnly />
+                                            <Form.Control type="text" value={dataModaldt[0]?.createBy} style={{ backgroundColor: '#b9edf3' }} readOnly />
                                         </Col>
                                         <Col xs={6} md={2}>
                                             <Form.Label>Create Date</Form.Label>
-                                            <Form.Control type="text" value={dataModaldt[0]?.createDateECR} readOnly />
+                                            <Form.Control type="text" value={dataModaldt[0]?.createDateECR} style={{ backgroundColor: '#b9edf3' }} readOnly />
                                         </Col>
                                         <Col xs={6} md={4}>
                                             <Form.Label>Update By</Form.Label>
-                                            <Form.Control type="text" value={dataModaldt[0]?.updateBy} readOnly />
+                                            <Form.Control type="text" value={dataModaldt[0]?.updateBy} style={{ backgroundColor: '#b9edf3' }} readOnly />
                                         </Col>
                                         <Col xs={6} md={2}>
                                             <Form.Label>Update Date</Form.Label>
-                                            <Form.Control type="text" value={dataModaldt[0]?.updateDate} readOnly />
+                                            <Form.Control type="text" value={dataModaldt[0]?.updateDate} style={{ backgroundColor: '#b9edf3' }} readOnly />
                                         </Col>
                                     </Row>
                                 </Typography>
@@ -951,9 +958,38 @@ function FormDetail(props) {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Typography>
-                                    <h5 style={{ color: 'rgb(50 80 251)' }}>Receive</h5>
+                                    <h6>2). QUALITY CHECK CONTENT (DCI) and Other</h6>
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={12}>
+                                            <Form.Label>2.1 &nbsp;&nbsp; PU Section : Effect Part stock control & Supplier (เฉพาะในกรณี 2 เท่านั้น)</Form.Label>
+                                            <Form.Control as="textarea" style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true} rows={10} value={dataModaldt[0]?.pU_Remark}
+                                                onChange={(e) => {
+                                                    dataModaldt[0].pU_Remark = e.target.value;
+                                                    setRemarkPU([...dataModaldt]);
+                                                }} />
+                                        </Col>
+                                    </Row>
+
                                     <hr></hr>
+
+
+                                    <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={12}>
+                                            <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: 'rgb(216 96 8)', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.pU_Receive_Remark}
+                                                onChange={(e) => {
+                                                    dataModaldt[0].pU_Receive_Remark = e.target.value;
+                                                    setPU_Receive([...dataModaldt]);
+                                                }} />
+                                        </Col>
+                                    </Row>
+
+                                    <br></br>
+
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                        <Col xs={12} md={2}></Col>
                                         <Col xs={12} md={4}>
                                             <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
@@ -988,7 +1024,7 @@ function FormDetail(props) {
                                                 </Select>
                                             </FormControl>
                                         </Col>
-                                        <Col xs={12} md={4}>
+                                        <Col xs={12} md={2}>
                                             {
                                                 permission.filter((item) => {
                                                     return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
@@ -1003,6 +1039,27 @@ function FormDetail(props) {
 
                                     <br></br>
                                     <Row style={{ display: 'flex', justifyContent: 'center' }}>
+                                        <table className='notify'>
+                                            <thead>
+                                                <tr>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Checked</b></center></td>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Issued</b></center></td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+
+                                                    tableNotify?.map((item, index) => {
+                                                        return <td style={{ border: '1px solid black' }}><center>{item.employeeFullName}<br></br>Date</center></td>
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </Row>
+
+
+                                    {/* <Row style={{ display: 'flex', justifyContent: 'center' }}>
                                         <table className='notify'>
                                             <thead>
                                                 <tr>
@@ -1041,33 +1098,13 @@ function FormDetail(props) {
                                                 }
                                             </tbody>
                                         </table>
-                                    </Row>
+                                    </Row> */}
 
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
-                                            <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428' }} value={dataModaldt[0]?.pU_Receive_Remark}
-                                                onChange={(e) => {
-                                                    dataModaldt[0].pU_Receive_Remark = e.target.value;
-                                                    setPU_Receive([...dataModaldt]);
-                                                }} />
-                                        </Col>
-                                    </Row>
 
-                                    <hr></hr>
-                                    <br></br>
 
-                                    <h6>2). QUALITY CHECK CONTENT (DCI) and Other</h6>
 
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
-                                            <Form.Label>2.1 &nbsp;&nbsp; PU Section : Effect Part stock control & Supplier (เฉพาะในกรณี 2 เท่านั้น)</Form.Label>
-                                            <Form.Control as="textarea" disabled={position == "ISSUED" ? false : true} rows={10} value={dataModaldt[0]?.pU_Remark}
-                                                onChange={(e) => {
-                                                    dataModaldt[0].pU_Remark = e.target.value;
-                                                    setRemarkPU([...dataModaldt]);
-                                                }} />
-                                        </Col>
-                                    </Row>
+
+
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
@@ -1077,18 +1114,6 @@ function FormDetail(props) {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Typography>
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
-                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                            <Form.Control as="textarea" disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} rows={5} style={{ color: '#db7428' }} value={dataModaldt[0]?.dD_Remark_Receive}
-                                                onChange={(e) => {
-                                                    dataModaldt[0].dD_Remark_Receive = e.target.value;
-                                                    setDD_Receive([...dataModaldt]);
-                                                }} />
-                                        </Col>
-                                    </Row>
-
-                                    <hr></hr>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
                                             <p>หัวข้อการตรวจเช็คคุณภาพ และผล(Quality Check item and Result) :</p>
@@ -1122,13 +1147,99 @@ function FormDetail(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <Form.Control as="textarea" rows={5} disabled={position == "ISSUED" ? false : true} value={dataModaldt[0]?.dD_Remark2}
+                                            <Form.Control as="textarea" style={{ backgroundColor: 'rgb(250 249 114)' }} rows={5} disabled={position == "ISSUED" ? false : true} value={dataModaldt[0]?.dD_Remark2}
                                                 onChange={(e) => {
                                                     dataModaldt[0].dD_Remark2 = e.target.value;
                                                     setDD_Remark2([...dataModaldt]);
                                                 }} />
                                         </Col>
                                     </Row>
+
+                                    <hr></hr>
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={12}>
+                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
+                                            <Form.Control as="textarea" disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} rows={5} style={{ color: '#db7428', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.dD_Remark_Receive}
+                                                onChange={(e) => {
+                                                    dataModaldt[0].dD_Remark_Receive = e.target.value;
+                                                    setDD_Receive([...dataModaldt]);
+                                                }} />
+                                        </Col>
+                                    </Row>
+
+                                    <br></br>
+
+                                    <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                        <Col xs={12} md={2}></Col>
+                                        <Col xs={12} md={4}>
+                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                                <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={employee}
+                                                    label="EmpCode"
+                                                    onChange={handleChangeEmployee}>
+                                                    {
+                                                        employeeArray.map((item, index) =>
+                                                            <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                        )
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                        </Col>
+                                        <Col xs={12} md={4}>
+                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                                <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={step}
+                                                    label="Status"
+                                                    onChange={handleChangeStep}>
+                                                    {
+                                                        stepArray.map((item, index) =>
+                                                            <MenuItem value={item}>{item}</MenuItem>
+                                                        )
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                        </Col>
+                                        <Col xs={12} md={2}>
+                                            {
+                                                permission.filter((item) => {
+                                                    return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
+                                                }).length ? <>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO)}>
+                                                        + เพิ่มผู้ดำเนินการ
+                                                    </Button>
+                                                </> : ""
+                                            }
+                                        </Col>
+                                    </Row>
+
+                                    <br></br>
+                                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
+                                        <table className='notify'>
+                                            <thead>
+                                                <tr>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Checked</b></center></td>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Issued</b></center></td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+
+                                                    tableNotify?.map((item, index) => {
+                                                        return <td style={{ border: '1px solid black' }}><center>{item.employeeFullName}<br></br>Date</center></td>
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </Row>
+
+
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
@@ -1140,25 +1251,99 @@ function FormDetail(props) {
                                 <Typography>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                            <Form.Control as="textarea" disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} rows={5} style={{ color: '#db7428' }} value={dataModaldt[0]?.eN_Remark_Receive}
-                                                onChange={(e) => {
-                                                    dataModaldt[0].eN_Remark_Receive = e.target.value;
-                                                    setEN_Receive([...dataModaldt]);
-                                                }} />
-                                        </Col>
-                                    </Row>
-                                    <hr></hr>
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
                                             <Form.Label>2.3  Engineer Section : Procesee effect , Tool life  , MQ,PC</Form.Label>
-                                            <Form.Control as="textarea" rows={5} disabled={position == "ISSUED" ? false : true} value={dataModaldt[0]?.eN_Remark}
+                                            <Form.Control as="textarea" style={{ backgroundColor: 'rgb(250 249 114)' }} rows={5} disabled={position == "ISSUED" ? false : true} value={dataModaldt[0]?.eN_Remark}
                                                 onChange={(e) => {
                                                     dataModaldt[0].eN_Remark = e.target.value;
                                                     setRemarkEN([...dataModaldt]);
                                                 }} />
                                         </Col>
                                     </Row>
+
+                                    <hr></hr>
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={12}>
+                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
+                                            <Form.Control as="textarea" disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} rows={5} style={{ color: '#db7428', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.eN_Remark_Receive}
+                                                onChange={(e) => {
+                                                    dataModaldt[0].eN_Remark_Receive = e.target.value;
+                                                    setEN_Receive([...dataModaldt]);
+                                                }} />
+                                        </Col>
+                                    </Row>
+
+                                    <br></br>
+                                    <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                        <Col xs={12} md={2}></Col>
+                                        <Col xs={12} md={4}>
+                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                                <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={employee}
+                                                    label="EmpCode"
+                                                    onChange={handleChangeEmployee}>
+                                                    {
+                                                        employeeArray.map((item, index) =>
+                                                            <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                        )
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                        </Col>
+                                        <Col xs={12} md={4}>
+                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                                <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={step}
+                                                    label="Status"
+                                                    onChange={handleChangeStep}>
+                                                    {
+                                                        stepArray.map((item, index) =>
+                                                            <MenuItem value={item}>{item}</MenuItem>
+                                                        )
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                        </Col>
+                                        <Col xs={12} md={2}>
+                                            {
+                                                permission.filter((item) => {
+                                                    return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
+                                                }).length ? <>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO)}>
+                                                        + เพิ่มผู้ดำเนินการ
+                                                    </Button>
+                                                </> : ""
+                                            }
+                                        </Col>
+                                    </Row>
+
+                                    <br></br>
+                                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
+                                        <table className='notify'>
+                                            <thead>
+                                                <tr>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Checked</b></center></td>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Issued</b></center></td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+
+                                                    tableNotify?.map((item, index) => {
+                                                        return <td style={{ border: '1px solid black' }}><center>{item.employeeFullName}<br></br>Date</center></td>
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </Row>
+
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
@@ -1168,27 +1353,101 @@ function FormDetail(props) {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Typography>
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
-                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                            <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428' }} value={dataModaldt[0]?.sqC_Remark_Receive}
-                                                onChange={(e) => {
-                                                    dataModaldt[0].sqC_Remark_Receive = e.target.value;
-                                                    setSQC_Receive([...dataModaldt]);
-                                                }} />
-                                        </Col>
-                                    </Row>
-                                    <hr></hr>
                                     <Form.Label>2.4 &nbsp;&nbsp; SQC : Quality part (PAS) / Peocess audit :</Form.Label>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <Form.Control as="textarea" rows={5} disabled={position == "ISSUED" ? false : true} value={dataModaldt[0]?.sqC_Remark}
+                                            <Form.Control as="textarea" rows={5} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true} value={dataModaldt[0]?.sqC_Remark}
                                                 onChange={(e) => {
                                                     dataModaldt[0].sqC_Remark = e.target.value;
                                                     setRemarkSQC([...dataModaldt]);
                                                 }} />
                                         </Col>
                                     </Row>
+
+                                    <hr></hr>
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={12}>
+                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
+                                            <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.sqC_Remark_Receive}
+                                                onChange={(e) => {
+                                                    dataModaldt[0].sqC_Remark_Receive = e.target.value;
+                                                    setSQC_Receive([...dataModaldt]);
+                                                }} />
+                                        </Col>
+                                    </Row>
+
+                                    <br></br>
+                                    <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                        <Col xs={12} md={2}></Col>
+                                        <Col xs={12} md={4}>
+                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                                <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={employee}
+                                                    label="EmpCode"
+                                                    onChange={handleChangeEmployee}>
+                                                    {
+                                                        employeeArray.map((item, index) =>
+                                                            <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                        )
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                        </Col>
+                                        <Col xs={12} md={4}>
+                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                                <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={step}
+                                                    label="Status"
+                                                    onChange={handleChangeStep}>
+                                                    {
+                                                        stepArray.map((item, index) =>
+                                                            <MenuItem value={item}>{item}</MenuItem>
+                                                        )
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                        </Col>
+                                        <Col xs={12} md={2}>
+                                            {
+                                                permission.filter((item) => {
+                                                    return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
+                                                }).length ? <>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO)}>
+                                                        + เพิ่มผู้ดำเนินการ
+                                                    </Button>
+                                                </> : ""
+                                            }
+                                        </Col>
+                                    </Row>
+
+                                    <br></br>
+                                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
+                                        <table className='notify'>
+                                            <thead>
+                                                <tr>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Checked</b></center></td>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Issued</b></center></td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+
+                                                    tableNotify?.map((item, index) => {
+                                                        return <td style={{ border: '1px solid black' }}><center>{item.employeeFullName}<br></br>Date</center></td>
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </Row>
+
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
@@ -1199,20 +1458,9 @@ function FormDetail(props) {
                             <AccordionDetails>
                                 <Typography>
                                     <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
-                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                            <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428' }} value={dataModaldt[0]?.qC_Remark_Receive}
-                                                onChange={(e) => {
-                                                    dataModaldt[0].qC_Remark_Receive = e.target.value;
-                                                    setQC_Receive([...dataModaldt]);
-                                                }} />
-                                        </Col>
-                                    </Row>
-                                    <hr></hr>
-                                    <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
                                             <Form.Label>2.5 &nbsp;&nbsp; QCD : (total Judgement) :</Form.Label>
-                                            <Form.Control as="textarea" rows={10} disabled={position == "ISSUED" ? false : true} type="text" variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.qC_Remark1)}
+                                            <Form.Control as="textarea" rows={10} disabled={position == "ISSUED" ? false : true} type="text" variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.qC_Remark1)}
                                                 onChange={(event) => {
                                                     dataModaldt[0].qC_Remark1 = event.target.value;
                                                     setRemarkQC1([...dataModaldt])
@@ -1269,6 +1517,90 @@ function FormDetail(props) {
 
                                         </Col>
                                     </Row>
+
+                                    <hr></hr>
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={12}>
+                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
+                                            <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.qC_Remark_Receive}
+                                                onChange={(e) => {
+                                                    dataModaldt[0].qC_Remark_Receive = e.target.value;
+                                                    setQC_Receive([...dataModaldt]);
+                                                }} />
+                                        </Col>
+                                    </Row>
+
+                                    <br></br>
+                                    <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                        <Col xs={12} md={2}></Col>
+                                        <Col xs={12} md={4}>
+                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                                <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={employee}
+                                                    label="EmpCode"
+                                                    onChange={handleChangeEmployee}>
+                                                    {
+                                                        employeeArray.map((item, index) =>
+                                                            <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                        )
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                        </Col>
+                                        <Col xs={12} md={4}>
+                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                                <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={step}
+                                                    label="Status"
+                                                    onChange={handleChangeStep}>
+                                                    {
+                                                        stepArray.map((item, index) =>
+                                                            <MenuItem value={item}>{item}</MenuItem>
+                                                        )
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                        </Col>
+                                        <Col xs={12} md={2}>
+                                            {
+                                                permission.filter((item) => {
+                                                    return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
+                                                }).length ? <>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO)}>
+                                                        + เพิ่มผู้ดำเนินการ
+                                                    </Button>
+                                                </> : ""
+                                            }
+                                        </Col>
+                                    </Row>
+
+                                    <br></br>
+                                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
+                                        <table className='notify'>
+                                            <thead>
+                                                <tr>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Checked</b></center></td>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Issued</b></center></td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+
+                                                    tableNotify?.map((item, index) => {
+                                                        return <td style={{ border: '1px solid black' }}><center>{item.employeeFullName}<br></br>Date</center></td>
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </Row>
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
@@ -1278,21 +1610,10 @@ function FormDetail(props) {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Typography>
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
-                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                            <Form.Control as="textarea" rows={5} disabled={(position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428' }} value={dataModaldt[0]?.diL_Remark_Receive}
-                                                onChange={(e) => {
-                                                    dataModaldt[0].diL_Remark_Receive = e.target.value;
-                                                    setDIL_Receive([...dataModaldt]);
-                                                }} />
-                                        </Col>
-                                    </Row>
-                                    <hr></hr>
                                     <Form.Label>3. JUDGEMENT ( DIL Design Section )</Form.Label>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <Form.Control as="textarea" rows={2} disabled={position == "ISSUED" ? false : true} value={dataModaldt[0]?.diL_DD_REMARK}
+                                            <Form.Control as="textarea" style={{ backgroundColor: 'rgb(250 249 114)' }} rows={2} disabled={position == "ISSUED" ? false : true} value={dataModaldt[0]?.diL_DD_REMARK}
                                                 onChange={(event) => {
                                                     dataModaldt[0].diL_DD_REMARK = event.target.value;
                                                     setRemarkDILDD([...dataModaldt])
@@ -1303,21 +1624,21 @@ function FormDetail(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Issued </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_DD_IssuedBy} disabled={position == "ISSUED" ? false : true}
+                                            <b>Issued </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_DD_IssuedBy} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].diL_DD_IssuedBy = event.target.value;
                                                     setIssuedDILDD([...dataModaldt])
                                                 }} />
                                         </Col>
                                         <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Check </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_DD_CheckBy} disabled={position == "ISSUED" ? false : true}
+                                            <b>Check </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_DD_CheckBy} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].diL_DD_CheckBy = event.target.value;
                                                     setCheckDILDD([...dataModaldt])
                                                 }} />
                                         </Col>
                                         <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Approved </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_DD_ApproveBy} disabled={position == "ISSUED" ? false : true}
+                                            <b>Approved </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_DD_ApproveBy} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].diL_DD_ApproveBy = event.target.value;
                                                     setApprovedDILDD([...dataModaldt])
@@ -1328,7 +1649,7 @@ function FormDetail(props) {
                                     <Form.Label>4. JUDGEMENT ( DIL Quality Control Section ) [Incase necessary]</Form.Label>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <Form.Control as="textarea" rows={2} disabled={position == "ISSUED" ? false : true} value={dataModaldt[0]?.diL_QC_REMARK}
+                                            <Form.Control as="textarea" rows={2} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true} value={dataModaldt[0]?.diL_QC_REMARK}
                                                 onChange={(event) => {
                                                     dataModaldt[0].diL_QC_REMARK = event.target.value;
                                                     setRemarkDILQC([...dataModaldt])
@@ -1338,27 +1659,41 @@ function FormDetail(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Issued </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_IssuedBy} disabled={position == "ISSUED" ? false : true}
+                                            <b>Issued </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_IssuedBy} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].diL_QC_IssuedBy = event.target.value;
                                                     setIssuedDILQC([...dataModaldt])
                                                 }} />
                                         </Col>
                                         <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Check </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_CheckBy} disabled={position == "ISSUED" ? false : true}
+                                            <b>Check </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_CheckBy} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].diL_QC_CheckBy = event.target.value;
                                                     setCheckDILQC([...dataModaldt])
                                                 }} />
                                         </Col>
                                         <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Approved </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_ApproveBy} disabled={position == "ISSUED" ? false : true}
+                                            <b>Approved </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_ApproveBy} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].diL_QC_ApproveBy = event.target.value;
                                                     setApprovedDILQC([...dataModaldt])
                                                 }} />
                                         </Col>
                                     </Row>
+
+                                    <hr></hr>
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={12}>
+                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
+                                            <Form.Control as="textarea" rows={5} disabled={(position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.diL_Remark_Receive}
+                                                onChange={(e) => {
+                                                    dataModaldt[0].diL_Remark_Receive = e.target.value;
+                                                    setDIL_Receive([...dataModaldt]);
+                                                }} />
+                                        </Col>
+                                    </Row>
+
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
@@ -1368,17 +1703,6 @@ function FormDetail(props) {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Typography>
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
-                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                            <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428' }} value={dataModaldt[0]?.qA_Remark_Receive}
-                                                onChange={(e) => {
-                                                    dataModaldt[0].qA_Remark_Receive = e.target.value;
-                                                    setQA_Receive([...dataModaldt]);
-                                                }} />
-                                        </Col>
-                                    </Row>
-                                    <hr></hr>
                                     <p>5.CUSTOMER INFORMATION</p>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
@@ -1443,7 +1767,7 @@ function FormDetail(props) {
                                         </Col>
                                         <Col xs={12} md={9}>
                                             <p>Information by:</p>
-                                            <Form.Control as="textarea" rows={2} id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', height: '3.5pc' }} value={decodeURIComponent(dataModaldt[0]?.qA_InformatonBy)} disabled={position == "ISSUED" ? false : true}
+                                            <Form.Control as="textarea" rows={2} id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', height: '3.5pc', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.qA_InformatonBy)} disabled={position == "ISSUED" ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].qA_InformatonBy = event.target.value;
                                                     setInformationBy([...dataModaldt])
@@ -1468,6 +1792,90 @@ function FormDetail(props) {
                                                 }
                                             </div>
                                         </Col>
+                                    </Row>
+
+                                    <hr></hr>
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={12}>
+                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
+                                            <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.qA_Remark_Receive}
+                                                onChange={(e) => {
+                                                    dataModaldt[0].qA_Remark_Receive = e.target.value;
+                                                    setQA_Receive([...dataModaldt]);
+                                                }} />
+                                        </Col>
+                                    </Row>
+
+                                    <br></br>
+                                    <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                        <Col xs={12} md={2}></Col>
+                                        <Col xs={12} md={4}>
+                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                                <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={employee}
+                                                    label="EmpCode"
+                                                    onChange={handleChangeEmployee}>
+                                                    {
+                                                        employeeArray.map((item, index) =>
+                                                            <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                        )
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                        </Col>
+                                        <Col xs={12} md={4}>
+                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                                <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={step}
+                                                    label="Status"
+                                                    onChange={handleChangeStep}>
+                                                    {
+                                                        stepArray.map((item, index) =>
+                                                            <MenuItem value={item}>{item}</MenuItem>
+                                                        )
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                        </Col>
+                                        <Col xs={12} md={2}>
+                                            {
+                                                permission.filter((item) => {
+                                                    return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
+                                                }).length ? <>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO)}>
+                                                        + เพิ่มผู้ดำเนินการ
+                                                    </Button>
+                                                </> : ""
+                                            }
+                                        </Col>
+                                    </Row>
+
+                                    <br></br>
+                                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
+                                        <table className='notify'>
+                                            <thead>
+                                                <tr>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Checked</b></center></td>
+                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Issued</b></center></td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+
+                                                    tableNotify?.map((item, index) => {
+                                                        return <td style={{ border: '1px solid black' }}><center>{item.employeeFullName}<br></br>Date</center></td>
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
                                     </Row>
                                 </Typography>
                             </AccordionDetails>
@@ -1807,7 +2215,7 @@ function FormDetail(props) {
                             {/* RECEIVE  */}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0023" && item.rolE_VIEW == "True" && dataModaldt[0]?.dD_ApprovedBit == "F"
+                                    return item.menuCode == "BTN0023" && item.rolE_VIEW == "True" && dataModaldt[0]?.dD_ApprovedBit == "F" && dataModaldt[0]?.eN_IssuedBit != "F"
                                 }).length ?
                                     <>
                                         <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -1819,7 +2227,7 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0027" && item.rolE_VIEW == "True" && dataModaldt[0]?.dD_ApprovedBit == "F"
+                                    return item.menuCode == "BTN0027" && item.rolE_VIEW == "True" && dataModaldt[0]?.dD_ApprovedBit == "F" && dataModaldt[0]?.eN_IssuedBit != "F"
                                 }).length ? <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
                                     รับเอกสาร (Receive)
                                 </Button>

@@ -24,7 +24,8 @@ function Navbars() {
 
     return (
         <>
-            <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+            {/* <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark"> */}
+            <Navbar style={{ backgroundColor: 'rgb(52 58 64)' }}>
                 <Container>
                     <div style={{ width: '45%' }}>
                         <label className='stylelb'><img src={ENTool} />ECR</label>

@@ -33,6 +33,13 @@ const getDeleteNotify = (code) => {
     return http.APIPERMISSION.get(`getDeleteNotify/${code}`);
 }
 
+const getShowEmployee = () => {
+    return http.APIPERMISSION.get(`getShowEmployee`);
+}
+
+const getSearchEmployee = (empCode) => {
+    return http.APIPERMISSION.get(`getSearchEmployee/${empCode}`);
+}
 
 export default {
     getPermission,
@@ -41,5 +48,7 @@ export default {
     getEmployee,
     postAddNotifyTo,
     getNotifyTo,
-    getDeleteNotify
+    getDeleteNotify,
+    getShowEmployee,
+    getSearchEmployee
 }

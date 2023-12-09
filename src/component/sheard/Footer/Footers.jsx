@@ -5,7 +5,7 @@ const Footer = () => {
     // return <footer className='styleFooter'>{`Copyright © By Pannita.i`}</footer>;
     return (
         <div className='styleFooter'>
-            <footer><span style={{ fontSize: '10px' }}></span>{`   i.P@nita   `}<span style={{ fontSize: '10px' }}>2023</span></footer>
+            <footer><span style={{ fontSize: '10px' }}></span>{`   IP@NITA   `}<span style={{ fontSize: '8px', color: '#858282' }}>2023</span></footer>
         </div>
     )
 };

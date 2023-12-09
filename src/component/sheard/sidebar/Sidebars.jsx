@@ -47,25 +47,44 @@ function Sidebars() {
                     <ul>
 
                         {/* HEAD TITLE */}
+
                         {
-                            data.filter((el, ind) => {
-                                return el.menuType == "HEAD" || el.menuType == "SUB"
-                            }).map((item, index) => {
-                                return item.menuType == "HEAD" ?
-                                    <li>
-                                        <label className='nav-link pk-2 ' style={{ backgroundColor: "#73766c", fontSize: '18px' }}>
-                                            <i style={{ color: 'lightyellow' }} className={item.menuIcon} /><span className='styleicon'><label style={{ color: 'white' }}>{item.menuTitle}</label></span>
-                                        </label>
-                                    </li>
-                                    :
-                                    <li >
-                                        <a className='nav-link pk-2' href={item.menuUrl} id='colorText' onClick={() => handleActive(item)}>
-                                            <i className={item.menuIcon} /><span className='styleicon'>{item.menuTitle}</span>
-                                        </a>
-                                    </li>
-                            })
+                            data.filter((item) => {
+                                return item.grpRoleSect == "ADMIN"
+                            }).length ? <>
+                                <li>
+                                    <label className='nav-link pk-2 ' style={{ backgroundColor: "#343a40", fontSize: '18px' }}>
+                                        <i style={{ color: 'lightyellow' }} className='bi-lock-fill' /><span className='styleicon'><label style={{ color: 'white' }}>Permisson</label></span>
+                                    </label>
+                                </li>
+
+                                <li >
+                                    <a className='nav-link pk-2' href='/ECR/AddPermissions' id='colorText' onClick={() => handleActive(item)} style={{ backgroundColor: '#676768' }}>
+                                        <i className='bi-person-fill-check' /><span className='styleicon'>Add Permission</span>
+                                    </a>
+                                </li>
+                            </> : ""
                         }
+
+
+
+
+                        <li>
+                            <label className='nav-link pk-2 ' style={{ backgroundColor: "#343a40", fontSize: '18px' }}>
+                                <i style={{ color: 'lightyellow' }} className='bi-stack' /><span className='styleicon'><label style={{ color: 'white' }}>Menu</label></span>
+                            </label>
+                        </li>
+
+                        <li >
+                            <a className='nav-link pk-2' href='/ECR/createform' id='colorText' onClick={() => handleActive(item)} style={{ backgroundColor: '#676768' }}>
+                                <i className='bi-rocket-takeoff' /><span className='styleicon'>รายการ ECR</span>
+                            </a>
+                        </li>
+
+
                         {/* END  HEAD TITLE */}
+
+
                     </ul>
                 </div>
             </div>

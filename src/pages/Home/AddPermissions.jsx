@@ -19,11 +19,12 @@ function AddPermissions() {
     const permission = useSelector((state) => state.reducer.permission);
     const [selectSection, setSelectSection] = useState(permission[0]?.grpRoleSect);
     const [selectStep, setSelectStep] = useState('ADMIN');
-    const [txtEmpCode, settxtEmpCode] = useState('');
+    const [txtEmpCode, settxtEmpCode] = useState('%');
+    const [data, setData] = useState([]);
 
 
     useEffect(() => {
-
+        loadPage();
     }, [])
 
 
@@ -39,6 +40,21 @@ function AddPermissions() {
     const stepArray = ['ADMIN', 'RECEIVED', 'ISSUED ', 'CHECK', 'APPROVED']
 
 
+    function loadPage() {
+        getDataSrvPermiss.getShowEmployee().then((res) => {
+            try {
+                setData(res.data)
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    }
+
+
+
+
     //***************************FUNCTON INPUT DATA INSERT HEAD , DETAIL*************************** */
     const AddPermission = () => {
         if (txtEmpCode != "") {
@@ -47,7 +63,8 @@ function AddPermissions() {
             }).then((res) => {
                 try {
                     // refresh();
-                    alert("Add Permission สำเร็จ")
+                    // alert("Add Permission สำเร็จ")
+                    handelSearch();
                 }
                 catch (error) {
                     // alert("มีสิทธิในระบบแล้ว");
@@ -61,6 +78,18 @@ function AddPermissions() {
         }
     };
     //***************************END FUNCTON INPUT DATA*************************** */
+
+    const handelSearch = (event) => {
+        getDataSrvPermiss.getSearchEmployee(txtEmpCode).then((res) => {
+            try {
+                setData(res.data)
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    }
 
 
 
@@ -112,6 +141,44 @@ function AddPermissions() {
                                 <Button autoFocus variant="success" onClick={AddPermission}>Save</Button>
                             </div>
                         </div>
+
+                        <br></br>
+                        <div class="row">
+                            <div class="col-1">
+                                <Button autoFocus variant="primary" onClick={handelSearch}>Search</Button>
+                            </div>
+
+                            <div class="col-11">
+                            </div>
+                        </div>
+
+                        <br></br>  <br></br>
+                        <table className='tablePermiss'>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Code</th>
+                                    <th>Full Name</th>
+                                    <th>Section</th>
+                                    <th>Step</th>
+                                    <th>Position</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    data?.map((item, index) => {
+                                        return <tr key={item.ecrno}>
+                                            <td align="center" style={{ textAlign: 'center' }}>{item.no}</td>
+                                            <td align="center" style={{ textAlign: 'center' }}>{item.code}</td>
+                                            <td align="center" style={{ textAlign: 'left' }}>{item.fullName}</td>
+                                            <td align="center" style={{ textAlign: 'center' }}>{item.section}</td>
+                                            <td align="center" style={{ textAlign: 'center' }}>{item.step}</td>
+                                            <td align="center" style={{ textAlign: 'center' }}>{item.position}</td>
+                                        </tr>
+                                    })
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

@@ -173,6 +173,9 @@ function Createform() {
         if (val == 'ADMIN') {
             varGrp = "ALL"
         }
+        else {
+            varGrp = permission[0]?.grpRoleSect
+        }
         return varGrp;
     }
 
@@ -348,7 +351,7 @@ function Createform() {
 
             <div class="row">
                 <div class="col-2">
-                    จำนวนเอกสาร = <span style={{ color: 'blue' }}>{getdata[0]?.summary}</span>
+                    {/* จำนวนเอกสาร = <span style={{ color: 'blue' }}>{getdata[0]?.summary}</span> */}
                 </div>
                 <div class="col-4"></div>
                 <div class="col-1"></div>

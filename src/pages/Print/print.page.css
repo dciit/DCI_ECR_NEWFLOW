@@ -1,6 +1,7 @@
 @media print {
     body {
-        zoom: 70%;
+        zoom: 60%;
+        size: A4;
     }
 
     .p {
@@ -137,6 +138,9 @@
         bottom: -60px;
         left: 75px;
     }
+
+
+
 }
 
 
