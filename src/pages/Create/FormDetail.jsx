@@ -147,6 +147,7 @@ function FormDetail(props) {
     const [step, setStep] = useState('ISSUED');
     const [showDtSec, setshowDtSec] = useState(false);
     const [tableNotify, setTableNotify] = useState([]);
+    const [notify, setNotify] = useState('PU');
     const { show, close, ecrno, refresh, statusCreateAppBit } = props;
     let section = permission[0]?.grpRoleSect;
     let position = permission[0]?.grpRole;
@@ -610,16 +611,14 @@ function FormDetail(props) {
 
     const handleChangeEmployee = (event) => {
         setemployee(event.target.value);
-        console.log(event.target.value)
     };
 
     const handleChangeStep = (event) => {
         setStep(event.target.value);
-        console.log(event.target.value)
     };
 
-    const postAddNotifyTo = (ecR_NO) => {
-        getDataSrvPermiss.postAddNotifyTo({ employeeCode: employee, employeeFullName: employee, ecrno: ecR_NO, step: step, createBy: empCode }).then((res) => {
+    const postAddNotifyTo = (ecR_NO, section) => {
+        getDataSrvPermiss.postAddNotifyTo({ employeeCode: employee, employeeFullName: employee, ecrno: ecR_NO, step: step, createBy: empCode, section: section }).then((res) => {
             try {
                 initFiles();
             }
@@ -660,7 +659,7 @@ function FormDetail(props) {
                     aria-describedby="scroll-dialog-description"
                 >
                     <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                        <h3>Detail ECR</h3>
+                        <h3>ECR Detail</h3>
                     </DialogTitle>
                     <IconButton aria-label="close" onClick={() => close(false)}
                         sx={{
@@ -989,7 +988,8 @@ function FormDetail(props) {
                                     <br></br>
 
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                        <Col xs={12} md={2}></Col>
+                                        <Col xs={12} md={2}>
+                                        </Col>
                                         <Col xs={12} md={4}>
                                             <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
@@ -1029,7 +1029,7 @@ function FormDetail(props) {
                                                 permission.filter((item) => {
                                                     return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
                                                 }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO)}>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, "PU")}>
                                                         + เพิ่มผู้ดำเนินการ
                                                     </Button>
                                                 </> : ""
@@ -1040,71 +1040,24 @@ function FormDetail(props) {
                                     <br></br>
                                     <Row style={{ display: 'flex', justifyContent: 'center' }}>
                                         <table className='notify'>
-                                            <thead>
-                                                <tr>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
+                                            <tr>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
+                                            </tr>
+                                            <tr>
                                                 {
-
-                                                    tableNotify?.map((item, index) => {
-                                                        return <td style={{ border: '1px solid black' }}><center>{item.employeeFullName}<br></br>Date</center></td>
-                                                    })
+                                                    tableNotify[0]?.pu_approvedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.pu_approved}<br></br>{tableNotify[0]?.pu_approvedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.pu_approved}</center></td>
                                                 }
-                                            </tbody>
+                                                {
+                                                    tableNotify[0]?.pu_checkedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.pu_checked}<br></br>{tableNotify[0]?.pu_checkedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.pu_checked}</center></td>
+                                                }
+                                                {
+                                                    tableNotify[0]?.pu_issuedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.pu_issued}<br></br>{tableNotify[0]?.pu_issuedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.pu_issued}</center></td>
+                                                }
+                                            </tr>
                                         </table>
                                     </Row>
-
-
-                                    {/* <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                        <table className='notify'>
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Code</th>
-                                                    <th>Full Name</th>
-                                                    <th>Position</th>
-                                                    <th>E-mail</th>
-                                                    <th>Status</th>
-                                                    <th>Delete</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    tableNotify?.map((item, index) => {
-                                                        return <tr key={item.ecrno}>
-                                                            <td align="center" style={{ textAlign: 'center' }}>{item.no}</td>
-                                                            <td align="center" style={{ textAlign: 'center' }}>{item.employeeCode}</td>
-                                                            <td align="center" style={{ textAlign: 'center', fontSize: '10px' }}>{item.employeeFullName}</td>
-                                                            <td align="center" style={{ textAlign: 'center', fontSize: '10px' }}>{item.position}</td>
-                                                            <td align="center" style={{ textAlign: 'center' }}>{item.email}</td>
-                                                            <td align="center" style={{ textAlign: 'center', fontSize: '10px' }}>{item.step}</td>
-                                                            <td align="center" style={{ textAlign: 'center', padding: '0px' }}>
-                                                                {
-                                                                    permission.filter((item) => {
-                                                                        return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
-                                                                    }).length ? <>
-                                                                        <Button autoFocus variant="danger" style={{ padding: '0px 2px 0px 2px', fontSize: '11px' }} onClick={() => getDeleteNotify(item.employeeCode)}>
-                                                                            ลบ
-                                                                        </Button>
-                                                                    </> : ""
-                                                                }
-                                                            </td>
-                                                        </tr>
-                                                    })
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </Row> */}
-
-
-
-
-
-
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
@@ -1208,9 +1161,9 @@ function FormDetail(props) {
                                         <Col xs={12} md={2}>
                                             {
                                                 permission.filter((item) => {
-                                                    return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
+                                                    return permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.dD_IssuedBit != "F"
                                                 }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO)}>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, "DD")}>
                                                         + เพิ่มผู้ดำเนินการ
                                                     </Button>
                                                 </> : ""
@@ -1221,21 +1174,22 @@ function FormDetail(props) {
                                     <br></br>
                                     <Row style={{ display: 'flex', justifyContent: 'center' }}>
                                         <table className='notify'>
-                                            <thead>
-                                                <tr>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
+                                            <tr>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
+                                            </tr>
+                                            <tr>
                                                 {
-
-                                                    tableNotify?.map((item, index) => {
-                                                        return <td style={{ border: '1px solid black' }}><center>{item.employeeFullName}<br></br>Date</center></td>
-                                                    })
+                                                    tableNotify[0]?.dd_approvedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.dd_approved}<br></br>{tableNotify[0]?.dd_approvedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.dd_approved}</center></td>
                                                 }
-                                            </tbody>
+                                                {
+                                                    tableNotify[0]?.dd_checkedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.dd_checked}<br></br>{tableNotify[0]?.dd_checkedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.dd_checked}</center></td>
+                                                }
+                                                {
+                                                    tableNotify[0]?.dd_issuedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.dd_issued}<br></br>{tableNotify[0]?.dd_issuedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.dd_issued}</center></td>
+                                                }
+                                            </tr>
                                         </table>
                                     </Row>
 
@@ -1313,9 +1267,9 @@ function FormDetail(props) {
                                         <Col xs={12} md={2}>
                                             {
                                                 permission.filter((item) => {
-                                                    return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
+                                                    return permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.eN_IssuedBit != "F"
                                                 }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO)}>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, "EN")}>
                                                         + เพิ่มผู้ดำเนินการ
                                                     </Button>
                                                 </> : ""
@@ -1326,21 +1280,22 @@ function FormDetail(props) {
                                     <br></br>
                                     <Row style={{ display: 'flex', justifyContent: 'center' }}>
                                         <table className='notify'>
-                                            <thead>
-                                                <tr>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
+                                            <tr>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
+                                            </tr>
+                                            <tr>
                                                 {
-
-                                                    tableNotify?.map((item, index) => {
-                                                        return <td style={{ border: '1px solid black' }}><center>{item.employeeFullName}<br></br>Date</center></td>
-                                                    })
+                                                    tableNotify[0]?.en_approvedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.en_approved}<br></br>{tableNotify[0]?.en_approvedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.en_approved}</center></td>
                                                 }
-                                            </tbody>
+                                                {
+                                                    tableNotify[0]?.en_checkedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.en_checked}<br></br>{tableNotify[0]?.en_checkedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.en_checked}</center></td>
+                                                }
+                                                {
+                                                    tableNotify[0]?.en_issuedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.en_issued}<br></br>{tableNotify[0]?.en_issuedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.en_issued}</center></td>
+                                                }
+                                            </tr>
                                         </table>
                                     </Row>
 
@@ -1417,9 +1372,9 @@ function FormDetail(props) {
                                         <Col xs={12} md={2}>
                                             {
                                                 permission.filter((item) => {
-                                                    return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
+                                                    return permission[0]?.grpRoleSect == "SQC" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F"
                                                 }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO)}>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, "SQC")}>
                                                         + เพิ่มผู้ดำเนินการ
                                                     </Button>
                                                 </> : ""
@@ -1430,21 +1385,22 @@ function FormDetail(props) {
                                     <br></br>
                                     <Row style={{ display: 'flex', justifyContent: 'center' }}>
                                         <table className='notify'>
-                                            <thead>
-                                                <tr>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
+                                            <tr>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
+                                            </tr>
+                                            <tr>
                                                 {
-
-                                                    tableNotify?.map((item, index) => {
-                                                        return <td style={{ border: '1px solid black' }}><center>{item.employeeFullName}<br></br>Date</center></td>
-                                                    })
+                                                    tableNotify[0]?.sqc_approvedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.sqc_approved}<br></br>{tableNotify[0]?.sqc_approvedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.sqc_approved}</center></td>
                                                 }
-                                            </tbody>
+                                                {
+                                                    tableNotify[0]?.sqc_checkedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.sqc_checked}<br></br>{tableNotify[0]?.sqc_checkedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.sqc_checked}</center></td>
+                                                }
+                                                {
+                                                    tableNotify[0]?.sqc_issuedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.sqc_issued}<br></br>{tableNotify[0]?.sqc_issuedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.sqc_issued}</center></td>
+                                                }
+                                            </tr>
                                         </table>
                                     </Row>
 
@@ -1571,9 +1527,9 @@ function FormDetail(props) {
                                         <Col xs={12} md={2}>
                                             {
                                                 permission.filter((item) => {
-                                                    return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
+                                                    return (permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F"
                                                 }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO)}>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, "QC")}>
                                                         + เพิ่มผู้ดำเนินการ
                                                     </Button>
                                                 </> : ""
@@ -1584,21 +1540,22 @@ function FormDetail(props) {
                                     <br></br>
                                     <Row style={{ display: 'flex', justifyContent: 'center' }}>
                                         <table className='notify'>
-                                            <thead>
-                                                <tr>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
+                                            <tr>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
+                                            </tr>
+                                            <tr>
                                                 {
-
-                                                    tableNotify?.map((item, index) => {
-                                                        return <td style={{ border: '1px solid black' }}><center>{item.employeeFullName}<br></br>Date</center></td>
-                                                    })
+                                                    tableNotify[0]?.qc_approvedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.qc_approved}<br></br>{tableNotify[0]?.qc_approvedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.qc_approved}</center></td>
                                                 }
-                                            </tbody>
+                                                {
+                                                    tableNotify[0]?.qc_checkedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.qc_checked}<br></br>{tableNotify[0]?.qc_checkedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.qc_checked}</center></td>
+                                                }
+                                                {
+                                                    tableNotify[0]?.qc_issuedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.qc_issued}<br></br>{tableNotify[0]?.qc_issuedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.qc_issued}</center></td>
+                                                }
+                                            </tr>
                                         </table>
                                     </Row>
                                 </Typography>
@@ -1761,6 +1718,7 @@ function FormDetail(props) {
                                                         dataModaldt[0].qA_InformationDate = val.format('YYYY-MM-DD');
                                                         setDataModaldt([...dataModaldt])
                                                     }}
+
                                                     disabled={position == "ISSUED" ? false : true}
                                                 />
                                             </LocalizationProvider>
@@ -1847,9 +1805,9 @@ function FormDetail(props) {
                                         <Col xs={12} md={2}>
                                             {
                                                 permission.filter((item) => {
-                                                    return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
+                                                    return permission[0]?.grpRoleSect == "QA" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F"
                                                 }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO)}>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, "QA")}>
                                                         + เพิ่มผู้ดำเนินการ
                                                     </Button>
                                                 </> : ""
@@ -1860,21 +1818,22 @@ function FormDetail(props) {
                                     <br></br>
                                     <Row style={{ display: 'flex', justifyContent: 'center' }}>
                                         <table className='notify'>
-                                            <thead>
-                                                <tr>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                    <td style={{ border: '1px solid black', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
+                                            <tr>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                                <td style={{ border: '1px solid black', fontSize: '14x', width: '4pc' }}><center><b>Checked</b></center></td>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
+                                            </tr>
+                                            <tr>
                                                 {
-
-                                                    tableNotify?.map((item, index) => {
-                                                        return <td style={{ border: '1px solid black' }}><center>{item.employeeFullName}<br></br>Date</center></td>
-                                                    })
+                                                    tableNotify[0]?.qa_approvedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.qa_approved}<br></br>{tableNotify[0]?.qa_approvedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.qa_approved}</center></td>
                                                 }
-                                            </tbody>
+                                                {
+                                                    tableNotify[0]?.qa_checkedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.qa_checked}<br></br>{tableNotify[0]?.qa_checkedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.qa_checked}</center></td>
+                                                }
+                                                {
+                                                    tableNotify[0]?.qa_issuedBit == "F" ? <td style={{ border: '1px solid black' }}><center>{tableNotify[0]?.qa_issued}<br></br>{tableNotify[0]?.qa_issuedDate}</center></td> : <td style={{ border: '1px solid black', color: 'gainsboro' }}><center>{tableNotify[0]?.qa_issued}</center></td>
+                                                }
+                                            </tr>
                                         </table>
                                     </Row>
                                 </Typography>
@@ -1921,8 +1880,8 @@ function FormDetail(props) {
                         <Stack direction={'row'} gap={3}>
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && creSec == roleSec) ||
-                                        (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && permission[0]?.grpRoleSect == "ADMIN")
+                                    return (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.createBy == item.code) ||
+                                        (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && permission[0]?.grpRoleSect == "ADMIN" && dataModaldt[0]?.createBy == item.code)
                                 }).length ? (dataModaldt[0]?.create_CheckBit == "U" || dataModaldt[0]?.create_CheckBit == "R") && <>
                                     <Button variant="danger" onClick={() => getDeleteDoc(dataModaldt[0]?.ecR_NO)}>
                                         ลบเอกสาร (Delete)
@@ -1932,8 +1891,8 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && creSec == roleSec) ||
-                                        (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && permission[0]?.grpRoleSect == "ADMIN")
+                                    return (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.createBy == item.code) ||
+                                        (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && permission[0]?.grpRoleSect == "ADMIN" && dataModaldt[0]?.createBy == item.code)
                                 }).length ? (dataModaldt[0]?.create_CheckBit == "U" || dataModaldt[0]?.create_CheckBit == "R") && <><Button autoFocus variant="primary" onClick={() => upDateData(dataModaldt[0].ecR_NO)}>
                                     แก้ไขเอกสาร (Update)
                                 </Button></>
@@ -1942,13 +1901,92 @@ function FormDetail(props) {
                             }
 
 
+                            {/* **********************************  BUTTON SECTION CREATE **************************************/}
+                            {/* --------******* CHECK********------- */}
+                            {
+                                permission.filter((item) => {
+                                    return (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && creSec == roleSec) ||
+                                        (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && creSec != roleSec)
+                                    // return (item.menuCode == "BTN0009" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") || 
+                                    // (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                }).length ? (
+                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
+                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F")
+                                )
+                                &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
+                            }
+
+
+                            {
+                                permission.filter((item) => {
+                                    return (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && creSec == roleSec) ||
+                                        (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && creSec != roleSec)
+                                    // return (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") ||
+                                    //     (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                }).length ? (
+                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
+                                    dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F"
+                                )
+                                &&
+                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                    อนุมัติ (MG Approved)
+                                </Button>
+                                    :
+                                    ""
+                            }
+                            {/* --------******* END CHECK********------- */}
+
+
+
+                            {/* --------******* APPROVED ********------- */}
+                            {
+                                permission.filter((item) => {
+                                    return (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") ||
+                                        (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
+                                        (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                }).length ? (
+                                    dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" || dataModaldt[0]?.dD_ReceiveBit != "F")
+                                )
+                                &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                        ตีกลับ (Return)
+                                    </Button>
+                                </> : ""
+                            }
+
+                            {
+                                permission.filter((item) => {
+                                    return (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") ||
+                                        (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
+                                        (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                }).length ? (
+                                    dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" || dataModaldt[0]?.dD_ReceiveBit != "F")
+                                )
+                                && <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                    อนุมัติ (GM Approved)
+                                </Button>
+                                    :
+                                    ""
+                            }
+                            {/* --------*******END APPROVED ********------- */}
+                            {/* **************************** END BUTTON SECTION CREATE ************************** */}
+
+
+
                             {/* **********************************  BUTTON SECTION PU **************************************/}
                             {/* --------*******RECEIVE********------- */}
                             {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0007" && item.rolE_VIEW == "True"
                                 }).length ? (
-                                    dataModaldt[0]?.pU_IssuedBit != "F"
+                                    dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_IssuedBit != "F"
+                                    // dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.pU_ReceiveBit != "F"
                                 )
                                 &&
                                 <>
@@ -1963,7 +2001,8 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0011" && item.rolE_VIEW == "True"
                                 }).length ? (
-                                    dataModaldt[0]?.pU_IssuedBit != "F"
+                                    dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_IssuedBit != "F"
+                                    // dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.pU_ReceiveBit != "F"
                                 )
                                 && <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
                                     รับเอกสาร (Receive)
@@ -1979,8 +2018,8 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0008" && item.rolE_VIEW == "True"
                                 }).length ? (
-                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit == "U" || dataModaldt[0]?.pU_CheckBit == "R") ||
-                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F")
+                                    (dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && (dataModaldt[0]?.pU_CheckBit == "U" || dataModaldt[0]?.pU_CheckBit == "R")) ||
+                                    (dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F")
                                 )
                                 &&
                                 <>
@@ -1994,8 +2033,8 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0012" && item.rolE_VIEW == "True"
                                 }).length ? (
-                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit == "U" || dataModaldt[0]?.pU_CheckBit == "R") ||
-                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F")
+                                    (dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && (dataModaldt[0]?.pU_CheckBit == "U" || dataModaldt[0]?.pU_CheckBit == "R")) ||
+                                    (dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F")
                                 )
                                 && <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
@@ -2010,10 +2049,13 @@ function FormDetail(props) {
                             {/* --------******* CHECK********------- */}
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0009" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") || (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    return (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec == roleSec) ||
+                                        (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec != roleSec)
+                                    // return (item.menuCode == "BTN0009" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") || 
+                                    // (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
                                 }).length ? (
-                                    (dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
-                                    dataModaldt[0]?.pU_ApprovedBit != "F"
+                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
+                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F")
                                 )
                                 &&
                                 <>
@@ -2026,10 +2068,13 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") || (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    return (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec == roleSec) ||
+                                        (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec != roleSec)
+                                    // return (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") ||
+                                    //     (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
                                 }).length ? (
-                                    (dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
-                                    dataModaldt[0]?.pU_ApprovedBit != "F"
+                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
+                                    dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F"
                                 )
                                 &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -2083,7 +2128,7 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0015" && item.rolE_VIEW == "True"
                                 }).length ? (
-                                    dataModaldt[0]?.dD_IssuedBit != "F"
+                                    dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.dD_ReceiveBit != "F"
                                 )
                                 &&
                                 <>
@@ -2098,7 +2143,7 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0019" && item.rolE_VIEW == "True"
                                 }).length ? (
-                                    dataModaldt[0]?.dD_IssuedBit != "F"
+                                    dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.dD_ReceiveBit != "F"
                                 )
                                 && <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
                                     รับเอกสาร (Receive)
@@ -2112,8 +2157,8 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0016" && item.rolE_VIEW == "True"
                                 }).length ? (
-                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit == "U" || dataModaldt[0]?.dD_CheckBit == "R") ||
-                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit != "F")
+                                    (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && (dataModaldt[0]?.dD_CheckBit == "U" || dataModaldt[0]?.dD_CheckBit == "R")) ||
+                                    (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit != "F")
                                 )
                                 &&
                                 <>
@@ -2127,8 +2172,8 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0020" && item.rolE_VIEW == "True"
                                 }).length ? (
-                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit == "U" || dataModaldt[0]?.dD_CheckBit == "R") ||
-                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit != "F")
+                                    (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && (dataModaldt[0]?.dD_CheckBit == "U" || dataModaldt[0]?.dD_CheckBit == "R")) ||
+                                    (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit != "F")
                                 )
                                 && <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
@@ -2146,8 +2191,8 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0017" && item.rolE_VIEW == "True" && creSec == roleSec
                                 }).length ? (
-                                    (dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0]?.dD_ApprovedBit != "F") ||
-                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ApprovedBit != "F" && dataModaldt[0]?.dD_IssuedBit == "F")
+                                    (dataModaldt[0]?.dD_CheckBit != "R" && dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0]?.dD_ApprovedBit != "F") ||
+                                    (dataModaldt[0]?.dD_CheckBit != "R" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ApprovedBit != "F" && dataModaldt[0]?.dD_IssuedBit == "F")
                                 )
                                 &&
                                 <>
@@ -2161,8 +2206,8 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0021" && item.rolE_VIEW == "True" && creSec == roleSec
                                 }).length ? (
-                                    (dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0]?.dD_ApprovedBit != "F") ||
-                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ApprovedBit != "F" && dataModaldt[0]?.dD_IssuedBit == "F")
+                                    (dataModaldt[0]?.dD_CheckBit != "R" && dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0]?.dD_ApprovedBit != "F") ||
+                                    (dataModaldt[0]?.dD_CheckBit != "R" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ApprovedBit != "F" && dataModaldt[0]?.dD_IssuedBit == "F")
                                 )
                                 &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -2194,14 +2239,14 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0].create_CheckBit == "F") ||
-                                        (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0].create_CheckBit == "F") ||
+                                    return (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0]?.create_CheckBit == "F") ||
+                                        (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.create_CheckBit == "F") ||
                                         (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
                                 }).length ? (
                                     (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.eN_ReceiveBit == "U") ||
                                     dataModaldt[0]?.pU_ReceiveBit == "U"
                                 )
-                                && <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                && <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0]?.ecR_NO, dataModaldt[0]?.section, dataModaldt[0]?.create_ApprovedBit)}>
                                     อนุมัติ (GM Approved)
                                 </Button>
                                     :
