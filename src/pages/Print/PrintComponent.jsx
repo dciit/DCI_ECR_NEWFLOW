@@ -83,7 +83,7 @@ function PrintComponent() {
         });
     };
     //***************************END FUNCTON TEST*************************** */
-    console.log(dataModaldt)
+
     return (
         <page className="A4">
             <div className='printpage'>

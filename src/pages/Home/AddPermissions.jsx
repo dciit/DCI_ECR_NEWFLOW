@@ -36,8 +36,8 @@ function AddPermissions() {
         setSelectStep(event.target.value);
     };
 
-    const sectionArray = ['ADMIN', 'PU ', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
-    const stepArray = ['ADMIN', 'RECEIVED', 'ISSUED ', 'CHECK', 'APPROVED']
+    const sectionArray = ['ADMIN', 'CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
+    const stepArray = ['ADMIN', 'CREATE', 'RECEIVED', 'ISSUED ', 'CHECK', 'APPROVED']
 
 
     function loadPage() {
