@@ -46,6 +46,10 @@ const getTestLogin = (code) => {
 }
 
 
+const getDeletePermission = (code) => {
+    return http.APIPERMISSION.get(`getDeletePermission/${code}`)
+}
+
 export default {
     getPermission,
     getPermissionMenu,
@@ -56,5 +60,6 @@ export default {
     getDeleteNotify,
     getShowEmployee,
     getSearchEmployee,
-    getTestLogin
+    getTestLogin,
+    getDeletePermission
 }
