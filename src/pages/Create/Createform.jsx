@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import getDataSrvHD from '../../service/getServiceHeader.js'
+import SrvPermissiom from '../../service/getPermisson.js'
 import './Createform.css'
 import Button from 'react-bootstrap/Button';
 import InputLabel from '@mui/material/InputLabel';
@@ -23,6 +24,7 @@ import { useHref } from 'react-router';
 import { FcFinePrint, FcPrint, FcSms, FcDocument } from "react-icons/fc";
 import { LegendToggleOutlined } from '@mui/icons-material';
 
+
 function Createform() {
     const navigate = useNavigate();
 
@@ -45,6 +47,7 @@ function Createform() {
     const [PartName, setPartName] = useState('');
     const [DrawingNo, setDrawingNo] = useState('');
     const [BRNo, setBRNO] = useState('');
+
 
 
 
@@ -106,20 +109,6 @@ function Createform() {
 
 
     //**************************** ddl Status ************ */
-    const grpSection = (val) => {
-        var varGrpSection = '';
-
-        if (val == 'ADMIN') {
-            varGrpSection = "CREATE"
-        }
-        else {
-            varGrpSection = permission[0]?.grpRoleSect;
-        }
-        return varGrpSection;
-    }
-
-    const [ddlStatus, setddlStatus] = useState(grpSection(permission[0]?.grpRoleSect));
-
 
     const showSection = (val) => {
         var varShowSection = '';
@@ -134,38 +123,7 @@ function Createform() {
     }
 
 
-    // const grp = (val) => {
-    //     var varGrp = '';
 
-    //     if (val == 'ADMIN') {
-    //         varGrp = "0"
-    //     }
-    //     else if (val == 'PU') {
-    //         varGrp = "1"
-    //     }
-    //     else if (val == 'DD') {
-    //         varGrp = "2"
-    //     }
-    //     else if (val == 'EN') {
-    //         varGrp = "3"
-    //     }
-    //     else if (val == 'SQC') {
-    //         varGrp = "4"
-    //     }
-    //     else if (val == 'QC') {
-    //         varGrp = "5"
-    //     }
-    //     else if (val == 'DIL') {
-    //         varGrp = "6"
-    //     }
-    //     else if (val == 'QA') {
-    //         varGrp = "7"
-    //     }
-    //     else {
-    //         varGrp = '999'
-    //     }
-    //     return varGrp;
-    // }
 
     const grp = (val) => {
         var varGrp = '';

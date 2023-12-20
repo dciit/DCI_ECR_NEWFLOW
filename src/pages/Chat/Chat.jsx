@@ -63,7 +63,6 @@ function Chat(props) {
     const [showChat, setShowChat] = useState([]);
     const initFiles = () => {
         getChat.getChat(item.ecrno).then((res) => {
-            console.log(res.data);
             try {
                 setShowChat(res.data);
             }

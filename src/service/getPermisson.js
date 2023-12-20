@@ -41,6 +41,11 @@ const getSearchEmployee = (empCode) => {
     return http.APIPERMISSION.get(`getSearchEmployee/${empCode}`);
 }
 
+const getTestLogin = (code) => {
+    return http.APIPERMISSION.get(`getTestLogin/${code}`);
+}
+
+
 export default {
     getPermission,
     getPermissionMenu,
@@ -50,5 +55,6 @@ export default {
     getNotifyTo,
     getDeleteNotify,
     getShowEmployee,
-    getSearchEmployee
+    getSearchEmployee,
+    getTestLogin
 }

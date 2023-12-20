@@ -29,7 +29,6 @@ function PrintComponent() {
             var originalContents = document.body.innerHTML;
 
             // document.body.innerHTML = printContents;
-            console.log(printContents)
             window.print();
         }, 1000);
 
@@ -404,7 +403,6 @@ function PrintComponent() {
                                                     <div class="col-md-12" >
                                                         {
                                                             cbSecQC.slice(0, 6).map((item, index) => {
-                                                                console.log(index);
                                                                 var isChecked = dataModaldt[0]?.qC_Remark2.split(',').includes(item?.req_ITEMQCCODE);
                                                                 return <div key={item?.req_ITEMQCCODE} style={{ display: 'flex' }} >
                                                                     <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled />    <div style={{ display: 'none' }}> {item?.req_ITEMQCCODE} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.req_ITEMQCNAME}</div> <br></br></div>
