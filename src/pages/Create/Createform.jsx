@@ -52,8 +52,9 @@ function Createform() {
 
 
     const PrintECR = (ecrno) => {
-        navigate(`/ECR/PrintPage/${ecrno}`,
-        );
+        // navigate(`/ECR/PrintPage/${ecrno}`,
+        // );
+        window.open(`/ECR/PrintPage/${ecrno}`, '_blank', 'noopener,noreferrer');
     }
 
     const handleShow = () => {

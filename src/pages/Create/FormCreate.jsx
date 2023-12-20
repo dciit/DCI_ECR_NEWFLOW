@@ -318,7 +318,7 @@ function FormCreate(props) {
                             <Row className='styleChangeItem'>
                                 <Col xs={12} md={9} style={{ display: 'flex' }}>
                                     <h6>TITLE</h6> &nbsp; &nbsp;
-                                    <TextField id="txtTitle" variant="standard" style={{ width: '95%' }} onChange={(event) => setTitle(event.target.value)} />
+                                    <TextField id="txtTitle" variant="standard" style={{ width: '95%', backgroundColor: '#f8ef64', height: '67%' }} onChange={(event) => setTitle(event.target.value)} />
                                     <br></br><br></br>
                                 </Col>
                                 <Col xs={12} md={3} style={{ display: 'flex' }}>
