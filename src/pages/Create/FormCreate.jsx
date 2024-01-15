@@ -15,6 +15,7 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import TextField from '@mui/material/TextField';
 import getDataSrv from '../../service/getdataService.js';
+import getDataSrvPermiss from '../../service/getPermisson.js'
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
@@ -86,8 +87,13 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 function FormCreate(props) {
     const { show, close, ecrno, refresh, section } = props;
-
     const permission = useSelector((state) => state.reducer.permission);
+    let position = permission[0]?.grpRole;
+    const [employee, setemployee] = useState('');
+    const [employeeArray, setEmployeeArray] = useState([]);
+    const [step, setStep] = useState('ISSUED');
+    const stepArray = ['ISSUED', 'CHECK', 'APPROVED'];
+    const [tableNotify, setTableNotify] = useState([]);
 
     useEffect(() => {
         if (show) {
@@ -181,6 +187,27 @@ function FormCreate(props) {
         getDataSrv.getDict().then((res) => {
             setcbFORDDNEED(res.data.filter(item => item.dictType == 'REQ_FOR'));
         })
+
+        getDataSrvPermiss.getEmployee().then((res) => {
+            try {
+                setEmployeeArray(res.data);
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+
+
+        getDataSrvPermiss.getNotifyTo(ecrno).then((res) => {
+            try {
+                setTableNotify(res.data);
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
     }
     //********************************************************** */
     // เงื่อนไข Dropdown Section
@@ -276,6 +303,31 @@ function FormCreate(props) {
         }
     };
     //***************************END FUNCTON INPUT DATA*************************** */
+
+
+    //******************SET STEP*************** */
+    const handleChangeEmployee = (event) => {
+        setemployee(event.target.value);
+    };
+
+    const handleChangeStep = (event) => {
+        setStep(event.target.value);
+    };
+
+
+    const postAddNotifyTo = (ecR_NO, section) => {
+        getDataSrvPermiss.postAddNotifyTo({ employeeCode: employee, employeeFullName: employee, ecrno: ecR_NO, step: step, createBy: empCode, section: section }).then((res) => {
+            try {
+                initFiles();
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+    //******************END SET STEP*************** */
+
 
 
     return (
@@ -563,6 +615,9 @@ function FormCreate(props) {
                                         <Col xs={12} md={2}>
                                         </Col>
                                     </Row>
+
+
+
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>

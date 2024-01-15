@@ -203,6 +203,7 @@ function FormDetail(props) {
         getDataSrvPermiss.getNotifyTo(ecrno).then((res) => {
             try {
                 setTableNotify(res.data);
+                console.log(res.data);
             }
             catch (error) {
                 console.log(error);
@@ -608,6 +609,8 @@ function FormDetail(props) {
     //****************************END FUNCTION RECEIVE************ */
     const stepArray = ['ISSUED', 'CHECK', 'APPROVED'];
 
+    const stepArrayCre = ['CHECK', 'APPROVED'];
+
     const handleChangeEmployee = (event) => {
         setemployee(event.target.value);
     };
@@ -930,6 +933,102 @@ function FormDetail(props) {
                                             </LocalizationProvider>
                                         </Col>
                                     </Row>
+
+
+                                    <br></br>
+                                    <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                        <Col xs={12} md={2}></Col>
+                                        <Col xs={12} md={4}>
+                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                                <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={employee}
+                                                    label="EmpCode"
+                                                    onChange={handleChangeEmployee}>
+                                                    {
+                                                        employeeArray.map((item, index) =>
+                                                            <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                        )
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                        </Col>
+                                        <Col xs={12} md={4}>
+                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                                <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={step}
+                                                    label="Status"
+                                                    onChange={handleChangeStep}>
+                                                    {
+                                                        stepArrayCre.map((item, index) =>
+                                                            <MenuItem value={item}>{item}</MenuItem>
+                                                        )
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                        </Col>
+                                        <Col xs={12} md={2}>
+                                            {
+                                                permission.filter((item) => {
+                                                    return ((permission[0]?.grpRole == 'RECEIVED' || dataModaldt[0]?.grpRole != "ISSUED" || permission[0]?.grpRoleSect == "ADMIN") && dataModaldt[0]?.create_CheckBit != "F")
+                                                }).length ? <>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, "CREATE")}>
+                                                        + เพิ่มผู้ดำเนินการ
+                                                    </Button>
+                                                </> : ""
+                                            }
+                                        </Col>
+                                    </Row>
+
+                                    <br></br>
+                                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
+                                        <table className='notify'>
+                                            <tr>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.cre_approvedBit == "F" ? 'black' : 'gainsboro' }}>
+                                                    <center>{tableNotify[0]?.cre_approved}<br></br> {tableNotify[0]?.cre_approvedBit == 'F' ? tableNotify[0]?.cre_approvedDate : ''}</center>
+                                                    {
+                                                        tableNotify[0]?.cre_approved != null ?
+                                                            // (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.cre_approvedCode)}>
+                                                            //     ลบ
+                                                            // </Button>
+                                                            // : ''
+
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.create_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.cre_approvedCode)}>
+                                                                ลบ
+                                                            </Button>
+                                                            : ''
+                                                    }
+                                                </td>
+                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.cre_checkedBit == "F" ? 'black' : 'gainsboro' }}>
+                                                    <center>{tableNotify[0]?.cre_checked}<br></br>{tableNotify[0]?.cre_checkedBit == 'F' ? tableNotify[0]?.cre_checkedDate : ''}</center>
+                                                    {
+                                                        tableNotify[0]?.cre_checked != null ?
+                                                            // (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.cre_checkedCode)}>
+                                                            //     ลบ
+                                                            // </Button>
+                                                            // : ''
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.create_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.cre_checkedCode)}>
+                                                                ลบ
+                                                            </Button>
+                                                            : ''
+                                                    }
+                                                    {/* {
+                                                        JSON.stringify(tableNotify)
+                                                    } */}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </Row>
+
 
                                     <Row className='styleRowText'>
                                         <Col xs={6} md={4}>
