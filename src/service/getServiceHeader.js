@@ -11,8 +11,6 @@ const postECRList = (param) => {
 }
 
 
-
-
 const getCheck = (docNo, status, section) => {
     return http.APIHEADER.get(`getCheck/${docNo}/${status}/${section}`);
 }

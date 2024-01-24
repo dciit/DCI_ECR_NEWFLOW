@@ -46,8 +46,8 @@ const getTestLogin = (code) => {
 }
 
 
-const getDeletePermission = (code) => {
-    return http.APIPERMISSION.get(`getDeletePermission/${code}`)
+const getDeletePermission = (code, grpCode) => {
+    return http.APIPERMISSION.get(`getDeletePermission/${code}/${grpCode}`)
 }
 
 export default {

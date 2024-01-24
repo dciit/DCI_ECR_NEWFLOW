@@ -505,6 +505,7 @@ function FormDetail(props) {
 
         // console.log(object)
         // return false
+
         getDataSrvDT.postReceive({ ecrno: ecrno, remark: sectionReceive, issued: empCode, section: section }).then((res) => {
             try {
                 refresh();
@@ -1058,7 +1059,6 @@ function FormDetail(props) {
                             <AccordionDetails>
                                 <Typography>
                                     <h6>2). QUALITY CHECK CONTENT (DCI) and Other</h6>
-
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
                                             <Form.Label>2.1 &nbsp;&nbsp; PU Section : Effect Part stock control & Supplier (เฉพาะในกรณี 2 เท่านั้น)</Form.Label>
@@ -1199,7 +1199,6 @@ function FormDetail(props) {
                                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  3). Durabillty , Realibility  <br></br>
                                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  4). BOM System
                                             </p>
-
 
 
                                             {
@@ -1587,7 +1586,6 @@ function FormDetail(props) {
                                             </tr>
                                         </table>
                                     </Row>
-
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
@@ -1767,7 +1765,7 @@ function FormDetail(props) {
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
-                        <Accordion expanded={expanded === 'DIL'} disabled={dataModaldt[0]?.qC_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('DIL')}>
+                        {/* <Accordion expanded={expanded === 'DIL'} disabled={dataModaldt[0]?.qC_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('DIL')}>
                             <AccordionSummary aria-controls="panel7d-content" id="panel7d-header">
                                 <Typography>ส่วนที่ 7 DIL</Typography>
                             </AccordionSummary>
@@ -1837,6 +1835,99 @@ function FormDetail(props) {
                                         </Col>
                                         <Col xs={12} md={4} style={{ display: 'flex' }}>
                                             <b>Approved </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_ApproveBy} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true}
+                                                onChange={(event) => {
+                                                    dataModaldt[0].diL_QC_ApproveBy = event.target.value;
+                                                    setApprovedDILQC([...dataModaldt])
+                                                }} />
+                                        </Col>
+                                    </Row>
+
+                                    <hr></hr>
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={12}>
+                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
+                                            <Form.Control as="textarea" rows={5} disabled={(position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.diL_Remark_Receive}
+                                                onChange={(e) => {
+                                                    dataModaldt[0].diL_Remark_Receive = e.target.value;
+                                                    setDIL_Receive([...dataModaldt]);
+                                                }} />
+                                        </Col>
+                                    </Row>
+
+                                </Typography>
+                            </AccordionDetails>
+                        </Accordion> */}
+                        <Accordion expanded={expanded === 'DIL'} disabled={dataModaldt[0]?.qC_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('DIL')}>
+                            <AccordionSummary aria-controls="panel7d-content" id="panel7d-header">
+                                <Typography>ส่วนที่ 7 DIL</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Typography>
+                                    <Form.Label>3. JUDGEMENT ( DIL Design Section )</Form.Label>
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={12}>
+                                            <Form.Control as="textarea" style={{ backgroundColor: 'rgb(250 249 114)' }} rows={2} value={dataModaldt[0]?.diL_DD_REMARK}
+                                                onChange={(event) => {
+                                                    dataModaldt[0].diL_DD_REMARK = event.target.value;
+                                                    setRemarkDILDD([...dataModaldt])
+                                                }}
+                                            />
+                                        </Col>
+                                    </Row>
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
+                                            <b>Issued </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_DD_IssuedBy} style={{ backgroundColor: 'rgb(250 249 114)' }}
+                                                onChange={(event) => {
+                                                    dataModaldt[0].diL_DD_IssuedBy = event.target.value;
+                                                    setIssuedDILDD([...dataModaldt])
+                                                }} />
+                                        </Col>
+                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
+                                            <b>Check </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_DD_CheckBy} style={{ backgroundColor: 'rgb(250 249 114)' }}
+                                                onChange={(event) => {
+                                                    dataModaldt[0].diL_DD_CheckBy = event.target.value;
+                                                    setCheckDILDD([...dataModaldt])
+                                                }} />
+                                        </Col>
+                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
+                                            <b>Approved </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_DD_ApproveBy} style={{ backgroundColor: 'rgb(250 249 114)' }}
+                                                onChange={(event) => {
+                                                    dataModaldt[0].diL_DD_ApproveBy = event.target.value;
+                                                    setApprovedDILDD([...dataModaldt])
+                                                }} />
+                                        </Col>
+                                    </Row>
+                                    <hr></hr>
+                                    <Form.Label>4. JUDGEMENT ( DIL Quality Control Section ) [Incase necessary]</Form.Label>
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={12}>
+                                            <Form.Control as="textarea" rows={2} style={{ backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.diL_QC_REMARK}
+                                                onChange={(event) => {
+                                                    dataModaldt[0].diL_QC_REMARK = event.target.value;
+                                                    setRemarkDILQC([...dataModaldt])
+                                                }} />
+                                        </Col>
+                                    </Row>
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
+                                            <b>Issued </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_IssuedBy} style={{ backgroundColor: 'rgb(250 249 114)' }}
+                                                onChange={(event) => {
+                                                    dataModaldt[0].diL_QC_IssuedBy = event.target.value;
+                                                    setIssuedDILQC([...dataModaldt])
+                                                }} />
+                                        </Col>
+                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
+                                            <b>Check </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_CheckBy} style={{ backgroundColor: 'rgb(250 249 114)' }}
+                                                onChange={(event) => {
+                                                    dataModaldt[0].diL_QC_CheckBy = event.target.value;
+                                                    setCheckDILQC([...dataModaldt])
+                                                }} />
+                                        </Col>
+                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
+                                            <b>Approved </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_ApproveBy} style={{ backgroundColor: 'rgb(250 249 114)' }}
                                                 onChange={(event) => {
                                                     dataModaldt[0].diL_QC_ApproveBy = event.target.value;
                                                     setApprovedDILQC([...dataModaldt])
@@ -2068,7 +2159,6 @@ function FormDetail(props) {
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
-
 
 
 

@@ -489,7 +489,8 @@ function Createform() {
                                     <td>
                                         <Button style={{ backgroundColor: 'white', borderColor: 'white' }} onClick={() => PrintECR(item.ecrno)}> <FcPrint style={{
                                             width: '32px', height: '40px'
-                                        }} /></Button>
+                                        }} />
+                                        </Button>
                                         <Link id='linkprint' to={`/ECR/PrintPage/${item.ecrno}`} target="_blank">
                                         </Link>
                                     </td>

@@ -92,8 +92,8 @@ function AddPermissions() {
     }
 
 
-    const handelDelete = (code) => {
-        getDataSrvPermiss.getDeletePermission(code).then((res) => {
+    const handelDelete = (code, grpCode) => {
+        getDataSrvPermiss.getDeletePermission(code, grpCode).then((res) => {
             try {
                 handelSearch();
             }
@@ -188,7 +188,7 @@ function AddPermissions() {
                                             <td align="center" style={{ textAlign: 'center' }}>{item.section}</td>
                                             <td align="center" style={{ textAlign: 'center' }}>{item.step}</td>
                                             <td align="center" style={{ textAlign: 'center' }}>{item.position}</td>
-                                            <td align="center" style={{ textAlign: 'center' }}>  <Button variant="danger" onClick={() => handelDelete(item.code)}>
+                                            <td align="center" style={{ textAlign: 'center' }}>  <Button variant="danger" onClick={() => handelDelete(item.code, item.grpCode)}>
                                                 ลบ
                                             </Button></td>
                                         </tr>
