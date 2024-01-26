@@ -24,19 +24,19 @@ function Navbars() {
 
     return (
         <>
-            {/* <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark"> */}
             <Navbar style={{ backgroundColor: 'rgb(52 58 64)' }}>
                 <Container>
-                    <div style={{ width: '45%' }}>
-                        <label className='stylelb'><img src={ENTool} />ECR</label>
-                        <p className='gradiantTitle'>Engineering Change Request</p>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12" style={{ width: '45%' }}>
+                                <label className='stylelb'><img src={ENTool} />ECR</label>
+                                <p className='gradiantTitle'>Engineering Change Request</p>
+                            </div>
+                        </div>
                     </div>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
-                            {/* <Nav.Link href="/ECR/home" id='colorText'>Dashboard</Nav.Link> */}
-
-                            {/* <Nav.Link href="/ECR/PrintTest" id='colorText'>Test</Nav.Link> */}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
@@ -52,9 +52,7 @@ function Navbars() {
                         <LuLogOut />
                         <span onClick={logout}>Log out</span>
                     </a>
-                    {/* <button onClick={logout}>Logout</button> */}
                 </div>
-                {/* <Navbar.Brand href="#home" style={{ color: 'red' }}>My-Web</Navbar.Brand> */}
             </Navbar>
         </>
     )

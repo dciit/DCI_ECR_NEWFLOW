@@ -122,39 +122,42 @@ function Login() {
         //     <p className="forgot-password text-right mt-2">
         //     </p>
         // </form>
+        <div class="row justify-content-md-center">
+            <div class="col-md-auto">
+                <form className="card p4 col-md-12" onSubmit={login}>
+                    <div className='styleImg'>
+                        <img src={DAIKIN_logo} height={40} />
+                    </div>
+                    <img src={User} className='styleImgUser' />
+                    <div className="form-group mt-3">
+                        <div>
+                            <p className='styleP'>Login ด้วย Username / Password เข้าเครื่องคอม</p>
+                        </div>
+                        <span className='stylespan'> <BsFillPersonFill /></span>
+                        <label>รหัสพนักงาน</label>
+                        <input
+                            type="text"
+                            id='username'
+                            value={username}
+                            autoComplete="username"
+                            className="form-control mt-1"
+                            onChange={(event) => setUsername(event.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className='btnLogin'>
+                        <button type="submit" className="btn btn-primary">
+                            Login
+                        </button>
+                    </div>
 
-        <form className="card p4 col-md-12" onSubmit={login}>
-            <div className='styleImg'>
-                <img src={DAIKIN_logo} height={40} />
-            </div>
-            <img src={User} className='styleImgUser' />
-            <div className="form-group mt-3">
-                <div>
-                    <p className='styleP'>Login ด้วย Username / Password เข้าเครื่องคอม</p>
-                </div>
-                <span className='stylespan'> <BsFillPersonFill /></span>
-                <label>รหัสพนักงาน</label>
-                <input
-                    type="text"
-                    id='username'
-                    value={username}
-                    autoComplete="username"
-                    className="form-control mt-1"
-                    onChange={(event) => setUsername(event.target.value)}
-                    required
-                />
-            </div>
-            <div className='btnLogin'>
-                <button type="submit" className="btn btn-primary">
-                    Login
-                </button>
-            </div>
+                    {failLogin && <span className='styleError'>รหัสผ่านไม่ถูกต้อง กรุณาลองอีกครั้ง !!!</span>}    {/* ถ้าเปิดหน้า Login มา ตัวแปร failLogin มีค่าเป็น false ให้แสดงข้อความนี้ */}
 
-            {failLogin && <span className='styleError'>รหัสผ่านไม่ถูกต้อง กรุณาลองอีกครั้ง !!!</span>}    {/* ถ้าเปิดหน้า Login มา ตัวแปร failLogin มีค่าเป็น false ให้แสดงข้อความนี้ */}
-
-            <p className="forgot-password text-right mt-2">
-            </p>
-        </form>
+                    <p className="forgot-password text-right mt-2">
+                    </p>
+                </form>
+            </div>
+        </div>
     )
 }
 

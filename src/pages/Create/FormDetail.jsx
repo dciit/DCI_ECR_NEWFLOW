@@ -678,15 +678,19 @@ function FormDetail(props) {
                     </IconButton>
                     <DialogContent dividers>
                         {/* <Button onClick={handleAdd}>TEST ADD</Button> */}
-                        <Row>
-                            <Col xs={12} md={8}>
-                                <h4 style={{ marginLeft: '49%' }}>ENGINEERING CHANGE REQUEST</h4>
-                            </Col>
-                            <Col xs={12} md={4}>
+                        <div class="row">
+                            <div class="col-sm-2">  </div>
+                            <div class="col-sm-10">
+                                <h5 style={{ marginLeft: '10%' }}>ENGINEERING CHANGE REQUEST</h5>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
                                 <Form.Label>ECR NO :</Form.Label>
                                 <Form.Control type="text" className='FormControl' style={{ backgroundColor: 'rgb(255 141 0)', color: 'white' }} value={dataModaldt[0]?.ecR_NO} readOnly />
-                            </Col>
-                        </Row>
+                            </div>
+                        </div>
                         <hr></hr>
 
                         <Row className='styleChangeItem'>

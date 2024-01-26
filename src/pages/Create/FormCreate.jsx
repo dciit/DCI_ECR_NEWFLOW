@@ -356,28 +356,30 @@ function FormCreate(props) {
                     </IconButton>
                     <DialogContent dividers>
                         <Container>
-                            <Row>
-                                <Col xs={12} md={8}>
-                                    <h4 style={{ marginLeft: '49%' }}>ENGINEERING CHANGE REQUEST</h4>
-                                </Col>
-                                <Col xs={12} md={4}>
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <h4 style={{ marginLeft: '33%' }}>ENGINEERING CHANGE REQUEST</h4>
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-7"></div>
+                                <div class="col-md-5">
                                     <Form.Label>ECR NO :</Form.Label>
                                     <Form.Control type="text" className='FormControl' value={nbr[0]?.runningNumber} readOnly />
-                                </Col>
-                            </Row>
+                                </div>
+                            </div>
                             <hr></hr>
 
-                            <Row className='styleChangeItem'>
-                                <Col xs={12} md={9} style={{ display: 'flex' }}>
+                            <div class="row" className='styleChangeItem'>
+                                <div class="col-sm-12" style={{ display: 'flex' }}>
                                     <h6>TITLE</h6> &nbsp; &nbsp;
                                     <TextField id="txtTitle" variant="standard" style={{ width: '95%', backgroundColor: '#f8ef64', height: '67%' }} onChange={(event) => setTitle(event.target.value)} />
                                     <br></br><br></br>
-                                </Col>
-                                <Col xs={12} md={3} style={{ display: 'flex' }}>
                                     <Form.Label>Section</Form.Label>
                                     <Form.Control type="text" className='FormControl' value={grpSection} style={{ marginTop: '5px', marginLeft: '11px' }} />
-                                </Col>
-                            </Row>
+                                </div>
+                            </div>
 
                             <hr></hr>
                             <Row className='styleChangeItem'>
@@ -468,7 +470,7 @@ function FormCreate(props) {
                                                             noValidate
                                                             autoComplete="off"
                                                         >
-                                                            <TextField id="txtOtherModel" label="Other..." variant="standard" onChange={(event) => setModelOther(event.target.value)} />
+                                                            <TextField id="txtOtherModel" label="Other..." variant="standard" style={{ width: '90%' }} onChange={(event) => setModelOther(event.target.value)} />
                                                         </Box>
                                                     </div>
                                                 </div>
@@ -493,7 +495,7 @@ function FormCreate(props) {
                                                             noValidate
                                                             autoComplete="off"
                                                         >
-                                                            <TextField id="txtOtherLine" label="Other..." variant="standard" onChange={(event) => setLineOther(event.target.value)} />
+                                                            <TextField id="txtOtherLine" label="Other..." variant="standard" style={{ width: '90%' }} onChange={(event) => setLineOther(event.target.value)} />
                                                         </Box>
                                                     </div>
                                                 </div>
@@ -506,7 +508,6 @@ function FormCreate(props) {
                                         <Row className='styleRow'>
                                             <Col xs={12} md={4}>
                                                 <div className='styleCard'>
-
                                                     <Form.Label>MODEL</Form.Label>
                                                     <div>
                                                         {

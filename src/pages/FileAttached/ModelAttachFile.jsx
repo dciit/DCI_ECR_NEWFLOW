@@ -156,12 +156,10 @@ function ModelAttachFile(props) {
                 >
                     <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
                         <Row>
-                            <Col xs={12} md={6}>
+                            <Col xs={12} md={7}>
                                 <b><h1>Add File</h1></b>
                             </Col>
-                            <Col xs={12} md={1}>
-                            </Col>
-                            <Col xs={12} md={4}>
+                            <Col xs={12} md={5}>
                                 <p>ECR NO : {item.ecrno}</p>
                             </Col>
                         </Row>

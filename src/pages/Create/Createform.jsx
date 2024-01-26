@@ -191,9 +191,11 @@ function Createform() {
             <div class="card ">
                 <h5 class="card-header bg-info text-white border-0">สร้างเอกสาร ECR</h5>  {/* 😉🤣😍😒😁🤞👏💋🌹🎂✔🤳💖😢😎🎶🤳💕 */}
                 <div class="card-body">
-                    <div class="row mb-3">
-                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Section :</label>
-                        <div class="col-sm-2">
+                    <div class="row">
+                        <div class="col-md-auto">
+                            <label for="colFormLabelSm" >Section :</label>
+                        </div>
+                        <div class="col-md-auto">
                             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                                 <InputLabel id="demo-select-small-label">Section</InputLabel>
                                 <Select
@@ -211,8 +213,10 @@ function Createform() {
                             </FormControl>
                         </div>
 
-                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Status :</label>
-                        <div class="col-sm-2">
+                        <div class="col-md-auto">
+                            <label for="colFormLabelSm" >Status :</label>
+                        </div>
+                        <div class="col-md-auto">
                             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                                 <InputLabel id="demo-select-small-label">Status</InputLabel>
                                 <Select
@@ -226,94 +230,88 @@ function Createform() {
                                 </Select>
                             </FormControl>
                         </div>
-
-                        <div class="col-6">
-                        </div>
                     </div>
 
 
                     <div class="row mb-3">
-                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">ECR No :</label>
+                        <div class="col-md-auto">
+                            <label for="colFormLabelSm">ECR No :</label>
+                        </div>
                         <div class="col-sm-2">
                             <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setECRNO(event.target.value)} />
                         </div>
 
-                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">BR No :</label>
+
+                        <div class="col-md-auto">
+                            <label for="colFormLabelSm">BR No :</label>
+                        </div>
                         <div class="col-sm-2">
                             <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setBRNO(event.target.value)} />
                         </div>
 
-
-                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Drawing No :</label>
+                        <div class="col-md-auto">
+                            <label for="colFormLabelSm">Drawing No :</label>
+                        </div>
                         <div class="col-sm-2">
                             <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setDrawingNo(event.target.value)} />
                         </div>
 
-
-
-                        <div class="col-sm-3">
-                        </div>
+                        <div class="col-sm-6"></div>
                     </div>
 
 
                     <div class="row mb-3">
-                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Title :</label>
+                        <div class="col-md-auto">
+                            <label for="colFormLabelSm">Title :</label>
+                        </div>
                         <div class="col-sm-2">
                             <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setTitle(event.target.value)} />
                         </div>
 
-
-                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Model :</label>
+                        <div class="col-md-auto">
+                            <label for="colFormLabelSm">Model :</label>
+                        </div>
                         <div class="col-sm-2">
                             <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setModel(event.target.value)} />
                         </div>
 
-
-                        <label for="colFormLabelSm" class="col-sm-1 col-form-label col-form-label-sm">Part Name :</label>
+                        <div class="col-md-auto">
+                            <label for="colFormLabelSm">Part Name :</label>
+                        </div>
                         <div class="col-sm-2">
                             <input type="text" class="form-control form-control-sm" id="colFormLabelSm" onChange={(event) => setPartName(event.target.value)} />
                         </div>
 
-
-                        <div class="col-sm-3">
-                        </div>
+                        <div class="col-sm-6"></div>
                     </div>
 
 
-                    <div class="row mb-3">
-                        <div class="col-sm-3">
-                        </div>
-
-                        <div class="col-sm-1">
-                            <button type="submit" class="btn btn-primary mb-2" onClick={getSearch}>Search</button>
-                        </div>
-
-                        <div class="col-sm-2">
-                            {
-                                permission.filter((item) => {
-                                    return item.menuCode == "BTN0001" && item.rolE_VIEW == "True"
-                                }).length ? <Button variant="success" onClick={handleShow}>สร้างเอกสาร ECR ใหม่</Button>
-                                    :
-                                    ""
-                            }
-                        </div>
-
-                        <div class="col-sm-6">
+                    <div class="row" >
+                        <div class="row justify-content-md-center">
+                            <div class="col col-lg-2">
+                            </div>
+                            <div class="col-md-auto">
+                                <button type="submit" class="btn btn-primary" onClick={getSearch}>Search</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                {
+                                    permission.filter((item) => {
+                                        return item.menuCode == "BTN0001" && item.rolE_VIEW == "True"
+                                    }).length ? <Button variant="success" onClick={handleShow}>สร้างเอกสาร ECR ใหม่</Button>
+                                        :
+                                        ""
+                                }
+                            </div>
+                            <div class="col col-lg-2">
+                            </div>
                         </div>
                     </div>
-
-
                 </div>
             </div>
             <br></br>
 
             <div class="row">
-                <div class="col-2">
-                    {/* จำนวนเอกสาร = <span style={{ color: 'blue' }}>{getdata[0]?.summary}</span> */}
+                <div class="col-md-8">
                 </div>
-                <div class="col-4"></div>
-                <div class="col-1"></div>
-                <div class="col-5">
+                <div class="col-md-4">
                     <span><b>R</b> = Receive</span> &nbsp;&nbsp;&nbsp;
                     <span><b>I</b> = Issued</span> &nbsp;&nbsp;&nbsp;
                     <span><b>C</b> = Checked</span> &nbsp;&nbsp;&nbsp;
