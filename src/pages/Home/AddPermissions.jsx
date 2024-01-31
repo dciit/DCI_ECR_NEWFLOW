@@ -113,10 +113,12 @@ function AddPermissions() {
                     <h5 class="card-header bg-primary text-white border-0">Add Permissions</h5>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-2">
-                                <TextField id="outlined-basic" label="EmpCode" variant="outlined" onChange={(event) => settxtEmpCode(event.target.value)} />
+                            <div class="col-md-3">
+                                <FormControl fullWidth>
+                                    <TextField id="outlined-basic" label="EmpCode" variant="outlined" onChange={(event) => settxtEmpCode(event.target.value)} />
+                                </FormControl>
                             </div>
-                            <div class="col-2">
+                            <div class="col-md-3">
                                 <FormControl fullWidth>
                                     <InputLabel id="demo-simple-select-label">Section</InputLabel>
                                     <Select
@@ -133,7 +135,7 @@ function AddPermissions() {
                                     </Select>
                                 </FormControl>
                             </div>
-                            <div class="col-2">
+                            <div class="col-md-3">
                                 <FormControl fullWidth>
                                     <InputLabel id="demo-simple-select-label">Step</InputLabel>
                                     <Select
@@ -150,18 +152,18 @@ function AddPermissions() {
                                     </Select>
                                 </FormControl>
                             </div>
-                            <div class="col-6">
+                            <div class="col-md-3">
                                 <Button autoFocus variant="success" onClick={AddPermission}>Save</Button>
                             </div>
                         </div>
 
                         <br></br>
                         <div class="row">
-                            <div class="col-1">
+                            <div class="col-md-1">
                                 <Button autoFocus variant="primary" onClick={handelSearch}>Search</Button>
                             </div>
 
-                            <div class="col-11">
+                            <div class="col-md-11">
                             </div>
                         </div>
 

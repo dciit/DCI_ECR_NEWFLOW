@@ -11,18 +11,26 @@ function LoginLayout() {
 
     return (
         <div className='styleBgColor'>
-            <div className="Auth-form-container">
-                {/* <img src='/public/asset/Image/image-1.png' className='image-1' /> */}
-                {/* <img src={Pic1} className='image-1' /> */}
-                <img src={Picture2} className='image-1' />
-                <div style={{ marginLeft: '-15%' }}>
-                    <h1 className='styleH'>ECR Online (TEST)</h1>
-                    <h5 className='styletextP'>Engineering Change Request (ECR)</h5>
-                    <Login />
+            {/* <div className="Auth-form-container"> */}
+            {/* <div style={{ display: 'flex' }}> */}
+            <div class="row" style={{ display: 'flex', alignItems: 'center' }}>
+                <div class="col-sm-2">
+                    <img src={Picture2} className='image-1' />
                 </div>
-                {/* <img src='/public/asset/Image/image-2.png' className='image-2' /> */}
-                <img src={Pichon} className='image-2' />
+                <div class="col-sm-8" >
+                    {/* <img src={Picture2} className='image-1' /> */}
+                    <div style={{ marginLeft: '0%' }}>
+                        <h1 className='styleH'>ECR Online (TEST)</h1>
+                        <h5 className='styletextP'>Engineering Change Request (ECR)</h5>
+                        <Login />
+                    </div>
+                    {/* <img src={Pichon} className='image-2' /> */}
+                </div>
+                <div class="col-sm-2">
+                    <img src={Pichon} className='image-2' />
+                </div>
             </div>
+            {/* </div> */}
         </div >
     )
 }

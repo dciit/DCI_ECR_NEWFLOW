@@ -58,23 +58,16 @@ label {
 }
 
 .image-1 {
-    margin-left: -6%;
-    margin-top: 10%;
-    width: 40%;
-
-    /* z-index: 1;
-    margin-right: -5%;
-    margin-top: 8%; */
+    /* margin-left: -11%; */
+    margin-top: 120%;
+    width: 270%;
 }
 
 .image-2 {
-    /* margin-top: 17pc;
-    margin-left: -73px; */
-
-    margin-left: -6%;
+    margin-left: -196%;
     z-index: 1;
-    margin-top: 15%;
-    opacity: 0.6;
+    margin-top: 94%;
+    /* opacity: 0.6;*/
 }
 
 .styletextP {

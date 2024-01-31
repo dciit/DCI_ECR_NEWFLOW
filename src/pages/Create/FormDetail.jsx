@@ -686,7 +686,8 @@ function FormDetail(props) {
                         </div>
 
                         <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-7"></div>
+                            <div class="col-sm-5">
                                 <Form.Label>ECR NO :</Form.Label>
                                 <Form.Control type="text" className='FormControl' style={{ backgroundColor: 'rgb(255 141 0)', color: 'white' }} value={dataModaldt[0]?.ecR_NO} readOnly />
                             </div>
@@ -694,7 +695,7 @@ function FormDetail(props) {
                         <hr></hr>
 
                         <Row className='styleChangeItem'>
-                            <Col xs={12} md={9} style={{ display: 'flex' }}>
+                            <div class="col-sm-7" style={{ display: 'flex' }}>
                                 <h6>TITLE</h6> &nbsp; &nbsp;
                                 {
                                     dataModaldt[0]?.create_CheckBit != "F" ?
@@ -707,13 +708,13 @@ function FormDetail(props) {
                                         </> : <TextField id="txtTitle" variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.title)}
                                             readOnly />
                                 }
-
                                 <br></br><br></br>
-                            </Col>
-                            <Col xs={12} md={3}>
-                                <span style={{ marginRight: '72%' }}><b>Section</b> </span> &nbsp; &nbsp;
-                                <Form.Control type="text" className='FormControl' value={dataModaldt[0]?.section} style={{ backgroundColor: '#b9edf3' }} readOnly />
-                            </Col>
+                            </div>
+
+                            <div class="col-sm-5" style={{ display: 'flex' }}>
+                                <Form.Label>Section &nbsp; &nbsp;</Form.Label>
+                                <Form.Control type="text" value={dataModaldt[0]?.section} style={{ backgroundColor: '#b9edf3' }} readOnly />
+                            </div>
                         </Row>
 
 
@@ -1036,19 +1037,19 @@ function FormDetail(props) {
 
 
                                     <Row className='styleRowText'>
-                                        <Col xs={6} md={4}>
+                                        <Col xs={6} md={3}>
                                             <Form.Label>Create By</Form.Label>
                                             <Form.Control type="text" value={dataModaldt[0]?.createBy} style={{ backgroundColor: '#b9edf3' }} readOnly />
                                         </Col>
-                                        <Col xs={6} md={2}>
+                                        <Col xs={6} md={3}>
                                             <Form.Label>Create Date</Form.Label>
                                             <Form.Control type="text" value={dataModaldt[0]?.createDateECR} style={{ backgroundColor: '#b9edf3' }} readOnly />
                                         </Col>
-                                        <Col xs={6} md={4}>
+                                        <Col xs={6} md={3}>
                                             <Form.Label>Update By</Form.Label>
                                             <Form.Control type="text" value={dataModaldt[0]?.updateBy} style={{ backgroundColor: '#b9edf3' }} readOnly />
                                         </Col>
-                                        <Col xs={6} md={2}>
+                                        <Col xs={6} md={3}>
                                             <Form.Label>Update Date</Form.Label>
                                             <Form.Control type="text" value={dataModaldt[0]?.updateDate} style={{ backgroundColor: '#b9edf3' }} readOnly />
                                         </Col>
@@ -1213,7 +1214,7 @@ function FormDetail(props) {
                                             }
                                         </Col>
                                         <Col xs={12} md={3}>
-                                            <div style={{ width: '14pc', padding: '10px', border: '3px solid gray', margin: '0' }}>
+                                            <div style={{ width: '160px', padding: '10px', border: '3px solid gray', margin: '0', fontSize: 'small' }}>
                                                 ดำเนินการข้อ 2.1 เฉพาะ <br></br>
                                                 ในกรณี ❶ : ข้อ 2  , ข้อ 3 <br></br>
                                                 ในกรณี ❷ : ข้อ 1  , ข้อ 2
