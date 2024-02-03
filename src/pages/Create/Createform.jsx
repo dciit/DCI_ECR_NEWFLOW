@@ -324,7 +324,7 @@ function Createform() {
                     <thead>
                         <tr>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '6%', fontSize: '12px' }}>On Process</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}></th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Action</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>DocNo</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '200px', fontSize: '12px' }}>Title</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Section</th>
@@ -349,20 +349,23 @@ function Createform() {
                     </thead>
                     <tbody>
                         {
-                            getdata?.map((item, index) => {
+                            getdata?.map((item, index) => {  // ข้อมูลใหญ่
                                 let oCols = ['cre', 'pu', 'dd', 'en', 'sqc', 'qc', 'dil_dd', 'dil_qc', 'qa'];
                                 let oApps = ['received', 'issued', 'check', 'approved'];
                                 let oEcr = [];
-                                oCols.map((items, idx) => {
+                                oCols.map((items, idx) => { // Section
                                     let iECR = {
                                         key: items, app: []
                                     }
-                                    oApps.map((iApp, idxx) => {
+                                    oApps.map((iApp, idxx) => { // Step
                                         let name = item[`${items}${iApp}by`]; // by
                                         let date = item[`${items}${iApp}date`]; // date
                                         let status = item[`${items}${iApp}bit`]; //bit
                                         let hold = item[`${items}${iApp}SumDate`];
                                         let holdDate = item[`${items}${iApp}SumDate`]; //sumdate
+                                        let namePending = item[`${items}${iApp}namepending`];
+                                        console.log(namePending)
+
 
                                         if (holdDate > 0) {
                                             holdDate = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
@@ -374,28 +377,28 @@ function Createform() {
                                         let color = 'rgb(254 253 239)';
                                         if (status == 'F') {
                                             if (items == 'cre') {
-                                                color = 'rgb(193 231 216)';
+                                                color = 'rgb(44 255 171)';
                                             }
                                             else if (items == 'pu') {
-                                                color = 'rgb(155 246 210)';
+                                                color = 'rgb(44 255 171)';
                                             }
                                             else if (items == 'dd') {
-                                                color = 'rgb(110 247 193)';
+                                                color = 'rgb(44 255 171)';
                                             }
                                             else if (items == 'en') {
                                                 color = 'rgb(44 255 171)';
                                             }
                                             else if (items == 'sqc') {
-                                                color = 'rgb(165 244 184)';
+                                                color = 'rgb(44 255 171)';
                                             }
                                             else if (items == 'qc') {
-                                                color = 'rgb(178 251 166)';
+                                                color = 'rgb(44 255 171)';
                                             }
                                             else if (items == 'dil_dd' || items == 'dil_qc') {
-                                                color = 'rgb(198 246 190)';
+                                                color = 'rgb(44 255 171)';
                                             }
                                             else if (items == 'qa') {
-                                                color = '#CCFFCC';
+                                                color = 'rgb(44 255 171)';
                                             }
                                         } else if (status == 'R') {
                                             color = 'red'
@@ -406,7 +409,6 @@ function Createform() {
                                         let icon = '';
                                         if (status == "F" || status == "R") {
                                             if (iApp == "received" || iApp == "issued" || iApp == "check") {
-                                                // icon = <IoArrowDown style={{ color: "rgb(28 3 217)" }} />
                                                 icon = <IoArrowForward style={{ color: "rgb(28 3 217)" }} />
                                             }
                                             else {
@@ -432,7 +434,8 @@ function Createform() {
                                             title: iApp,
                                             icon: icon,
                                             holdDate: holdDate,
-                                            colorHoldDate: colorHoldDate
+                                            colorHoldDate: colorHoldDate,
+                                            namePedning: namePending,
                                         });
                                     });
                                     oEcr.push(iECR);
@@ -447,9 +450,12 @@ function Createform() {
 
 
                                 return <tr>
+                                    {/* {
+                                        JSON.stringify(getdata)
+                                    } */}
+
                                     <td style={{ backgroundColor: (status != '' ? 'rgb(255 252 106)' : 'rgb(72 229 23)') }}><p style={{ color: (status != '' ? 'red' : 'rgb(60 3 255)') }}>{(status != '' ? status : 'FINISH')}</p>
                                     </td>
-                                    {/* <td><center><Button variant="primary" onClick={() => handleShowDetail(item.ecrno)} >Report</Button></center> */}
                                     <td>
                                         <Link underline="hover">
                                             <center><FcFinePrint style={{ width: '35px', height: '45px' }} onClick={() => handleShowDetail(item.ecrno)} /></center>
@@ -508,7 +514,10 @@ function Createform() {
                                                                 <div style={{ fontSize: '9px' }}>
                                                                     {vApp.date}
                                                                 </div>
-                                                                <div style={{ color: vApp.colorHoldDate, fontSize: '11px', fontWeight: '700' }}>  {vApp.holdDate}</div></div>
+                                                                <div style={{ color: vApp.colorHoldDate, fontSize: '11px', fontWeight: '700' }}>  {vApp.holdDate}
+                                                                </div>
+                                                                <div style={{ color: 'rgb(101 93 192)' }}>  {vApp.namePedning}</div>
+                                                            </div>
 
                                                         </td>
                                                     })

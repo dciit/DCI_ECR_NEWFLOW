@@ -217,7 +217,7 @@ function ModelAttachFile(props) {
                                             showFile?.map((item, index) => {
                                                 return <StyledTableRow key={item.docid}>
                                                     <StyledTableCell align="center">{item.no}</StyledTableCell>
-                                                    <StyledTableCell align="center">{item.docfile}</StyledTableCell>
+                                                    <StyledTableCell align="center">{item.filename}</StyledTableCell>
                                                     <StyledTableCell align="center">{item.section}</StyledTableCell>
                                                     <StyledTableCell align="center">{item.addfileby}</StyledTableCell>
                                                     <StyledTableCell align="center">{item.addfiledate}</StyledTableCell>

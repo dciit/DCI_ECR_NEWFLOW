@@ -92,7 +92,7 @@ function FormCreate(props) {
     const [employee, setemployee] = useState('');
     const [employeeArray, setEmployeeArray] = useState([]);
     const [step, setStep] = useState('ISSUED');
-    const stepArray = ['ISSUED', 'CHECK', 'APPROVED'];
+    const stepArrayCre = ['CHECK', 'APPROVED'];
     const [tableNotify, setTableNotify] = useState([]);
 
     useEffect(() => {
@@ -143,6 +143,10 @@ function FormCreate(props) {
     const [partName, setpartName] = useState('');
     const [remark, setremark] = useState('');
     const [methodRemark, setmethodRemark] = useState('');
+    const [purpose, setPurpose] = useState('');
+    const [methodOld, setMethodOld] = useState('');
+    const [methodNew, setMethodNew] = useState('');
+    const [detail, setDetail] = useState('');
     const [duedate, setduedate] = useState(moment().format('YYYY-MM-DD'));
     const [itemOther, setItemOther] = useState('');
     const [notification, setNotification] = useState('');
@@ -188,20 +192,9 @@ function FormCreate(props) {
             setcbFORDDNEED(res.data.filter(item => item.dictType == 'REQ_FOR'));
         })
 
-        getDataSrvPermiss.getEmployee().then((res) => {
+        getDataSrvPermiss.getEmployeeForCreate().then((res) => {
             try {
                 setEmployeeArray(res.data);
-            }
-            catch (error) {
-                console.log(error);
-                return error;
-            }
-        });
-
-
-        getDataSrvPermiss.getNotifyTo(ecrno).then((res) => {
-            try {
-                setTableNotify(res.data);
             }
             catch (error) {
                 console.log(error);
@@ -286,7 +279,7 @@ function FormCreate(props) {
             setbtnAddFile(true);
 
             getDataSrv.postInputData({
-                Ecrno: nbr[0]?.runningNumber, TitleNane: title, Section: grpSection, Item: cbitem, ItemOther: itOther, Notificaion: noti, DRNo: drno, Model: selectItem(cbMODEL), ModelOther: modelot, Line: selectItem(cbLINE), LineOther: lineOt, EmpCode: empCode, PartNo: partNo, PartName: partName, Remark: remark, DueDate: duedate, Method: methodRemark, SecForDD: secForDD
+                Ecrno: nbr[0]?.runningNumber, TitleNane: title, Section: grpSection, Item: cbitem, ItemOther: itOther, Notificaion: noti, DRNo: drno, Model: selectItem(cbMODEL), ModelOther: modelot, Line: selectItem(cbLINE), LineOther: lineOt, EmpCode: empCode, PartNo: partNo, PartName: partName, Remark: remark, DueDate: duedate, Method: methodRemark, SecForDD: secForDD, purpose: purpose, methodOld: methodOld, methodNew: methodNew, detail: detail
             }).then((res) => {
                 try {
                     refresh();
@@ -305,7 +298,7 @@ function FormCreate(props) {
     //***************************END FUNCTON INPUT DATA*************************** */
 
 
-    //******************SET STEP*************** */
+    //******************SET NOTIFY TO*************** */
     const handleChangeEmployee = (event) => {
         setemployee(event.target.value);
     };
@@ -318,7 +311,15 @@ function FormCreate(props) {
     const postAddNotifyTo = (ecR_NO, section) => {
         getDataSrvPermiss.postAddNotifyTo({ employeeCode: employee, employeeFullName: employee, ecrno: ecR_NO, step: step, createBy: empCode, section: section }).then((res) => {
             try {
-                initFiles();
+                getDataSrvPermiss.getNotifyTo(ecR_NO).then((res) => {
+                    try {
+                        setTableNotify(res.data);
+                    }
+                    catch (error) {
+                        console.log(error);
+                        return error;
+                    }
+                });
             }
             catch (error) {
                 console.log(error);
@@ -326,9 +327,29 @@ function FormCreate(props) {
             }
         });
     };
-    //******************END SET STEP*************** */
+    //******************END SET NOTIFY TO*************** */
 
-
+    //****************** DELETE NOTIFY TO*************** */
+    const getDeleteNotify = (ecr_No, code, step) => {
+        getDataSrvPermiss.getDeleteNotify(code, step).then((res) => {
+            try {
+                getDataSrvPermiss.getNotifyTo(ecr_No).then((res) => {
+                    try {
+                        setTableNotify(res.data);
+                    }
+                    catch (error) {
+                        console.log(error);
+                        return error;
+                    }
+                });
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+    //******************END DELETE NOTIFY TO*************** */
 
     return (
         <div>
@@ -582,25 +603,57 @@ function FormCreate(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={6} md={4}>
                                             <Form.Label>PART NO (DRAWING) </Form.Label>
-                                            <Form.Control type="text" onChange={(event) => setpartNo(event.target.value)} />
+                                            {/* <Form.Control type="text" onChange={(event) => setpartNo(event.target.value)} /> */}
+                                            <Form.Control as="textarea" rows={5} onChange={(event) => setpartNo(event.target.value)} />
                                         </Col>
                                         <Col xs={6} md={4}>
                                             <Form.Label>PART NAME</Form.Label>
-                                            <Form.Control type="text" onChange={(event) => setpartName(event.target.value)} />
+                                            {/* <Form.Control type="text" onChange={(event) => setpartName(event.target.value)} /> */}
+                                            <Form.Control as="textarea" rows={5} onChange={(event) => setpartName(event.target.value)} />
                                         </Col>
-                                        <Col xs={6} md={4}>
-                                            <Form.Label>REMARK</Form.Label>
-                                            <Form.Control type="text" onChange={(event) => setremark(event.target.value)} />
+                                        <Col xs={12} md={4}>
+                                            <Form.Label>REMARK / MODEL</Form.Label>
+                                            {/* <Form.Control as="textarea" onChange={(event) => setremark(event.target.value)} /> */}
+                                            <Form.Control as="textarea" rows={5} onChange={(event) => setremark(event.target.value)} />
+                                        </Col>
+                                    </Row>
+
+                                    {/* <Row className='styleRowText'>
+                                        <Col xs={12} md={12}>
+                                            <Form.Label>วัตถุประสงค์,วิธีการ,ข้อมูลการส่งมอบ (Purposr,Method & Delivery Schedule)</Form.Label>
+                                            <Form.Control as="textarea" rows={5} onChange={(event) => setmethodRemark(event.target.value)} />
+                                        </Col>
+                                    </Row> */}
+
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={12}>
+                                            <Form.Label>Purpose :</Form.Label>
+                                            <Form.Control as="textarea" rows={2} onChange={(event) => setPurpose(event.target.value)} />
                                         </Col>
                                     </Row>
 
                                     <Row className='styleRowText'>
-                                        <Col xs={12} md={7}>
-                                            <Form.Label>วัตถุประสงค์,วิธีการ,ข้อมูลการส่งมอบ (Purposr,Method & Delivery Schedule)</Form.Label>
-                                            <Form.Control as="textarea" rows={5} onChange={(event) => setmethodRemark(event.target.value)} />
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>Method Old :</Form.Label>
+                                            <Form.Control as="textarea" rows={1} onChange={(event) => setMethodOld(event.target.value)} />
                                         </Col>
-                                        <Col xs={12} md={3}>
-                                            <Form.Label>Due Date (Target)</Form.Label>
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>Method New :</Form.Label>
+                                            <Form.Control as="textarea" rows={1} onChange={(event) => setMethodNew(event.target.value)} />
+                                        </Col>
+                                    </Row>
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={12}>
+                                            <Form.Label>Detail :</Form.Label>
+                                            <Form.Control as="textarea" rows={3} onChange={(event) => setDetail(event.target.value)} />
+                                        </Col>
+                                    </Row>
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={5}>
+                                            <Form.Label>Due Date (Target) : </Form.Label>
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
                                                     value={dayjs(duedate)}
@@ -613,10 +666,109 @@ function FormCreate(props) {
                                                 />
                                             </LocalizationProvider>
                                         </Col>
-                                        <Col xs={12} md={2}>
+                                        <Col xs={12} md={7}>
                                         </Col>
                                     </Row>
 
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>Change Point (Acction):</Form.Label>
+                                            <button>Add file</button>
+                                        </Col>
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>Delivery Sche :</Form.Label>
+                                            <button>Add file</button>
+                                        </Col>
+                                    </Row>
+
+
+
+                                    <br></br>
+                                    {
+                                        btnAddFile && <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                            <Col xs={12} md={2}></Col>
+                                            <Col xs={12} md={4}>
+                                                <FormControl fullWidth>
+                                                    <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                    <Select
+                                                        labelId="demo-simple-select-label"
+                                                        id="demo-simple-select"
+                                                        value={employee}
+                                                        label="EmpCode"
+                                                        onChange={handleChangeEmployee}>
+                                                        {
+                                                            employeeArray.map((item, index) =>
+                                                                <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                            )
+                                                        }
+                                                    </Select>
+                                                </FormControl>
+                                            </Col>
+                                            <Col xs={12} md={4}>
+                                                <FormControl fullWidth>
+                                                    <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                    <Select
+                                                        labelId="demo-simple-select-label"
+                                                        id="demo-simple-select"
+                                                        value={step}
+                                                        label="Status"
+                                                        onChange={handleChangeStep}>
+                                                        {
+                                                            stepArrayCre.map((item, index) =>
+                                                                <MenuItem value={item}>{item}</MenuItem>
+                                                            )
+                                                        }
+                                                    </Select>
+                                                </FormControl>
+                                            </Col>
+                                            <Col xs={12} md={2}>
+                                                {
+                                                    permission.filter((item) => {
+                                                        return ((permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == "ISSUED" || permission[0]?.grpRoleSect == "ADMIN"))
+                                                    }).length ? <>
+                                                        <Button variant="success" onClick={() => postAddNotifyTo(nbr[0]?.runningNumber, "CREATE")}>
+                                                            + เพิ่มผู้ดำเนินการ
+                                                        </Button>
+                                                    </> : ""
+                                                }
+                                            </Col>
+                                        </Row>
+                                    }
+
+                                    <br></br>
+                                    {
+                                        btnAddFile && <Row style={{ display: 'flex', justifyContent: 'center' }}>
+                                            <table className='notify'>
+                                                <tr>
+                                                    <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
+                                                    <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style={{ border: '1px solid black', color: tableNotify[0]?.cre_approvedBit == "F" ? 'black' : 'gainsboro' }}>
+                                                        <center>{tableNotify[0]?.cre_approved}<br></br> {tableNotify[0]?.cre_approvedBit == 'F' ? tableNotify[0]?.cre_approvedDate : ''}</center>
+                                                        {
+                                                            tableNotify[0]?.cre_approved != null ?
+                                                                (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN'))) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(nbr[0]?.runningNumber, tableNotify[0]?.cre_approvedCode, tableNotify[0]?.cre_approved_step)}>
+                                                                    ลบ
+                                                                </Button>
+                                                                : ''
+                                                        }
+                                                    </td>
+                                                    <td style={{ border: '1px solid black', color: tableNotify[0]?.cre_checkedBit == "F" ? 'black' : 'gainsboro' }}>
+                                                        <center>{tableNotify[0]?.cre_checked}<br></br>{tableNotify[0]?.cre_checkedBit == 'F' ? tableNotify[0]?.cre_checkedDate : ''}</center>
+                                                        {
+                                                            tableNotify[0]?.cre_checked != null ?
+                                                                (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN'))) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(nbr[0]?.runningNumber, tableNotify[0]?.cre_checkedCode, tableNotify[0]?.cre_check_step)}>
+                                                                    ลบ
+                                                                </Button>
+                                                                : ''
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </Row>
+                                    }
 
 
                                 </Typography>

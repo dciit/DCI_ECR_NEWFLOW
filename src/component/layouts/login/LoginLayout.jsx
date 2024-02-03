@@ -15,7 +15,7 @@ function LoginLayout() {
             {/* <div style={{ display: 'flex' }}> */}
             <div class="row" style={{ display: 'flex', alignItems: 'center' }}>
                 <div class="col-sm-2">
-                    <img src={Picture2} className='image-1' />
+                    {/* <img src={Picture2} className='image-1' /> */}
                 </div>
                 <div class="col-sm-8" >
                     {/* <img src={Picture2} className='image-1' /> */}
@@ -27,7 +27,7 @@ function LoginLayout() {
                     {/* <img src={Pichon} className='image-2' /> */}
                 </div>
                 <div class="col-sm-2">
-                    <img src={Pichon} className='image-2' />
+                    {/* <img src={Pichon} className='image-2' /> */}
                 </div>
             </div>
             {/* </div> */}

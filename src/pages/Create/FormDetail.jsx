@@ -116,6 +116,10 @@ function FormDetail(props) {
     const [partName, setpartName] = useState('');
     const [remark, setremark] = useState('');
     const [method, setMethod] = useState('');
+    const [purpose, setPurpose] = useState('');
+    const [methodOld, setMethodOld] = useState('');
+    const [methodNew, setMethodNew] = useState('');
+    const [detail, setDetail] = useState('');
     const [duedate, setduedate] = useState(moment().format('YYYY-MM-DD'));
     const [remarkPU, setRemarkPU] = useState('');
     const [remarkCancel, setRemarkCancel] = useState('');
@@ -142,7 +146,11 @@ function FormDetail(props) {
     const [otherCus, setOtherCus] = useState('');
     const [informationDate, setInformationDate] = useState(moment().format('YYYY-MM-DD'));
     const [informationBy, setInformationBy] = useState('');
-    const [employeeArray, setEmployeeArray] = useState([]);
+    const [employeeArrayCRE, setEmployeeArrayCRE] = useState([]);
+    const [employeeArrayPU, setEmployeeArrayPU] = useState([]);
+    const [employeeArrayDD, setEmployeeArrayDD] = useState([]);
+    const [employeeArrayEN, setEmployeeArrayEN] = useState([]);
+    const [employeeArrayQC, setEmployeeArrayQC] = useState([]);
     const [employee, setemployee] = useState('');
     const [step, setStep] = useState('ISSUED');
     const [showDtSec, setshowDtSec] = useState(false);
@@ -190,9 +198,39 @@ function FormDetail(props) {
             }
         });
 
-        getDataSrvPermiss.getEmployee().then((res) => {
+        getDataSrvPermiss.getEmployeeForCreate().then((res) => {
             try {
-                setEmployeeArray(res.data);
+                setEmployeeArrayCRE(res.data);
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+
+        getDataSrvPermiss.getEmployeeForPU().then((res) => {
+            try {
+                setEmployeeArrayPU(res.data);
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+
+        getDataSrvPermiss.getEmployeeForDD().then((res) => {
+            try {
+                setEmployeeArrayDD(res.data);
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+
+        getDataSrvPermiss.getEmployeeForEN().then((res) => {
+            try {
+                setEmployeeArrayEN(res.data);
             }
             catch (error) {
                 console.log(error);
@@ -203,7 +241,6 @@ function FormDetail(props) {
         getDataSrvPermiss.getNotifyTo(ecrno).then((res) => {
             try {
                 setTableNotify(res.data);
-                console.log(res.data);
             }
             catch (error) {
                 console.log(error);
@@ -464,9 +501,9 @@ function FormDetail(props) {
         if (confirm(txtAlertUpdate) == true) {
             getDataSrv.postUpdateData(dataModaldt[0]).then((res) => {
                 try {
-                    // initFiles();
                     refresh();
-                    close(false);
+                    //close(false);
+                    alert("successfully")
                 }
                 catch (error) {
                     return error;
@@ -623,7 +660,15 @@ function FormDetail(props) {
     const postAddNotifyTo = (ecR_NO, section) => {
         getDataSrvPermiss.postAddNotifyTo({ employeeCode: employee, employeeFullName: employee, ecrno: ecR_NO, step: step, createBy: empCode, section: section }).then((res) => {
             try {
-                initFiles();
+                getDataSrvPermiss.getNotifyTo(ecR_NO).then((res) => {
+                    try {
+                        setTableNotify(res.data);
+                    }
+                    catch (error) {
+                        console.log(error);
+                        return error;
+                    }
+                });
             }
             catch (error) {
                 console.log(error);
@@ -633,10 +678,18 @@ function FormDetail(props) {
     };
 
 
-    const getDeleteNotify = (code) => {
-        getDataSrvPermiss.getDeleteNotify(code).then((res) => {
+    const getDeleteNotify = (ecrno, code, step) => {
+        getDataSrvPermiss.getDeleteNotify(code, step).then((res) => {
             try {
-                initFiles();
+                getDataSrvPermiss.getNotifyTo(ecrno).then((res) => {
+                    try {
+                        setTableNotify(res.data);
+                    }
+                    catch (error) {
+                        console.log(error);
+                        return error;
+                    }
+                });
             }
             catch (error) {
                 console.log(error);
@@ -734,7 +787,7 @@ function FormDetail(props) {
                                                         {
                                                             cbPUEdit.map((item, index) => {
                                                                 var isChecked = dataModaldt[0]?.item.split(',').includes(item?.dict_Code);
-                                                                return <div key={item?.dict_Code} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px' }}>{item?.dict_Desc}</div> <br></br></div>
+                                                                return <div key={item?.dict_Code} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px' }}>{item?.dict_Desc}</div> <br></br></div>
                                                             })
                                                         }
                                                         <Box
@@ -745,7 +798,7 @@ function FormDetail(props) {
                                                             noValidate
                                                             autoComplete="off"
                                                         >
-                                                            <TextField id="txtOtherPU" label="Other..." variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.item_Other)} disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true}
+                                                            <TextField id="txtOtherPU" label="Other..." variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.item_Other)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                                 onChange={(event) => {
                                                                     dataModaldt[0].item_Other = event.target.value;
                                                                     setItemOther([...dataModaldt])
@@ -764,7 +817,7 @@ function FormDetail(props) {
                                                         {
                                                             cbDDEdit.map((item, index) => {
                                                                 var isChecked = dataModaldt[0]?.item.split(',').includes(item?.dict_Code);
-                                                                return <div key={item?.dict_Code} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxDDEdit(index, event.target.checked)} disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px' }}>{item?.dict_Desc}</div> <br></br></div>
+                                                                return <div key={item?.dict_Code} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxDDEdit(index, event.target.checked)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px' }}>{item?.dict_Desc}</div> <br></br></div>
                                                             })
                                                         }
                                                         <Box
@@ -775,17 +828,17 @@ function FormDetail(props) {
                                                             noValidate
                                                             autoComplete="off"
                                                         >
-                                                            <TextField id="txtOtherNoti" label="Notification" variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.notificationNO)} disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true}
+                                                            <TextField id="txtOtherNoti" label="Notification" variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.notificationNO)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                                 onChange={(event) => {
                                                                     dataModaldt[0].notificationNO = event.target.value;
                                                                     setNotification([...dataModaldt])
                                                                 }} /><br></br>
-                                                            <TextField id="txtOtherDrNo" label="DR No" variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.drno)} disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true}
+                                                            <TextField id="txtOtherDrNo" label="DR No" variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.drno)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                                 onChange={(event) => {
                                                                     dataModaldt[0].drno = event.target.value;
                                                                     setDrNo([...dataModaldt])
                                                                 }} /><br></br>
-                                                            <TextField id="txtOtherDD" label="Other...." variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.item_Other)} disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true}
+                                                            <TextField id="txtOtherDD" label="Other...." variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.item_Other)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                                 onChange={(event) => {
                                                                     dataModaldt[0].item_Other = event.target.value;
                                                                     setItemOther([...dataModaldt])
@@ -804,7 +857,7 @@ function FormDetail(props) {
                                                     {
                                                         cbMODELEdit.map((item, index) => {
                                                             var isChecked = dataModaldt[0]?.model.split(',').includes(item?.dict_Code);
-                                                            return <div key={item?.dict_Code} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxMODELEdit(index, event.target.checked)} disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px' }}>{item?.dict_Desc}</div> <br></br></div>
+                                                            return <div key={item?.dict_Code} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxMODELEdit(index, event.target.checked)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px' }}>{item?.dict_Desc}</div> <br></br></div>
                                                         })
                                                     }
                                                     <Box
@@ -815,7 +868,7 @@ function FormDetail(props) {
                                                         noValidate
                                                         autoComplete="off"
                                                     >
-                                                        <TextField id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.modelOther)} disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true}
+                                                        <TextField id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.modelOther)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                             onChange={(event) => {
                                                                 dataModaldt[0].modelOther = event.target.value;
                                                                 setModelOther([...dataModaldt])
@@ -833,7 +886,7 @@ function FormDetail(props) {
                                                     {
                                                         cbLINEEdit.map((item, index) => {
                                                             var isChecked = dataModaldt[0]?.line.split(',').includes(item?.dict_Code);
-                                                            return <div key={item?.dict_Code} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxLINEEdit(index, event.target.checked)} disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px' }}>{item?.dict_Desc}</div> <br></br></div>
+                                                            return <div key={item?.dict_Code} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxLINEEdit(index, event.target.checked)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px' }}>{item?.dict_Desc}</div> <br></br></div>
                                                         })
                                                     }
                                                     <Box
@@ -844,7 +897,7 @@ function FormDetail(props) {
                                                         noValidate
                                                         autoComplete="off"
                                                     >
-                                                        <TextField id="txtOtherLine" label="Other..." variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.lineOther)} disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true}
+                                                        <TextField id="txtOtherLine" label="Other..." variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.lineOther)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                             onChange={(event) => {
                                                                 dataModaldt[0].lineOther = event.target.value;
                                                                 setLineOther([...dataModaldt])
@@ -864,7 +917,7 @@ function FormDetail(props) {
                                                         {
                                                             cbFORDDNEEDEdit.map((item, index) => {
                                                                 var isChecked = dataModaldt[0]?.forDDsection.split(',').includes(item?.dict_Code);
-                                                                return <div key={item?.dict_Code} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxFORDDNEEDEdit(index, event.target.checked)} disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px' }}>{item?.dict_Desc}</div> <br></br></div>
+                                                                return <div key={item?.dict_Code} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxFORDDNEEDEdit(index, event.target.checked)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px' }}>{item?.dict_Desc}</div> <br></br></div>
                                                             })
 
                                                         }
@@ -886,7 +939,7 @@ function FormDetail(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={6} md={4}>
                                             <Form.Label>PART NO (DRAWING) </Form.Label>
-                                            <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.partno)} disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true}
+                                            <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.partno)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].partno = event.target.value;
                                                     setpartNo([...dataModaldt])
@@ -894,15 +947,15 @@ function FormDetail(props) {
                                         </Col>
                                         <Col xs={6} md={4}>
                                             <Form.Label>PART NAME</Form.Label>
-                                            <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.partName)} disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true}
+                                            <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.partName)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].partName = event.target.value;
                                                     setpartName([...dataModaldt])
                                                 }} />
                                         </Col>
                                         <Col xs={6} md={4}>
-                                            <Form.Label>REMARK</Form.Label>
-                                            <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.remarkCreate)} disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true}
+                                            <Form.Label>REMARK / MODEL</Form.Label>
+                                            <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.remarkCreate)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].remarkCreate = event.target.value;
                                                     setremark([...dataModaldt])
@@ -910,10 +963,10 @@ function FormDetail(props) {
                                         </Col>
                                     </Row>
 
-                                    <Row className='styleRowText'>
+                                    {/* <Row className='styleRowText'>
                                         <Col xs={6} md={8}>
                                             <Form.Label>วัตถุประสงค์,วิธีการ,ข้อมูลการส่งมอบ (Purposr,Method & Delivery Schedule)</Form.Label>
-                                            <Form.Control as="textarea" rows={5} id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.method)} disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true}
+                                            <Form.Control as="textarea" rows={5} id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.method)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].method = event.target.value;
                                                     setMethod([...dataModaldt])
@@ -938,7 +991,80 @@ function FormDetail(props) {
                                                 />
                                             </LocalizationProvider>
                                         </Col>
+                                    </Row> */}
+
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={12}>
+                                            <Form.Label>Purpose :</Form.Label>
+                                            <Form.Control as="textarea" rows={2} variant="standard" value={decodeURIComponent(dataModaldt[0]?.purpose)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                                onChange={(event) => {
+                                                    dataModaldt[0].purpose = event.target.value;
+                                                    setPurpose([...dataModaldt])
+                                                }} />
+                                            {/* <Form.Control as="textarea" rows={2} onChange={(event) => setPurpose(event.target.value)} /> */}
+                                        </Col>
                                     </Row>
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>Method Old :</Form.Label>
+                                            <Form.Control as="textarea" rows={2} variant="standard" value={decodeURIComponent(dataModaldt[0]?.methodOld)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                                onChange={(event) => {
+                                                    dataModaldt[0].methodOld = event.target.value;
+                                                    setMethodOld([...dataModaldt])
+                                                }} />
+                                            {/* <Form.Control as="textarea" rows={1} onChange={(event) => setMethodOld(event.target.value)} /> */}
+                                        </Col>
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>Method New :</Form.Label>
+                                            <Form.Control as="textarea" rows={2} variant="standard" value={decodeURIComponent(dataModaldt[0]?.methodNew)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                                onChange={(event) => {
+                                                    dataModaldt[0].methodNew = event.target.value;
+                                                    setMethodNew([...dataModaldt])
+                                                }} />
+                                            {/* <Form.Control as="textarea" rows={1} onChange={(event) => setMethodNew(event.target.value)} /> */}
+                                        </Col>
+                                    </Row>
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={12}>
+                                            <Form.Label>Detail :</Form.Label>
+                                            <Form.Control as="textarea" rows={2} variant="standard" value={decodeURIComponent(dataModaldt[0]?.detail)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                                onChange={(event) => {
+                                                    dataModaldt[0].detail = event.target.value;
+                                                    setDetail([...dataModaldt])
+                                                }} />
+                                            {/* <Form.Control as="textarea" rows={3} onChange={(event) => setDetail(event.target.value)} /> */}
+                                        </Col>
+                                    </Row>
+
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={5}>
+                                            <Form.Label>Due Date (Target) : </Form.Label>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <DatePicker
+                                                    // 2023-10-31
+                                                    value={dayjs(dataModaldt[0]?.duedate)}
+                                                    slotProps={{
+                                                        textField: {
+                                                            format: 'YYYY-MM-DD',
+                                                        },
+                                                    }}
+                                                    onChange={(val) => {
+                                                        dataModaldt[0].duedate = val.format('YYYY-MM-DD');
+                                                        setDataModaldt([...dataModaldt])
+                                                    }}
+                                                    disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                                />
+                                            </LocalizationProvider>
+                                        </Col>
+                                        <Col xs={12} md={7}>
+                                        </Col>
+                                    </Row>
+
+
 
 
                                     <br></br>
@@ -954,7 +1080,7 @@ function FormDetail(props) {
                                                     label="EmpCode"
                                                     onChange={handleChangeEmployee}>
                                                     {
-                                                        employeeArray.map((item, index) =>
+                                                        employeeArrayCRE.map((item, index) =>
                                                             <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
                                                         )
                                                     }
@@ -1003,12 +1129,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.cre_approved}<br></br> {tableNotify[0]?.cre_approvedBit == 'F' ? tableNotify[0]?.cre_approvedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.cre_approved != null ?
-                                                            // (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.cre_approvedCode)}>
-                                                            //     ลบ
-                                                            // </Button>
-                                                            // : ''
-
-                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.create_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.cre_approvedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.create_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.cre_approvedCode, tableNotify[0]?.cre_approved_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1018,11 +1139,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.cre_checked}<br></br>{tableNotify[0]?.cre_checkedBit == 'F' ? tableNotify[0]?.cre_checkedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.cre_checked != null ?
-                                                            // (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.cre_checkedCode)}>
-                                                            //     ลบ
-                                                            // </Button>
-                                                            // : ''
-                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.create_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.cre_checkedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.create_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.cre_checkedCode, tableNotify[0]?.cre_check_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1034,6 +1151,9 @@ function FormDetail(props) {
                                             </tr>
                                         </table>
                                     </Row>
+                                    {
+                                        JSON.stringify(tableNotify)
+                                    }
 
 
                                     <Row className='styleRowText'>
@@ -1105,7 +1225,7 @@ function FormDetail(props) {
                                                     label="EmpCode"
                                                     onChange={handleChangeEmployee}>
                                                     {
-                                                        employeeArray.map((item, index) =>
+                                                        employeeArrayPU.map((item, index) =>
                                                             <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
                                                         )
                                                     }
@@ -1155,7 +1275,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.pu_approved}<br></br> {tableNotify[0]?.pu_approvedBit == 'F' ? tableNotify[0]?.pu_approvedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.pu_approved != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.pu_approvedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_approvedCode, tableNotify[0]?.pu_approved_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1165,7 +1285,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.pu_checked}<br></br>{tableNotify[0]?.pu_checkedBit == 'F' ? tableNotify[0]?.pu_checkedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.pu_checked != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.pu_checkedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_checkedCode, tableNotify[0]?.pu_checked_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1175,7 +1295,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.pu_issued}<br></br> {tableNotify[0]?.pu_issuedBit == 'F' ? tableNotify[0]?.pu_issuedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.pu_issued != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.pu_issuedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_issuedCode, tableNotify[0]?.pu_issued_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1259,7 +1379,7 @@ function FormDetail(props) {
                                                     label="EmpCode"
                                                     onChange={handleChangeEmployee}>
                                                     {
-                                                        employeeArray.map((item, index) =>
+                                                        employeeArrayDD.map((item, index) =>
                                                             <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
                                                         )
                                                     }
@@ -1286,7 +1406,7 @@ function FormDetail(props) {
                                         <Col xs={12} md={2}>
                                             {
                                                 permission.filter((item) => {
-                                                    return permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.dD_IssuedBit != "F"
+                                                    return permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.dD_ReceiveBit != "F"
                                                 }).length ? <>
                                                     <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, "DD")}>
                                                         + เพิ่มผู้ดำเนินการ
@@ -1309,7 +1429,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.dd_approved}<br></br> {tableNotify[0]?.dd_approvedBit == 'F' ? tableNotify[0]?.dd_approvedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.dd_approved != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.dD_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.dd_approvedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.dD_ReceiveBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_approvedCode, tableNotify[0]?.dd_approved_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1319,7 +1439,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.dd_checked}<br></br>{tableNotify[0]?.dd_checkedBit == 'F' ? tableNotify[0]?.dd_checkedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.dd_checked != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.dD_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.dd_checkedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.dD_ReceiveBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_checkedCode, tableNotify[0]?.dd_checked_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1329,7 +1449,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.dd_issued}<br></br> {tableNotify[0]?.dd_issuedBit == 'F' ? tableNotify[0]?.dd_issuedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.dd_issued != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.dD_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.dd_issuedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.dD_ReceiveBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_issuedCode, tableNotify[0]?.dd_issued_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1386,7 +1506,7 @@ function FormDetail(props) {
                                                     label="EmpCode"
                                                     onChange={handleChangeEmployee}>
                                                     {
-                                                        employeeArray.map((item, index) =>
+                                                        employeeArrayEN.map((item, index) =>
                                                             <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
                                                         )
                                                     }
@@ -1436,7 +1556,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.en_approved}<br></br> {tableNotify[0]?.en_approvedBit == 'F' ? tableNotify[0]?.en_approvedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.en_approved != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.eN_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.en_approvedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.eN_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_approvedCode, tableNotify[0]?.en_approved_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1446,7 +1566,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.en_checked}<br></br>{tableNotify[0]?.en_checkedBit == 'F' ? tableNotify[0]?.en_checkedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.en_checked != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.eN_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.en_checkedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.eN_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_checkedCode, tableNotify[0]?.en_checked_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1456,7 +1576,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.en_issued}<br></br> {tableNotify[0]?.en_issuedBit == 'F' ? tableNotify[0]?.en_issuedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.en_issued != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.eN_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.en_issuedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.eN_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_issuedCode, tableNotify[0]?.en_issued_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1512,7 +1632,7 @@ function FormDetail(props) {
                                                     label="EmpCode"
                                                     onChange={handleChangeEmployee}>
                                                     {
-                                                        employeeArray.map((item, index) =>
+                                                        employeeArrayQC.map((item, index) =>
                                                             <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
                                                         )
                                                     }
@@ -1562,7 +1682,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.sqc_approved}<br></br> {tableNotify[0]?.sqc_approvedBit == 'F' ? tableNotify[0]?.sqc_approvedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.sqc_approved != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "SQC" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.sqc_approvedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "SQC" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_approvedCode, tableNotify[0]?.sqc_approved_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1572,7 +1692,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.sqc_checked}<br></br>{tableNotify[0]?.sqc_checkedBit == 'F' ? tableNotify[0]?.sqc_checkedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.sqc_checked != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "SQC" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.sqc_checkedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "SQC" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_checkedCode, tableNotify[0]?.sqc_checked_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1582,7 +1702,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.sqc_issued}<br></br> {tableNotify[0]?.sqc_issuedBit == 'F' ? tableNotify[0]?.sqc_issuedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.sqc_issued != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "SQC" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.sqc_issuedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "SQC" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_issuedCode, tableNotify[0]?.sqc_issued_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1687,7 +1807,7 @@ function FormDetail(props) {
                                                     label="EmpCode"
                                                     onChange={handleChangeEmployee}>
                                                     {
-                                                        employeeArray.map((item, index) =>
+                                                        employeeArrayQC.map((item, index) =>
                                                             <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
                                                         )
                                                     }
@@ -1738,7 +1858,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.qc_approved}<br></br> {tableNotify[0]?.qc_approvedBit == 'F' ? tableNotify[0]?.qc_approvedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.qc_approved != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.qc_approvedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_approvedCode, tableNotify[0]?.qc_approved_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1748,7 +1868,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.qc_checked}<br></br>{tableNotify[0]?.qc_checkedBit == 'F' ? tableNotify[0]?.qc_checkedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.qc_checked != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.qc_checkedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_checkedCode, tableNotify[0]?.qc_checked_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1758,7 +1878,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.qc_issued}<br></br> {tableNotify[0]?.qc_issuedBit == 'F' ? tableNotify[0]?.qc_issuedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.qc_issued != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.qc_issuedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_issuedCode, tableNotify[0]?.qc_issued_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -2081,7 +2201,7 @@ function FormDetail(props) {
                                                     label="EmpCode"
                                                     onChange={handleChangeEmployee}>
                                                     {
-                                                        employeeArray.map((item, index) =>
+                                                        employeeArrayQC.map((item, index) =>
                                                             <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
                                                         )
                                                     }
@@ -2132,7 +2252,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.qa_approved}<br></br> {tableNotify[0]?.qa_approvedBit == 'F' ? tableNotify[0]?.qa_approvedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.qa_approved != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "QA" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.qa_approvedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "QA" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_approvedCode, tableNotify[0]?.qa_approved_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -2142,7 +2262,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.qa_checked}<br></br>{tableNotify[0]?.qa_checkedBit == 'F' ? tableNotify[0]?.qa_checkedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.qa_checked != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "QA" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.qa_checkedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "QA" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_checkedCode, tableNotify[0]?.qa_checked_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -2152,7 +2272,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.qa_issued}<br></br> {tableNotify[0]?.qa_issuedBit == 'F' ? tableNotify[0]?.qa_issuedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.qa_issued != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "QA" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(tableNotify[0]?.qa_issuedCode)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "QA" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_issuedCode, tableNotify[0]?.qa_issued_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -2202,9 +2322,11 @@ function FormDetail(props) {
                             }
                         </Stack>
                         <Stack direction={'row'} gap={3}>
+                            {/* **********************************  BUTTON SECTION CREATE **************************************/}
+                            {/* --------******* ISSUED********------- */}
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.createBy == item.code) ||
+                                    return (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.createBy == item.code || item.grpRole == "ADMIN") ||
                                         (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && permission[0]?.grpRoleSect == "ADMIN" && dataModaldt[0]?.createBy == item.code)
                                 }).length ? (dataModaldt[0]?.create_CheckBit == "U" || dataModaldt[0]?.create_CheckBit == "R") && <>
                                     <Button variant="danger" onClick={() => getDeleteDoc(dataModaldt[0]?.ecR_NO)}>
@@ -2215,51 +2337,51 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.createBy == item.code) ||
-                                        (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && permission[0]?.grpRoleSect == "ADMIN" && dataModaldt[0]?.createBy == item.code)
+                                    return (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && creSec == roleSec && (dataModaldt[0]?.createBy == item.code || item.grpRole == "ADMIN")) ||
+                                        (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && permission[0]?.grpRoleSect == "ADMIN" && (dataModaldt[0]?.createBy == item.code || item.grpRole == "ADMIN"))
                                 }).length ? (dataModaldt[0]?.create_CheckBit == "U" || dataModaldt[0]?.create_CheckBit == "R") && <><Button autoFocus variant="primary" onClick={() => upDateData(dataModaldt[0].ecR_NO)}>
                                     แก้ไขเอกสาร (Update)
                                 </Button></>
                                     :
                                     ""
                             }
+                            {/* --------*******END ISSUED********------- */}
 
 
-                            {/* **********************************  BUTTON SECTION CREATE **************************************/}
                             {/* --------******* CHECK********------- */}
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && creSec == roleSec) ||
-                                        (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && creSec != roleSec)
-                                    // return (item.menuCode == "BTN0009" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") || 
-                                    // (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
-                                }).length ? (
-                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
-                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F")
-                                )
-                                &&
-                                <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO)}>
-                                        ตีกลับ (Return)
-                                    </Button>
-                                </> : ""
+                                    return (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN")) ||
+                                        (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && (creSec != roleSec || item.grpRole == "ADMIN"))
+                                }).length ?// (
+                                    // (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
+                                    // (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F") || permission.grpRole == 'ADMIN'
+                                    //  permission.grpRole == 'ADMIN'
+                                    // )
+                                    //  &&
+                                    <>
+                                        <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO)}>
+                                            ตีกลับ (Return)
+                                        </Button>
+                                    </> : ""
                             }
+                            {/* {
+                                JSON.stringify(permission)
+                            } */}
 
 
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && creSec == roleSec) ||
-                                        (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && creSec != roleSec)
-                                    // return (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") ||
-                                    //     (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
-                                }).length ? (
-                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
-                                    dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F"
-                                )
-                                &&
-                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                    อนุมัติ (MG Approved)
-                                </Button>
+                                    return (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN")) ||
+                                        (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN"))
+                                }).length ? //(
+                                    //     (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
+                                    //     dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F"
+                                    // )
+                                    // &&
+                                    <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        อนุมัติ (MG Approved)
+                                    </Button>
                                     :
                                     ""
                             }
@@ -2270,31 +2392,32 @@ function FormDetail(props) {
                             {/* --------******* APPROVED ********------- */}
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") ||
-                                        (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
+                                    return (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN") && dataModaldt[0]?.create_ApprovedBit != "F") ||
+                                        (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN") && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
                                         (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
-                                }).length ? (
-                                    dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" || dataModaldt[0]?.dD_ReceiveBit != "F")
-                                )
-                                &&
-                                <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                        ตีกลับ (Return)
-                                    </Button>
-                                </> : ""
+                                }).length ? //(
+                                    //     dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" || dataModaldt[0]?.dD_ReceiveBit != "F")
+                                    // )
+                                    // &&
+                                    <>
+                                        <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                            ตีกลับ (Return)
+                                        </Button>
+                                    </> : ""
                             }
 
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") ||
-                                        (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
+                                    return (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN") && dataModaldt[0]?.create_ApprovedBit != "F") ||
+                                        (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN") && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
                                         (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
-                                }).length ? (
-                                    dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" || dataModaldt[0]?.dD_ReceiveBit != "F")
-                                )
-                                && <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                    อนุมัติ (GM Approved)
-                                </Button>
+                                }).length ? //(
+                                    //     dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" || dataModaldt[0]?.dD_ReceiveBit != "F")
+                                    // )
+                                    // && 
+                                    <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                        อนุมัติ (GM Approved)
+                                    </Button>
                                     :
                                     ""
                             }
@@ -2310,7 +2433,6 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0007" && item.rolE_VIEW == "True"
                                 }).length ? (
                                     dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_IssuedBit != "F"
-                                    // dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.pU_ReceiveBit != "F"
                                 )
                                 &&
                                 <>
@@ -2326,7 +2448,6 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0011" && item.rolE_VIEW == "True"
                                 }).length ? (
                                     dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_IssuedBit != "F"
-                                    // dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.pU_ReceiveBit != "F"
                                 )
                                 && <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
                                     รับเอกสาร (Receive)
@@ -2373,13 +2494,8 @@ function FormDetail(props) {
                             {/* --------******* CHECK********------- */}
                             {
                                 permission.filter((item) => {
-                                    // return (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec == roleSec) ||
-                                    //     (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec != roleSec)
-                                    return (item.menuCode == "BTN0009" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") ||
-                                        (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    return (item.menuCode == "BTN0009" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
                                 }).length ? (
-                                    // (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
-                                    // (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F")
                                     (dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
                                     (dataModaldt[0]?.pU_ApprovedBit != "F")
                                 )
@@ -2394,10 +2510,7 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    // return (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec == roleSec) ||
-                                    //     (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec != roleSec)
-                                    return (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") ||
-                                        (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    return (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
                                 }).length ? (
                                     (dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
                                     dataModaldt[0]?.pU_ApprovedBit != "F"
@@ -2420,7 +2533,8 @@ function FormDetail(props) {
                                         (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
                                         (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
                                 }).length ? (
-                                    dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" || dataModaldt[0]?.dD_ReceiveBit != "F")
+                                    dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" ||
+                                        dataModaldt[0]?.dD_ReceiveBit != "F")
                                 )
                                 &&
                                 <>

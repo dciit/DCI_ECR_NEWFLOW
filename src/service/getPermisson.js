@@ -14,10 +14,25 @@ const postAddPermission = (param) => {
 }
 
 
-const getEmployee = () => {
-    return http.APIPERMISSION.get(`getEmployee`);
+const getEmployeeForCreate = () => {
+    return http.APIPERMISSION.get(`getEmployeeForCreate`);
 }
 
+const getEmployeeForPU = () => {
+    return http.APIPERMISSION.get(`getEmployeeForPU`);
+}
+
+const getEmployeeForDD = () => {
+    return http.APIPERMISSION.get(`getEmployeeForDD`);
+}
+
+const getEmployeeForEN = () => {
+    return http.APIPERMISSION.get(`getEmployeeForEN`);
+}
+
+const getEmployeeForQC = () => {
+    return http.APIPERMISSION.get(`getEmployeeForQC`);
+}
 
 const postAddNotifyTo = (param) => {
     return http.APIPERMISSION.post(`postAddNotifyTo`, param);
@@ -29,8 +44,8 @@ const getNotifyTo = (ecrno) => {
 }
 
 
-const getDeleteNotify = (code) => {
-    return http.APIPERMISSION.get(`getDeleteNotify/${code}`);
+const getDeleteNotify = (code, step) => {
+    return http.APIPERMISSION.get(`getDeleteNotify/${code}/${step}`);
 }
 
 const getShowEmployee = () => {
@@ -54,7 +69,11 @@ export default {
     getPermission,
     getPermissionMenu,
     postAddPermission,
-    getEmployee,
+    getEmployeeForCreate,
+    getEmployeeForPU,
+    getEmployeeForDD,
+    getEmployeeForEN,
+    getEmployeeForQC,
     postAddNotifyTo,
     getNotifyTo,
     getDeleteNotify,
