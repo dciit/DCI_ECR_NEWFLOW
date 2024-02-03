@@ -37,6 +37,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TableRow from '@mui/material/TableRow';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import { json } from 'react-router-dom';
 
 
 
@@ -167,6 +168,7 @@ function FormDetail(props) {
         }
     }, [show]);
 
+
     const initFiles = () => {
         dataModaldt.createBy = empCode;
         setDataModaldt([...dataModaldt])
@@ -231,6 +233,16 @@ function FormDetail(props) {
         getDataSrvPermiss.getEmployeeForEN().then((res) => {
             try {
                 setEmployeeArrayEN(res.data);
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+
+        getDataSrvPermiss.getEmployeeForQC().then((res) => {
+            try {
+                setEmployeeArrayQC(res.data);
             }
             catch (error) {
                 console.log(error);
@@ -770,6 +782,9 @@ function FormDetail(props) {
                             </div>
                         </Row>
 
+                        {
+                            JSON.stringify(dataModaldt)
+                        }
 
 
                         <Accordion expanded={expanded === 'CREATE'} onChange={handleChangeCollapse('CREATE')}>
@@ -1151,9 +1166,7 @@ function FormDetail(props) {
                                             </tr>
                                         </table>
                                     </Row>
-                                    {
-                                        JSON.stringify(tableNotify)
-                                    }
+
 
 
                                     <Row className='styleRowText'>
@@ -1890,99 +1903,6 @@ function FormDetail(props) {
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
-                        {/* <Accordion expanded={expanded === 'DIL'} disabled={dataModaldt[0]?.qC_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('DIL')}>
-                            <AccordionSummary aria-controls="panel7d-content" id="panel7d-header">
-                                <Typography>ส่วนที่ 7 DIL</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <Typography>
-                                    <Form.Label>3. JUDGEMENT ( DIL Design Section )</Form.Label>
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
-                                            <Form.Control as="textarea" style={{ backgroundColor: 'rgb(250 249 114)' }} rows={2} disabled={position == "ISSUED" ? false : true} value={dataModaldt[0]?.diL_DD_REMARK}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].diL_DD_REMARK = event.target.value;
-                                                    setRemarkDILDD([...dataModaldt])
-                                                }}
-                                            />
-                                        </Col>
-                                    </Row>
-
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Issued </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_DD_IssuedBy} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].diL_DD_IssuedBy = event.target.value;
-                                                    setIssuedDILDD([...dataModaldt])
-                                                }} />
-                                        </Col>
-                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Check </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_DD_CheckBy} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].diL_DD_CheckBy = event.target.value;
-                                                    setCheckDILDD([...dataModaldt])
-                                                }} />
-                                        </Col>
-                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Approved </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_DD_ApproveBy} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].diL_DD_ApproveBy = event.target.value;
-                                                    setApprovedDILDD([...dataModaldt])
-                                                }} />
-                                        </Col>
-                                    </Row>
-                                    <hr></hr>
-                                    <Form.Label>4. JUDGEMENT ( DIL Quality Control Section ) [Incase necessary]</Form.Label>
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
-                                            <Form.Control as="textarea" rows={2} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true} value={dataModaldt[0]?.diL_QC_REMARK}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].diL_QC_REMARK = event.target.value;
-                                                    setRemarkDILQC([...dataModaldt])
-                                                }} />
-                                        </Col>
-                                    </Row>
-
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Issued </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_IssuedBy} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].diL_QC_IssuedBy = event.target.value;
-                                                    setIssuedDILQC([...dataModaldt])
-                                                }} />
-                                        </Col>
-                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Check </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_CheckBy} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].diL_QC_CheckBy = event.target.value;
-                                                    setCheckDILQC([...dataModaldt])
-                                                }} />
-                                        </Col>
-                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Approved </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_ApproveBy} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].diL_QC_ApproveBy = event.target.value;
-                                                    setApprovedDILQC([...dataModaldt])
-                                                }} />
-                                        </Col>
-                                    </Row>
-
-                                    <hr></hr>
-
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
-                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                            <Form.Control as="textarea" rows={5} disabled={(position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.diL_Remark_Receive}
-                                                onChange={(e) => {
-                                                    dataModaldt[0].diL_Remark_Receive = e.target.value;
-                                                    setDIL_Receive([...dataModaldt]);
-                                                }} />
-                                        </Col>
-                                    </Row>
-
-                                </Typography>
-                            </AccordionDetails>
-                        </Accordion> */}
                         <Accordion expanded={expanded === 'DIL'} disabled={dataModaldt[0]?.qC_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('DIL')}>
                             <AccordionSummary aria-controls="panel7d-content" id="panel7d-header">
                                 <Typography>ส่วนที่ 7 DIL</Typography>
@@ -2351,8 +2271,9 @@ function FormDetail(props) {
                             {/* --------******* CHECK********------- */}
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN")) ||
-                                        (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && (creSec != roleSec || item.grpRole == "ADMIN"))
+                                    // return (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN")) ||
+                                    //     (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && (creSec != roleSec || item.grpRole == "ADMIN"))
+                                    return (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_CheckCode)
                                 }).length ?// (
                                     // (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
                                     // (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F") || permission.grpRole == 'ADMIN'
@@ -2361,26 +2282,25 @@ function FormDetail(props) {
                                     //  &&
                                     <>
                                         <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO)}>
-                                            ตีกลับ (Return)
+                                            ตีกลับ (Return) CREATE
                                         </Button>
                                     </> : ""
                             }
-                            {/* {
-                                JSON.stringify(permission)
-                            } */}
+
 
 
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN")) ||
-                                        (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN"))
+                                    // return (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN")) ||
+                                    //     (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN"))
+                                    return (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_CheckCode)
                                 }).length ? //(
                                     //     (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
                                     //     dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F"
                                     // )
                                     // &&
                                     <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        อนุมัติ (MG Approved)
+                                        อนุมัติ (MG Approved) CREATE
                                     </Button>
                                     :
                                     ""
@@ -2392,31 +2312,34 @@ function FormDetail(props) {
                             {/* --------******* APPROVED ********------- */}
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN") && dataModaldt[0]?.create_ApprovedBit != "F") ||
-                                        (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN") && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
-                                        (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+
+                                    // return (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN") && dataModaldt[0]?.create_ApprovedBit != "F") ||
+                                    //     (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN") && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
+                                    //     (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    return item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode
                                 }).length ? //(
                                     //     dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" || dataModaldt[0]?.dD_ReceiveBit != "F")
                                     // )
                                     // &&
                                     <>
                                         <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                            ตีกลับ (Return)
+                                            ตีกลับ (Return) CREATE
                                         </Button>
                                     </> : ""
                             }
 
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN") && dataModaldt[0]?.create_ApprovedBit != "F") ||
-                                        (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN") && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
-                                        (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    // return (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN") && dataModaldt[0]?.create_ApprovedBit != "F") ||
+                                    //     (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && (creSec == roleSec || item.grpRole == "ADMIN") && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
+                                    //     (item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    return item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode
                                 }).length ? //(
                                     //     dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" || dataModaldt[0]?.dD_ReceiveBit != "F")
                                     // )
                                     // && 
                                     <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                        อนุมัติ (GM Approved)
+                                        อนุมัติ (GM Approved) CREATE
                                     </Button>
                                     :
                                     ""
@@ -2437,7 +2360,7 @@ function FormDetail(props) {
                                 &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return)  PU
                                     </Button>
                                 </> : ""
                             }
@@ -2450,7 +2373,7 @@ function FormDetail(props) {
                                     dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_IssuedBit != "F"
                                 )
                                 && <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
-                                    รับเอกสาร (Receive)
+                                    รับเอกสาร (Receive)  PU
                                 </Button>
                                     :
                                     ""
@@ -2461,7 +2384,7 @@ function FormDetail(props) {
                             {/* --------*******ISSUED********------- */}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0008" && item.rolE_VIEW == "True"
+                                    return (item.menuCode == "BTN0008" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_IssuedCode)
                                 }).length ? (
                                     (dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && (dataModaldt[0]?.pU_CheckBit == "U" || dataModaldt[0]?.pU_CheckBit == "R")) ||
                                     (dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F")
@@ -2469,21 +2392,21 @@ function FormDetail(props) {
                                 &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) PU
                                     </Button>
                                 </> : ""
                             }
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0012" && item.rolE_VIEW == "True"
+                                    return (item.menuCode == "BTN0012" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_IssuedCode)
                                 }).length ? (
                                     (dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && (dataModaldt[0]?.pU_CheckBit == "U" || dataModaldt[0]?.pU_CheckBit == "R")) ||
                                     (dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F")
                                 )
                                 && <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
-                                        ออกเอกสาร (Issued)
+                                        ออกเอกสาร (Issued) PU
                                     </Button>
                                 </>
                                     :
@@ -2494,15 +2417,17 @@ function FormDetail(props) {
                             {/* --------******* CHECK********------- */}
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0009" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    return (item.menuCode == "BTN0009" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_CheckCode) ||
+                                        (item.menuCode == "BTN0009" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_CheckCode)
                                 }).length ? (
                                     (dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
-                                    (dataModaldt[0]?.pU_ApprovedBit != "F")
+                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F") ||
+                                    dataModaldt[0]?.create_ApproveBit != "F"
                                 )
                                 &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) PU
                                     </Button>
                                 </> : ""
                             }
@@ -2510,14 +2435,17 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    // return (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    return (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_CheckCode) ||
+                                        (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_CheckCode)
                                 }).length ? (
                                     (dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
-                                    dataModaldt[0]?.pU_ApprovedBit != "F"
+                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F") ||
+                                    dataModaldt[0]?.create_ApproveBit != "F"
                                 )
                                 &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                    อนุมัติ (MG Approved)
+                                    อนุมัติ (MG Approved) PU
                                 </Button>
                                     :
                                     ""
@@ -2529,9 +2457,11 @@ function FormDetail(props) {
                             {/* --------******* APPROVED ********------- */}
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") ||
-                                        (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
-                                        (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    // return (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") ||
+                                    //     (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
+                                    //     (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    return (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode) ||
+                                        (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_ApprovedCode)
                                 }).length ? (
                                     dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" ||
                                         dataModaldt[0]?.dD_ReceiveBit != "F")
@@ -2539,21 +2469,23 @@ function FormDetail(props) {
                                 &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return)  PU
                                     </Button>
                                 </> : ""
                             }
 
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") ||
-                                        (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
-                                        (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    // return (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") ||
+                                    //     (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F") ||
+                                    //     (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    return (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode) ||
+                                        (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_ApprovedCode)
                                 }).length ? (
                                     dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" || dataModaldt[0]?.dD_ReceiveBit != "F")
                                 )
                                 && <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                    อนุมัติ (GM Approved)
+                                    อนุมัติ (GM Approved) PU
                                 </Button>
                                     :
                                     ""
@@ -2567,13 +2499,14 @@ function FormDetail(props) {
                             {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0015" && item.rolE_VIEW == "True"
+                                    // return (item.menuCode == "BTN0015" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_ApprovedCode)
                                 }).length ? (
                                     dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.dD_ReceiveBit != "F"
                                 )
                                 &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) DD
                                     </Button>
                                 </> : ""
                             }
@@ -2586,7 +2519,7 @@ function FormDetail(props) {
                                     dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.dD_ReceiveBit != "F"
                                 )
                                 && <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
-                                    รับเอกสาร (Receive)
+                                    รับเอกสาร (Receive) DD
                                 </Button>
                                     :
                                     ""
@@ -2595,7 +2528,8 @@ function FormDetail(props) {
                             {/*  ISSUED  */}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0016" && item.rolE_VIEW == "True"
+                                    // return item.menuCode == "BTN0016" && item.rolE_VIEW == "True"
+                                    return (item.menuCode == "BTN0016" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_IssuedCode)
                                 }).length ? (
                                     (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && (dataModaldt[0]?.dD_CheckBit == "U" || dataModaldt[0]?.dD_CheckBit == "R")) ||
                                     (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit != "F")
@@ -2603,21 +2537,22 @@ function FormDetail(props) {
                                 &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) DD
                                     </Button>
                                 </> : ""
                             }
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0020" && item.rolE_VIEW == "True"
+                                    // return item.menuCode == "BTN0020" && item.rolE_VIEW == "True"
+                                    return (item.menuCode == "BTN0020" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_IssuedCode)
                                 }).length ? (
                                     (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && (dataModaldt[0]?.dD_CheckBit == "U" || dataModaldt[0]?.dD_CheckBit == "R")) ||
                                     (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit != "F")
                                 )
                                 && <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
-                                        ออกเอกสาร (Issued)
+                                        ออกเอกสาร (Issued) DD
                                     </Button>
                                 </>
                                     : ""
@@ -2627,31 +2562,38 @@ function FormDetail(props) {
 
 
                             {/* ******** CHECK **********/}
+
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0017" && item.rolE_VIEW == "True" && creSec == roleSec
+                                    // return item.menuCode == "BTN0017" && item.rolE_VIEW == "True" && creSec == roleSec
+                                    return (item.menuCode == "BTN0017" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_CheckCode) ||
+                                        (item.menuCode == "BTN0017" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_CheckCode)
                                 }).length ? (
+                                    (dataModaldt[0]?.dD_CheckBit == "R") ||
                                     (dataModaldt[0]?.dD_CheckBit != "R" && dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0]?.dD_ApprovedBit != "F") ||
                                     (dataModaldt[0]?.dD_CheckBit != "R" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ApprovedBit != "F" && dataModaldt[0]?.dD_IssuedBit == "F")
                                 )
                                 &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) DD CHECK
                                     </Button>
                                 </> : ""
                             }
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0021" && item.rolE_VIEW == "True" && creSec == roleSec
+                                    // return item.menuCode == "BTN0021" && item.rolE_VIEW == "True" && creSec == roleSec
+                                    return (item.menuCode == "BTN0021" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_CheckCode) ||
+                                        ((item.menuCode == "BTN0021" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_CheckCode))
                                 }).length ? (
+                                    (dataModaldt[0]?.dD_CheckBit == "R") ||
                                     (dataModaldt[0]?.dD_CheckBit != "R" && dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0]?.dD_ApprovedBit != "F") ||
                                     (dataModaldt[0]?.dD_CheckBit != "R" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ApprovedBit != "F" && dataModaldt[0]?.dD_IssuedBit == "F")
                                 )
                                 &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                    อนุมัติ (MG Approved)
+                                    อนุมัติ (MG Approved) DD
                                 </Button>
                                     :
                                     ""
@@ -2662,9 +2604,11 @@ function FormDetail(props) {
                             {/* APPROVED */}
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0].create_CheckBit == "F") ||
-                                        (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0].create_CheckBit == "F") ||
-                                        (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    // return (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0].create_CheckBit == "F") ||
+                                    //     (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0].create_CheckBit == "F") ||
+                                    //     (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    return (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode) ||
+                                        (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_ApprovedCode)
                                 }).length ? (
                                     (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.eN_ReceiveBit == "U") ||
                                     dataModaldt[0]?.pU_ReceiveBit == "U"
@@ -2672,22 +2616,24 @@ function FormDetail(props) {
                                 &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) DD
                                     </Button>
                                 </> : ""
                             }
 
                             {
                                 permission.filter((item) => {
-                                    return (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0]?.create_CheckBit == "F") ||
-                                        (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.create_CheckBit == "F") ||
-                                        (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    // return (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0]?.create_CheckBit == "F") ||
+                                    //     (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.create_CheckBit == "F") ||
+                                    //     (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && creSec != roleSec && dataModaldt[0]?.create_ApprovedBit == "F")
+                                    return (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode) ||
+                                        (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_ApprovedCode)
                                 }).length ? (
                                     (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.eN_ReceiveBit == "U") ||
                                     dataModaldt[0]?.pU_ReceiveBit == "U"
                                 )
                                 && <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0]?.ecR_NO, dataModaldt[0]?.section, dataModaldt[0]?.create_ApprovedBit)}>
-                                    อนุมัติ (GM Approved)
+                                    อนุมัติ (GM Approved) DD
                                 </Button>
                                     :
                                     ""
@@ -2725,7 +2671,7 @@ function FormDetail(props) {
                             {/*  ISSUED  */}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0024" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_ReceiveBit == "F"
+                                    return item.menuCode == "BTN0024" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_ReceiveBit == "F" && empCode == dataModaldt[0]?.eN_IssuedCode
                                 }).length ? dataModaldt[0]?.eN_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -2736,7 +2682,7 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0028" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_ReceiveBit == "F"
+                                    return item.menuCode == "BTN0028" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_ReceiveBit == "F" && empCode == dataModaldt[0]?.eN_IssuedCode
                                 }).length ? dataModaldt[0]?.eN_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
@@ -2752,7 +2698,7 @@ function FormDetail(props) {
                             {/* ******** CHECK **********/}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0025" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_IssuedBit == "F"
+                                    return item.menuCode == "BTN0025" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_IssuedBit == "F" && empCode == dataModaldt[0]?.eN_CheckCode
                                 }).length ? dataModaldt[0]?.eN_ApprovedBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -2763,7 +2709,7 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0029" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_IssuedBit == "F"
+                                    return item.menuCode == "BTN0029" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_IssuedBit == "F" && empCode == dataModaldt[0]?.eN_CheckCode
                                 }).length ? dataModaldt[0]?.eN_ApprovedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
                                     อนุมัติ (MG Approved)
@@ -2777,7 +2723,7 @@ function FormDetail(props) {
                             {/* APPROVED */}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0026" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_CheckBit == "F"
+                                    return item.menuCode == "BTN0026" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_CheckBit == "F" && empCode == dataModaldt[0]?.eN_ApprovedCode
                                 }).length ? dataModaldt[0]?.sqC_ReceiveBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -2788,7 +2734,7 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0030" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_CheckBit == "F"
+                                    return item.menuCode == "BTN0030" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_CheckBit == "F" && empCode == dataModaldt[0]?.eN_ApprovedCode
                                 }).length ? dataModaldt[0]?.sqC_ReceiveBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
                                     อนุมัติ (GM Approved)
@@ -2830,7 +2776,7 @@ function FormDetail(props) {
                             {/*  ISSUED  */}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0032" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_ReceiveBit == "F"
+                                    return item.menuCode == "BTN0032" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_ReceiveBit == "F" && empCode == dataModaldt[0]?.sqC_IssuedCode
                                 }).length ? dataModaldt[0]?.sqC_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -2841,7 +2787,7 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0036" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_ReceiveBit == "F"
+                                    return item.menuCode == "BTN0036" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_ReceiveBit == "F" && empCode == dataModaldt[0]?.sqC_IssuedCode
                                 }).length ? dataModaldt[0]?.sqC_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
@@ -2857,7 +2803,7 @@ function FormDetail(props) {
                             {/* ******** CHECK **********/}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0033" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_IssuedBit == "F"
+                                    return item.menuCode == "BTN0033" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_IssuedBit == "F" && empCode == dataModaldt[0]?.sqC_CheckCode
                                 }).length ? dataModaldt[0]?.sqC_ApprovedBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -2868,7 +2814,7 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0037" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_IssuedBit == "F"
+                                    return item.menuCode == "BTN0037" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_IssuedBit == "F" && empCode == dataModaldt[0]?.sqC_CheckCode
                                 }).length ? dataModaldt[0]?.sqC_ApprovedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
                                     อนุมัติ (MG Approved)
@@ -2882,7 +2828,7 @@ function FormDetail(props) {
                             {/* APPROVED */}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0034" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_CheckBit == "F"
+                                    return item.menuCode == "BTN0034" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_CheckBit == "F" && empCode == dataModaldt[0]?.sqC_ApprovedCode
                                 }).length ? dataModaldt[0]?.qC_ReceiveBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -2893,7 +2839,7 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0038" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_CheckBit == "F"
+                                    return item.menuCode == "BTN0038" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_CheckBit == "F" && empCode == dataModaldt[0]?.sqC_ApprovedCode
                                 }).length ? dataModaldt[0]?.qC_ReceiveBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
                                     อนุมัติ (GM Approved)
@@ -2935,7 +2881,7 @@ function FormDetail(props) {
                             {/*  ISSUED  */}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0040" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ReceiveBit == "F"
+                                    return item.menuCode == "BTN0040" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ReceiveBit == "F" && empCode == dataModaldt[0]?.qC_IssuedCode
                                 }).length ? dataModaldt[0]?.qC_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -2946,7 +2892,7 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0044" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ReceiveBit == "F"
+                                    return item.menuCode == "BTN0044" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ReceiveBit == "F" && empCode == dataModaldt[0]?.qC_IssuedCode
                                 }).length ? dataModaldt[0]?.qC_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
@@ -2962,7 +2908,7 @@ function FormDetail(props) {
                             {/* ******** CHECK **********/}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0041" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_IssuedBit == "F"
+                                    return item.menuCode == "BTN0041" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_IssuedBit == "F" && empCode == dataModaldt[0]?.qC_CheckCode
                                 }).length ? dataModaldt[0]?.qC_ApprovedBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -2973,7 +2919,7 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0045" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_IssuedBit == "F"
+                                    return item.menuCode == "BTN0045" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_IssuedBit == "F" && empCode == dataModaldt[0]?.qC_CheckCode
                                 }).length ? dataModaldt[0]?.qC_ApprovedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
                                     อนุมัติ (MG Approved)
@@ -2987,7 +2933,7 @@ function FormDetail(props) {
                             {/* APPROVED */}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0042" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_CheckBit == "F"
+                                    return item.menuCode == "BTN0042" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_CheckBit == "F" && empCode == dataModaldt[0]?.qC_ApprovedCode
                                 }).length ? dataModaldt[0]?.diL_RECEIVEBIT != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -2998,7 +2944,7 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0046" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_CheckBit == "F"
+                                    return item.menuCode == "BTN0046" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_CheckBit == "F" && empCode == dataModaldt[0]?.qC_ApprovedCode
                                 }).length ? dataModaldt[0]?.diL_RECEIVEBIT != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
                                     อนุมัติ (GM Approved)
@@ -3070,7 +3016,7 @@ function FormDetail(props) {
                             {/*  ISSUED  */}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0050" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_ReceiveBit == "F"
+                                    return item.menuCode == "BTN0050" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_ReceiveBit == "F" && empCode == dataModaldt[0]?.qA_IssuedCode
                                 }).length ? dataModaldt[0]?.qA_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -3081,7 +3027,7 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0054" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_ReceiveBit == "F"
+                                    return item.menuCode == "BTN0054" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_ReceiveBit == "F" && empCode == dataModaldt[0]?.qA_IssuedCode
                                 }).length ? dataModaldt[0]?.qA_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
@@ -3096,7 +3042,7 @@ function FormDetail(props) {
                             {/* ******** CHECK **********/}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0051" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_IssuedBit == "F"
+                                    return item.menuCode == "BTN0051" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_IssuedBit == "F" && empCode == dataModaldt[0]?.qA_CheckCode
                                 }).length ? dataModaldt[0]?.qA_ApprovedBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -3107,7 +3053,7 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0055" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_IssuedBit == "F"
+                                    return item.menuCode == "BTN0055" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_IssuedBit == "F" && empCode == dataModaldt[0]?.qA_CheckCode
                                 }).length ? dataModaldt[0]?.qA_ApprovedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
                                     อนุมัติ (MG Approved)
@@ -3122,7 +3068,7 @@ function FormDetail(props) {
                             {/* APPROVED */}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0052" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_CheckBit == "F"
+                                    return item.menuCode == "BTN0052" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_CheckBit == "F" && empCode == dataModaldt[0]?.qA_ApprovedCode
                                 }).length ?
                                     <>
                                         <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -3133,7 +3079,7 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0056" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_CheckBit == "F"
+                                    return item.menuCode == "BTN0056" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_CheckBit == "F" && empCode == dataModaldt[0]?.qA_ApprovedCode
                                 }).length ?
                                     <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
                                         อนุมัติ (GM Approved)
