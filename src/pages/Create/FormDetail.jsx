@@ -160,7 +160,9 @@ function FormDetail(props) {
     const { show, close, ecrno, refresh, statusCreateAppBit } = props;
     let section = permission[0]?.grpRoleSect;
     let position = permission[0]?.grpRole;
-
+    const [strclass, setClass] = useState('');
+    const [requestPU, setRequestPU] = useState('');
+    const [showDueDate, setShowDueDate] = useState(false)
     useEffect(() => {
         if (show) {
             initFiles();
@@ -168,10 +170,18 @@ function FormDetail(props) {
         }
     }, [show]);
 
-
+    useEffect(() => {
+        if (typeof dataModaldt != 'undefined' && Object.keys(dataModaldt).length) {
+            setClass(dataModaldt[0].strclass)
+        }
+    }, [dataModaldt]);
+    useEffect(() => {
+        if (strclass != '') {
+        }
+    }, [strclass])
     const initFiles = () => {
         dataModaldt.createBy = empCode;
-        setDataModaldt([...dataModaldt])
+        // setDataModaldt([...dataModaldt])
         getDataSrv.getDetailCreate(ecrno).then((res) => {
             try {
                 if (Object.keys(res.data).length) {
@@ -711,7 +721,24 @@ function FormDetail(props) {
     };
 
 
+    const classArray = ['CLASS A', 'CLASS B', 'CLASS C', 'CLASS D', 'CLASS E']
 
+
+    const handleChangeClass = (event) => {
+        setClass([...dataModaldt])
+        setClass(event.target.value)
+
+        let data = dataModaldt;
+        data[0].strclass = event.target.value;
+        setDataModaldt([...data]);
+
+        if (event.target.value == "CLASS C" || event.target.value == "CLASS D" || event.target.value == "CLASS E") {
+            setShowDueDate(true)
+        }
+        else {
+            setShowDueDate(false)
+        }
+    };
 
 
     return (
@@ -761,7 +788,7 @@ function FormDetail(props) {
 
                         <Row className='styleChangeItem'>
                             <div class="col-sm-7" style={{ display: 'flex' }}>
-                                <h6>TITLE</h6> &nbsp; &nbsp;
+                                <h6>TITLE</h6> &nbsp; &nbsp; <span style={{ color: 'red', fontSize: '18px' }}>*</span>
                                 {
                                     dataModaldt[0]?.create_CheckBit != "F" ?
                                         <>
@@ -782,9 +809,9 @@ function FormDetail(props) {
                             </div>
                         </Row>
 
-                        {
+                        {/* {
                             JSON.stringify(dataModaldt)
-                        }
+                        } */}
 
 
                         <Accordion expanded={expanded === 'CREATE'} onChange={handleChangeCollapse('CREATE')}>
@@ -797,7 +824,7 @@ function FormDetail(props) {
                                         <Row className='styleRow'>
                                             <Col xs={12} md={12}>
                                                 <div className='styleCard'>
-                                                    <Form.Label>PU</Form.Label>
+                                                    <Form.Label>PU <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                                     <div>
                                                         {
                                                             cbPUEdit.map((item, index) => {
@@ -827,7 +854,7 @@ function FormDetail(props) {
                                         <Row className='styleRow'>
                                             <Col xs={12} md={12}>
                                                 <div className='styleCard'>
-                                                    <Form.Label>DD</Form.Label>
+                                                    <Form.Label>DD <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                                     <div>
                                                         {
                                                             cbDDEdit.map((item, index) => {
@@ -867,7 +894,7 @@ function FormDetail(props) {
                                     <Row className='styleRow'>
                                         <Col xs={12} md={4}>
                                             <div className='styleCard'>
-                                                <Form.Label>MODEL</Form.Label>
+                                                <Form.Label>MODEL <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                                 <div>
                                                     {
                                                         cbMODELEdit.map((item, index) => {
@@ -896,7 +923,7 @@ function FormDetail(props) {
 
                                         <Col xs={12} md={4}>
                                             <div className='styleCard'>
-                                                <Form.Label>LINE</Form.Label>
+                                                <Form.Label>LINE <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                                 <div>
                                                     {
                                                         cbLINEEdit.map((item, index) => {
@@ -927,7 +954,7 @@ function FormDetail(props) {
                                         ) :
                                             <Col xs={12} md={4}>
                                                 <div className='styleCard'>
-                                                    <Form.Label>FOR DD</Form.Label>
+                                                    <Form.Label>FOR DD <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                                     <div>
                                                         {
                                                             cbFORDDNEEDEdit.map((item, index) => {
@@ -953,7 +980,7 @@ function FormDetail(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={6} md={4}>
-                                            <Form.Label>PART NO (DRAWING) </Form.Label>
+                                            <Form.Label>PART NO (DRAWING) <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                             <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.partno)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].partno = event.target.value;
@@ -961,7 +988,7 @@ function FormDetail(props) {
                                                 }} />
                                         </Col>
                                         <Col xs={6} md={4}>
-                                            <Form.Label>PART NAME</Form.Label>
+                                            <Form.Label>PART NAME <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                             <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.partName)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].partName = event.target.value;
@@ -969,7 +996,7 @@ function FormDetail(props) {
                                                 }} />
                                         </Col>
                                         <Col xs={6} md={4}>
-                                            <Form.Label>REMARK / MODEL</Form.Label>
+                                            <Form.Label>REMARK / MODEL <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                             <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.remarkCreate)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].remarkCreate = event.target.value;
@@ -1010,21 +1037,43 @@ function FormDetail(props) {
 
 
                                     <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
-                                            <Form.Label>Purpose :</Form.Label>
-                                            <Form.Control as="textarea" rows={2} variant="standard" value={decodeURIComponent(dataModaldt[0]?.purpose)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>Purpose : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Control as="textarea" rows={1} variant="standard" value={decodeURIComponent(dataModaldt[0]?.purpose)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].purpose = event.target.value;
                                                     setPurpose([...dataModaldt])
                                                 }} />
-                                            {/* <Form.Control as="textarea" rows={2} onChange={(event) => setPurpose(event.target.value)} /> */}
+                                        </Col>
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>CLASS : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                                                <InputLabel id="demo-select-small-label">CLASS</InputLabel>
+                                                <Select
+                                                    labelId="demo-select-small-label"
+                                                    id="demo-select-small"
+                                                    value={strclass}
+                                                    label="Class"
+                                                    onChange={handleChangeClass}>
+                                                    {
+                                                        classArray.map((item, index) => {
+                                                            return <MenuItem value={item}>{item}</MenuItem>
+                                                        }
+
+                                                        )
+                                                    }
+                                                </Select>
+                                            </FormControl>
                                         </Col>
                                     </Row>
 
+
+
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
-                                            <Form.Label>Method Old :</Form.Label>
-                                            <Form.Control as="textarea" rows={2} variant="standard" value={decodeURIComponent(dataModaldt[0]?.methodOld)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                            <Form.Label>Method Old : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Control as="textarea" rows={1} variant="standard" value={decodeURIComponent(dataModaldt[0]?.methodOld)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].methodOld = event.target.value;
                                                     setMethodOld([...dataModaldt])
@@ -1032,32 +1081,7 @@ function FormDetail(props) {
                                             {/* <Form.Control as="textarea" rows={1} onChange={(event) => setMethodOld(event.target.value)} /> */}
                                         </Col>
                                         <Col xs={12} md={6}>
-                                            <Form.Label>Method New :</Form.Label>
-                                            <Form.Control as="textarea" rows={2} variant="standard" value={decodeURIComponent(dataModaldt[0]?.methodNew)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].methodNew = event.target.value;
-                                                    setMethodNew([...dataModaldt])
-                                                }} />
-                                            {/* <Form.Control as="textarea" rows={1} onChange={(event) => setMethodNew(event.target.value)} /> */}
-                                        </Col>
-                                    </Row>
-
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
-                                            <Form.Label>Detail :</Form.Label>
-                                            <Form.Control as="textarea" rows={2} variant="standard" value={decodeURIComponent(dataModaldt[0]?.detail)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].detail = event.target.value;
-                                                    setDetail([...dataModaldt])
-                                                }} />
-                                            {/* <Form.Control as="textarea" rows={3} onChange={(event) => setDetail(event.target.value)} /> */}
-                                        </Col>
-                                    </Row>
-
-
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={5}>
-                                            <Form.Label>Due Date (Target) : </Form.Label>
+                                            <Form.Label>Due Date (Target) : &nbsp;&nbsp;</Form.Label>
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
                                                     // 2023-10-31
@@ -1075,8 +1099,52 @@ function FormDetail(props) {
                                                 />
                                             </LocalizationProvider>
                                         </Col>
-                                        <Col xs={12} md={7}>
+                                    </Row>
+
+
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>Method New : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Control as="textarea" rows={1} variant="standard" value={decodeURIComponent(dataModaldt[0]?.methodNew)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                                onChange={(event) => {
+                                                    dataModaldt[0].methodNew = event.target.value;
+                                                    setMethodNew([...dataModaldt])
+                                                }} />
+                                            {/* <Form.Control as="textarea" rows={1} onChange={(event) => setMethodNew(event.target.value)} /> */}
                                         </Col>
+                                        <Col xs={12} md={6}>
+                                        </Col>
+                                    </Row>
+
+
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>Detail : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Control as="textarea" rows={1} variant="standard" value={decodeURIComponent(dataModaldt[0]?.detail)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                                onChange={(event) => {
+                                                    dataModaldt[0].detail = event.target.value;
+                                                    setDetail([...dataModaldt])
+                                                }} />
+                                            {/* <Form.Control as="textarea" rows={3} onChange={(event) => setDetail(event.target.value)} /> */}
+                                        </Col>
+                                        <Col xs={12} md={6}></Col>
+                                    </Row>
+
+
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>REQUEST PU  : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            {/* <Form.Control as="textarea" rows={1} onChange={(event) => setRequestPU(event.target.value)} /> */}
+                                            <Form.Control as="textarea" rows={1} variant="standard" value={decodeURIComponent(dataModaldt[0]?.requestPU)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                                onChange={(event) => {
+                                                    dataModaldt[0].requestPU = event.target.value;
+                                                    setRequestPU([...dataModaldt])
+                                                }} />
+                                        </Col>
+                                        <Col xs={12} md={6}> </Col>
                                     </Row>
 
 
@@ -1196,6 +1264,16 @@ function FormDetail(props) {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Typography>
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={3}></Col>
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>REQUEST PU :</Form.Label>
+                                            <Form.Control as="textarea" style={{ backgroundColor: 'red', color: 'while' }} disabled={position == "ISSUED" ? false : true} rows={2} value={dataModaldt[0]?.requestPU} readOnly />
+                                        </Col>
+                                        <Col xs={12} md={3}></Col>
+                                    </Row>
+
+                                    <br></br><br></br>
                                     <h6>2). QUALITY CHECK CONTENT (DCI) and Other</h6>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
@@ -1342,7 +1420,7 @@ function FormDetail(props) {
                                             {
                                                 cbItemSecDD.map((item, index) => {
                                                     var isChecked = dataModaldt[0]?.dD_Remark1.split(',').includes(item?.dict_Code);
-                                                    return <div key={item?.dict_Code} style={{ display: 'flex' }} > <input disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true} defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxSecDD(index, event.target.checked)} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px' }}>{item?.dict_Desc}</div> <br></br></div>
+                                                    return <div key={item?.dict_Code} style={{ display: 'flex' }} > <input disabled={(position == "ISSUED") ? false : true} defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxSecDD(index, event.target.checked)} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px' }}>{item?.dict_Desc}</div> <br></br></div>
                                                 })
                                             }
                                         </Col>
@@ -1358,7 +1436,7 @@ function FormDetail(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <Form.Control as="textarea" style={{ backgroundColor: 'rgb(250 249 114)' }} rows={5} disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true} value={dataModaldt[0]?.dD_Remark2}
+                                            <Form.Control as="textarea" style={{ backgroundColor: 'rgb(250 249 114)' }} rows={5} disabled={(position == "ISSUED") ? false : true} value={dataModaldt[0]?.dD_Remark2}
                                                 onChange={(e) => {
                                                     dataModaldt[0].dD_Remark2 = e.target.value;
                                                     setDD_Remark2([...dataModaldt]);
@@ -2386,8 +2464,12 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return (item.menuCode == "BTN0008" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_IssuedCode)
                                 }).length ? (
-                                    (dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && (dataModaldt[0]?.pU_CheckBit == "U" || dataModaldt[0]?.pU_CheckBit == "R")) ||
-                                    (dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F")
+                                    // (dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && (dataModaldt[0]?.pU_CheckBit == "U" || dataModaldt[0]?.pU_CheckBit == "R")) ||
+                                    // (dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F")
+
+                                    (dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F")
+                                    // ||
+                                    // (dataModaldt[0]?.pU_ReceiveBit != "R" && dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F")
                                 )
                                 &&
                                 <>
@@ -2401,8 +2483,9 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return (item.menuCode == "BTN0012" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_IssuedCode)
                                 }).length ? (
-                                    (dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && (dataModaldt[0]?.pU_CheckBit == "U" || dataModaldt[0]?.pU_CheckBit == "R")) ||
-                                    (dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F")
+                                    // (dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && (dataModaldt[0]?.pU_CheckBit == "U" || dataModaldt[0]?.pU_CheckBit == "R")) ||
+                                    // (dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F")
+                                    (dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F")
                                 )
                                 && <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
@@ -2420,9 +2503,11 @@ function FormDetail(props) {
                                     return (item.menuCode == "BTN0009" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_CheckCode) ||
                                         (item.menuCode == "BTN0009" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_CheckCode)
                                 }).length ? (
-                                    (dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
-                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F") ||
-                                    dataModaldt[0]?.create_ApproveBit != "F"
+                                    // (dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
+                                    // (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F") ||
+                                    // dataModaldt[0]?.create_ApproveBit != "F"
+                                    (dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0]?.createBy != "") ||
+                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F")
                                 )
                                 &&
                                 <>
@@ -2439,9 +2524,8 @@ function FormDetail(props) {
                                     return (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_CheckCode) ||
                                         (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_CheckCode)
                                 }).length ? (
-                                    (dataModaldt[0]?.create_ApproveBit != "F" && dataModaldt[0]?.create_CheckBit == "U") ||
-                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F") ||
-                                    dataModaldt[0]?.create_ApproveBit != "F"
+                                    (dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0]?.createBy != "") ||
+                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F")
                                 )
                                 &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
@@ -2501,7 +2585,8 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0015" && item.rolE_VIEW == "True"
                                     // return (item.menuCode == "BTN0015" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_ApprovedCode)
                                 }).length ? (
-                                    dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.dD_ReceiveBit != "F"
+                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.dD_ReceiveBit != "F") ||
+                                    (dataModaldt[0]?.pU_ApprovedBit == "F" && dataModaldt[0]?.dD_IssuedBit != "F")
                                 )
                                 &&
                                 <>
@@ -2516,7 +2601,8 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0019" && item.rolE_VIEW == "True"
                                 }).length ? (
-                                    dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.dD_ReceiveBit != "F"
+                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.dD_ReceiveBit != "F") ||
+                                    (dataModaldt[0]?.pU_ApprovedBit == "F" && dataModaldt[0]?.dD_IssuedBit != "F")
                                 )
                                 && <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
                                     รับเอกสาร (Receive) DD
@@ -2525,14 +2611,24 @@ function FormDetail(props) {
                                     ""
                             }
                             {/* END RECEIVE  */}
+
+
+
                             {/*  ISSUED  */}
+
                             {
                                 permission.filter((item) => {
                                     // return item.menuCode == "BTN0016" && item.rolE_VIEW == "True"
                                     return (item.menuCode == "BTN0016" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_IssuedCode)
                                 }).length ? (
-                                    (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && (dataModaldt[0]?.dD_CheckBit == "U" || dataModaldt[0]?.dD_CheckBit == "R")) ||
-                                    (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit != "F")
+                                    // (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && (dataModaldt[0]?.dD_CheckBit == "U" || dataModaldt[0]?.dD_CheckBit == "R")) ||
+                                    // (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit != "F")
+
+                                    // (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && (dataModaldt[0]?.dD_CheckBit == "U" || dataModaldt[0]?.dD_CheckBit == "R")) ||
+                                    // (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit != "F")
+
+                                    (dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit != "F") ||
+                                    dataModaldt[0]?.create_CheckBit != "F"
                                 )
                                 &&
                                 <>
@@ -2547,8 +2643,11 @@ function FormDetail(props) {
                                     // return item.menuCode == "BTN0020" && item.rolE_VIEW == "True"
                                     return (item.menuCode == "BTN0020" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_IssuedCode)
                                 }).length ? (
-                                    (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && (dataModaldt[0]?.dD_CheckBit == "U" || dataModaldt[0]?.dD_CheckBit == "R")) ||
-                                    (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit != "F")
+                                    // (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && (dataModaldt[0]?.dD_CheckBit == "U" || dataModaldt[0]?.dD_CheckBit == "R")) ||
+                                    // (dataModaldt[0]?.dD_ReceiveBit != "R" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit != "F")
+
+                                    (dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit != "F") ||
+                                    dataModaldt[0]?.create_CheckBit != "F"
                                 )
                                 && <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
@@ -2611,7 +2710,8 @@ function FormDetail(props) {
                                         (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_ApprovedCode)
                                 }).length ? (
                                     (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.eN_ReceiveBit == "U") ||
-                                    dataModaldt[0]?.pU_ReceiveBit == "U"
+                                    dataModaldt[0]?.pU_ReceiveBit == "U" ||
+                                    dataModaldt[0]?.pU_ReceiveBit == "R"
                                 )
                                 &&
                                 <>
@@ -2630,7 +2730,8 @@ function FormDetail(props) {
                                         (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_ApprovedCode)
                                 }).length ? (
                                     (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.eN_ReceiveBit == "U") ||
-                                    dataModaldt[0]?.pU_ReceiveBit == "U"
+                                    dataModaldt[0]?.pU_ReceiveBit == "U" ||
+                                    dataModaldt[0]?.pU_ReceiveBit == "R"
                                 )
                                 && <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0]?.ecR_NO, dataModaldt[0]?.section, dataModaldt[0]?.create_ApprovedBit)}>
                                     อนุมัติ (GM Approved) DD

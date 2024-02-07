@@ -9,7 +9,7 @@ import Print from "./pages/Print/Print";
 import Chat from "./pages/Chat/Chat";
 import Detail from "./pages/Create/FormDetail";
 import AddPermissions from "./pages/Home/AddPermissions";
-import Test from "./pages/Create/Test";
+import LoginVI from "./pages/Login/LoginVI";
 import PrintComponent from "./pages/Print/PrintComponent";
 let logintrue = false
 logintrue = localStorage.getItem('logintrue', false)
@@ -21,9 +21,12 @@ const Routess = () => {
         <BrowserRouter>
             <Routes>
                 {/* Frontend */}
-                <Route path="*" element={<LoginLayout />} />
-                <Route path="/Login" element={<LoginLayout />} />
+                {/* <Route path="*" element={<LoginLayout />} />
+                <Route path="/Login" element={<LoginLayout />} /> */}
+                <Route path="*" element={<LoginVI />} />
+                <Route path="/Login" element={<LoginVI />} />
                 <Route path={BASE_PATH + '/PrintPage/:ecrno'} element={<PrintComponent />} />
+                <Route path={BASE_PATH + '/LoginVI'} element={<LoginVI />} />
                 <Route element={<Backend />}>
                     <Route path={BASE_PATH + '/createform'} element={<Createform />} />
                     <Route path={BASE_PATH + '/home'} element={<Home />} />
@@ -31,7 +34,6 @@ const Routess = () => {
                     <Route path={BASE_PATH + '/Print/:ecrno'} element={<Print />} />
                     <Route path={BASE_PATH + '/Chat/:ecrno'} element={<Chat />} />
                     <Route path={BASE_PATH + '/ModalDetail'} element={<Detail />} />
-                    <Route path={BASE_PATH + '/PrintTest'} element={<Test />} />
                 </Route>
             </Routes>
         </BrowserRouter >

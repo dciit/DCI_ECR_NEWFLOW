@@ -95,10 +95,12 @@ function FormCreate(props) {
     const stepArrayCre = ['CHECK', 'APPROVED'];
     const [tableNotify, setTableNotify] = useState([]);
 
+
     useEffect(() => {
         if (show) {
             initFiles();
             setbtnAddFile(false);
+            setShowDueDate(false)
         }
 
     }, [show]);
@@ -130,6 +132,7 @@ function FormCreate(props) {
     // *********************** ตัวแปร ส่งไป API*******************
     const [btnAddFile, setbtnAddFile] = useState(false);
     const [openAttrFile, setOpenAttrFile] = useState(false);
+    const [showDueDate, setShowDueDate] = useState(false)
     const [ecrnoSelected, setEcrnoSelected] = useState('');
     const [title, setTitle] = useState('');
     const [ddlSection, setddlSection] = React.useState('Design');
@@ -147,6 +150,7 @@ function FormCreate(props) {
     const [methodOld, setMethodOld] = useState('');
     const [methodNew, setMethodNew] = useState('');
     const [detail, setDetail] = useState('');
+    const [requestPU, setRequestPU] = useState('');
     const [duedate, setduedate] = useState(moment().format('YYYY-MM-DD'));
     const [itemOther, setItemOther] = useState('');
     const [notification, setNotification] = useState('');
@@ -155,7 +159,8 @@ function FormCreate(props) {
     const [lineOther, setLineOther] = useState('');
     // const empCode = localStorage.getItem("name");
     const empCode = Cookies.get('code')
-    const [nbr, setNbr] = useState([]);
+    const [nbr, setNbr] = useState([])
+    const [strclass, setClass] = useState(['CLASS A']);
     // ***************จบ ตัวแปร ส่งไป API ***********************
 
 
@@ -220,9 +225,7 @@ function FormCreate(props) {
     function handleCheckBoxPU(indexCheck, checked) {
         var items = cbPU;
         items[indexCheck]['checked'] = checked;
-        // console.log(cbPU)
         setcbPU(items);
-
     }
 
     function handleCheckBoxDD(indexCheck, checked) {
@@ -260,9 +263,9 @@ function FormCreate(props) {
         }
         /// ************จบ สั้น************
 
-        var cbitem = ddlSection == "Design" ? selectItem(cbDD) : selectItem(cbPU)
+        let cbitem = grpSection == "Design" ? selectItem(cbDD) : selectItem(cbPU);
         var secForDD = selectItem(cbFORDDNEED) != "" ? selectItem(cbFORDDNEED) : ""
-        if (ddlSection == "Design" && selectItem(cbFORDDNEED) != "") {
+        if (grpSection == "Design" && selectItem(cbFORDDNEED) != "") {
             secForDD = selectItem(cbFORDDNEED);
         }
         else {
@@ -275,11 +278,11 @@ function FormCreate(props) {
         var modelot = modelOther != "" ? modelOther : "-";
         var lineOt = lineOther != "" ? lineOther : "-";
 
-        if (title != "") {
-            setbtnAddFile(true);
 
+        if (title != "" && cbitem != "" && noti != "" && selectItem(cbMODEL) != "" && selectItem(cbLINE) != "" && partNo != "" && partName != "" && remark != "" && purpose != "" && methodOld != "" && methodNew != "" && detail != "" && requestPU != "") {
+            setbtnAddFile(true);
             getDataSrv.postInputData({
-                Ecrno: nbr[0]?.runningNumber, TitleNane: title, Section: grpSection, Item: cbitem, ItemOther: itOther, Notificaion: noti, DRNo: drno, Model: selectItem(cbMODEL), ModelOther: modelot, Line: selectItem(cbLINE), LineOther: lineOt, EmpCode: empCode, PartNo: partNo, PartName: partName, Remark: remark, DueDate: duedate, Method: methodRemark, SecForDD: secForDD, purpose: purpose, methodOld: methodOld, methodNew: methodNew, detail: detail
+                Ecrno: nbr[0]?.runningNumber, TitleNane: title, Section: grpSection, Item: cbitem, ItemOther: itOther, Notificaion: noti, DRNo: drno, Model: selectItem(cbMODEL), ModelOther: modelot, Line: selectItem(cbLINE), LineOther: lineOt, EmpCode: empCode, PartNo: partNo, PartName: partName, Remark: remark, DueDate: duedate, Method: methodRemark, SecForDD: secForDD, purpose: purpose, methodOld: methodOld, methodNew: methodNew, detail: detail, requestPU: requestPU, strclass: strclass
             }).then((res) => {
                 try {
                     refresh();
@@ -292,7 +295,7 @@ function FormCreate(props) {
             });
         }
         else {
-            alert("กรุณากรอกชื่อ Title");
+            alert("กรุณากรอกเอกสารให้ครบถ้วน (*)");
         }
     };
     //***************************END FUNCTON INPUT DATA*************************** */
@@ -351,6 +354,21 @@ function FormCreate(props) {
     };
     //******************END DELETE NOTIFY TO*************** */
 
+    const classArray = ['CLASS A', 'CLASS B', 'CLASS C', 'CLASS D', 'CLASS E']
+
+
+    const handleChangeClass = (event) => {
+        setClass(event.target.value);
+        console.log(event.target.value)
+        if (event.target.value == "CLASS C" || event.target.value == "CLASS D" || event.target.value == "CLASS E") {
+            setShowDueDate(true)
+        }
+        else {
+            setShowDueDate(false)
+        }
+    };
+
+
     return (
         <div>
             <BootstrapDialog
@@ -394,7 +412,7 @@ function FormCreate(props) {
 
                             <div class="row" className='styleChangeItem'>
                                 <div class="col-sm-12" style={{ display: 'flex' }}>
-                                    <h6>TITLE</h6> &nbsp; &nbsp;
+                                    <h6>TITLE</h6> &nbsp; &nbsp; <p style={{ color: 'red', fontSize: '18px' }}>*</p> &nbsp; &nbsp;
                                     <TextField id="txtTitle" variant="standard" style={{ width: '95%', backgroundColor: '#f8ef64', height: '67%' }} onChange={(event) => setTitle(event.target.value)} />
                                     <br></br><br></br>
                                     <Form.Label>Section</Form.Label>
@@ -422,7 +440,7 @@ function FormCreate(props) {
                                         <Row className='styleRow'>
                                             <Col xs={12} md={12}>
                                                 <div className='styleCard'>
-                                                    <Form.Label>PU</Form.Label>
+                                                    <Form.Label>PU <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                                     <div>
                                                         {
                                                             cbPU.map((item, index) => {
@@ -447,7 +465,7 @@ function FormCreate(props) {
                                         <Row className='styleRow'>
                                             <Col xs={12} md={12}>
                                                 <div className='styleCard'>
-                                                    <Form.Label>DD</Form.Label>
+                                                    <Form.Label>DD <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                                     <div>
                                                         {
                                                             cbDD.map((item, index) => {
@@ -462,9 +480,9 @@ function FormCreate(props) {
                                                             noValidate
                                                             autoComplete="off"
                                                         >
-                                                            <TextField id="txtOtherNoti" label="Notification No" variant="standard" style={{ width: '95%' }} onChange={(event) => setNotification(event.target.value)} /> <br></br>
-                                                            <TextField id="txtOtherDrNo" label="DR No" variant="standard" style={{ width: '95%' }} onChange={(event) => setDrNo(event.target.value)} /> <br></br>
-                                                            <TextField id="txtOtherDD" label="Other...." variant="standard" style={{ width: '95%' }} onChange={(event) => setItemOther(event.target.value)} />
+                                                            <span style={{ color: 'red', fontSize: '18px' }}>*</span>    <TextField id="txtOtherNoti" label="Notification No" variant="standard" style={{ width: '95%' }} onChange={(event) => setNotification(event.target.value)} /><br></br>
+                                                            <span style={{ color: 'white', fontSize: '18px' }}>*</span><TextField id="txtOtherDrNo" label="DR No" variant="standard" style={{ width: '95%' }} onChange={(event) => setDrNo(event.target.value)} /> <br></br>
+                                                            <span style={{ color: 'white', fontSize: '18px' }}>*</span><TextField id="txtOtherDD" label="Other...." variant="standard" style={{ width: '95%' }} onChange={(event) => setItemOther(event.target.value)} />
                                                         </Box>
                                                     </div>
                                                 </div>
@@ -476,7 +494,7 @@ function FormCreate(props) {
                                         <Row className='styleRow'>
                                             <Col xs={12} md={4}>
                                                 <div className='styleCard'>
-                                                    <Form.Label>MODEL</Form.Label>
+                                                    <Form.Label>MODEL <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                                     <div>
                                                         {
                                                             cbMODEL.map((item, index) => {
@@ -500,7 +518,7 @@ function FormCreate(props) {
 
                                             <Col xs={12} md={4}>
                                                 <div className='styleCard'>
-                                                    <Form.Label>LINE</Form.Label>
+                                                    <Form.Label>LINE <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                                     <div>
                                                         {
                                                             cbLINE.map((item, index) => {
@@ -529,7 +547,7 @@ function FormCreate(props) {
                                         <Row className='styleRow'>
                                             <Col xs={12} md={4}>
                                                 <div className='styleCard'>
-                                                    <Form.Label>MODEL</Form.Label>
+                                                    <Form.Label>MODEL <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                                     <div>
                                                         {
                                                             cbMODEL.map((item, index) => {
@@ -553,7 +571,7 @@ function FormCreate(props) {
 
                                             <Col xs={12} md={4}>
                                                 <div className='styleCard'>
-                                                    <Form.Label>LINE</Form.Label>
+                                                    <Form.Label>LINE <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                                     <div>
                                                         {
                                                             cbLINE.map((item, index) => {
@@ -577,7 +595,7 @@ function FormCreate(props) {
 
                                             <Col xs={12} md={4}>
                                                 <div className='styleCard'>
-                                                    <Form.Label>FOR DD</Form.Label>
+                                                    <Form.Label>FOR DD <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                                     <div>
                                                         {
                                                             cbFORDDNEED.map((item, index) => {
@@ -602,17 +620,17 @@ function FormCreate(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={6} md={4}>
-                                            <Form.Label>PART NO (DRAWING) </Form.Label>
+                                            <Form.Label>PART NO (DRAWING) <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                             {/* <Form.Control type="text" onChange={(event) => setpartNo(event.target.value)} /> */}
                                             <Form.Control as="textarea" rows={5} onChange={(event) => setpartNo(event.target.value)} />
                                         </Col>
                                         <Col xs={6} md={4}>
-                                            <Form.Label>PART NAME</Form.Label>
+                                            <Form.Label>PART NAME <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                             {/* <Form.Control type="text" onChange={(event) => setpartName(event.target.value)} /> */}
                                             <Form.Control as="textarea" rows={5} onChange={(event) => setpartName(event.target.value)} />
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <Form.Label>REMARK / MODEL</Form.Label>
+                                            <Form.Label>REMARK / MODEL <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                             {/* <Form.Control as="textarea" onChange={(event) => setremark(event.target.value)} /> */}
                                             <Form.Control as="textarea" rows={5} onChange={(event) => setremark(event.target.value)} />
                                         </Col>
@@ -627,60 +645,82 @@ function FormCreate(props) {
 
 
                                     <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
-                                            <Form.Label>Purpose :</Form.Label>
-                                            <Form.Control as="textarea" rows={2} onChange={(event) => setPurpose(event.target.value)} />
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>PURPOSE : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Control as="textarea" rows={1} onChange={(event) => setPurpose(event.target.value)} />
+                                        </Col>
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>CLASS : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                                                <InputLabel id="demo-select-small-label">Class</InputLabel>
+                                                <Select
+                                                    labelId="demo-select-small-label"
+                                                    id="demo-select-small"
+                                                    value={strclass}
+                                                    label="Class"
+                                                    onChange={handleChangeClass}>
+                                                    {
+                                                        classArray.map((item, index) =>
+                                                            <MenuItem value={item}>{item}</MenuItem>
+                                                        )
+                                                    }
+                                                </Select>
+                                            </FormControl>
                                         </Col>
                                     </Row>
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
-                                            <Form.Label>Method Old :</Form.Label>
+                                            <Form.Label>MERHOD Old : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                             <Form.Control as="textarea" rows={1} onChange={(event) => setMethodOld(event.target.value)} />
                                         </Col>
+                                        {
+                                            showDueDate && <Col xs={12} md={6}>
+                                                <Form.Label>Due Date (Target) : </Form.Label> <br></br>
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <DatePicker
+                                                        value={dayjs(duedate)}
+                                                        slotProps={{
+                                                            textField: {
+                                                                format: 'YYYY-MM-DD',
+                                                            },
+                                                        }}
+                                                        onChange={(newValue) => setduedate(dayjs(newValue).format('YYYY-MM-DD'))}
+                                                    />
+                                                </LocalizationProvider>
+                                            </Col>
+                                        }
+                                    </Row>
+
+
+                                    <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
-                                            <Form.Label>Method New :</Form.Label>
+                                            <Form.Label>MERHOD New : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                             <Form.Control as="textarea" rows={1} onChange={(event) => setMethodNew(event.target.value)} />
                                         </Col>
-                                    </Row>
-
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
-                                            <Form.Label>Detail :</Form.Label>
-                                            <Form.Control as="textarea" rows={3} onChange={(event) => setDetail(event.target.value)} />
-                                        </Col>
-                                    </Row>
-
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={5}>
-                                            <Form.Label>Due Date (Target) : </Form.Label>
-                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                <DatePicker
-                                                    value={dayjs(duedate)}
-                                                    slotProps={{
-                                                        textField: {
-                                                            format: 'YYYY-MM-DD',
-                                                        },
-                                                    }}
-                                                    onChange={(newValue) => setduedate(dayjs(newValue).format('YYYY-MM-DD'))}
-                                                />
-                                            </LocalizationProvider>
-                                        </Col>
-                                        <Col xs={12} md={7}>
-                                        </Col>
+                                        <Col xs={12} md={6}></Col>
                                     </Row>
 
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
-                                            <Form.Label>Change Point (Acction):</Form.Label>
-                                            <button>Add file</button>
+                                            <Form.Label>DETAIL : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Control as="textarea" rows={1} onChange={(event) => setDetail(event.target.value)} />
                                         </Col>
-                                        <Col xs={12} md={6}>
-                                            <Form.Label>Delivery Sche :</Form.Label>
-                                            <button>Add file</button>
-                                        </Col>
+                                        <Col xs={12} md={6}> </Col>
                                     </Row>
+
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>REQUEST PU  : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Control as="textarea" rows={1} onChange={(event) => setRequestPU(event.target.value)} />
+                                        </Col>
+                                        <Col xs={12} md={6}> </Col>
+                                    </Row>
+
+
+
 
 
 

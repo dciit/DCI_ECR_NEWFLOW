@@ -1,0 +1,56 @@
+.divider:after,
+.divider:before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #eee;
+}
+
+.h-custom {
+    height: calc(100% - 73px);
+}
+
+@media (max-width: 450px) {
+    .h-custom {
+        height: 100%;
+    }
+}
+
+
+
+.Title {
+    font-size: 17px;
+    font-weight: bold;
+    /* background: linear-gradient(45deg, #ee6558, #eed071, #7695ee, #11cceb, #5e6472); */
+    background: linear-gradient(45deg, #ee6558, #f6c527, #ab51e8, #11cceb, #074ff8);
+    background-size: 40%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient 5s infinite;
+    margin-top: -10px;
+}
+
+
+
+
+div.relative {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+div.absolute {
+    position: fixed;
+    top: 42%;
+    left: 79%;
+    width: 115%;
+    transform: translate(-50%, -50%);
+}
+
+.absolute-input {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    width: 45%;
+    transform: translate(-50%, -50%);
+}

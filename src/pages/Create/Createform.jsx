@@ -40,13 +40,14 @@ function Createform() {
     const permission = useSelector((state) => state.reducer.permission);
     const permissionActive = useSelector((state) => state.reducer.permissionActive);
     const [selectStatus, setselectStatus] = useState("0");
-
+    const [strClass, setStrClass] = useState('ALL');
     const [ECRNo, setECRNO] = useState('');
     const [Title, setTitle] = useState('');
     const [Model, setModel] = useState('');
     const [PartName, setPartName] = useState('');
     const [DrawingNo, setDrawingNo] = useState('');
     const [BRNo, setBRNO] = useState('');
+
 
 
 
@@ -151,6 +152,10 @@ function Createform() {
     };
 
 
+    const handleChangeClass = (event) => {
+        setStrClass(event.target.value);
+    };
+
     //****************************END ddl Status ************ */
 
 
@@ -159,9 +164,10 @@ function Createform() {
     // ส่ง DocNo กับ Status ไป API
     const [DocNo, setDocNo] = useState(('%'));
     const getSearch = (event) => {
-        getDataSrvHD.postECRList({ section: selectSection, ecrno: ECRNo, title: Title, model: Model, partName: PartName, drawingNo: DrawingNo, brno: BRNo, status: selectStatus }).then((res) => {
+        getDataSrvHD.postECRList({ section: selectSection, ecrno: ECRNo, title: Title, model: Model, partName: PartName, drawingNo: DrawingNo, brno: BRNo, status: selectStatus, strclass: strClass }).then((res) => {
             try {
                 setGetdata(res.data)
+                // console.log(res.data)
             }
             catch (error) {
                 console.log(error);
@@ -183,13 +189,13 @@ function Createform() {
     //****************************END BUTTON SEARCH ************ *
     const sectionArray = ['CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
     const sectionArrayAll = ['ALL', 'CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
-
+    const classArray = ['ALL', 'CLASS A', 'CLASS B', 'CLASS C', 'CLASS D', 'CLASS E']
 
 
     return (<>
         <div className='stylePagee'>
             <div class="card ">
-                <h5 class="card-header bg-info text-white border-0">สร้างเอกสาร ECR</h5>  {/* 😉🤣😍😒😁🤞👏💋🌹🎂✔🤳💖😢😎🎶🤳💕 */}
+                <h5 class="card-header bg-info text-white border-0">ค้นหา เอกสาร ECR</h5>  {/* 😉🤣😍😒😁🤞👏💋🌹🎂✔🤳💖😢😎🎶🤳💕 */}
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-auto">
@@ -227,6 +233,28 @@ function Createform() {
                                     onChange={handleChangeStatus}>
                                     <MenuItem value='0'>On Process</MenuItem>
                                     <MenuItem value='1'>Finish</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-auto">
+                            <label for="colFormLabelSm" >CLASS :</label>
+                        </div>
+                        <div class="col-md-auto">
+                            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                                <InputLabel id="demo-select-small-label">Class</InputLabel>
+                                <Select
+                                    labelId="demo-select-small-label"
+                                    id="demo-select-small"
+                                    value={strClass}
+                                    label="Class"
+                                    onChange={handleChangeClass}>
+                                    {
+                                        classArray.map((item, index) =>
+                                            <MenuItem value={item}>{item}</MenuItem>
+                                        )
+                                    }
                                 </Select>
                             </FormControl>
                         </div>
@@ -312,10 +340,10 @@ function Createform() {
                 <div class="col-md-8">
                 </div>
                 <div class="col-md-4">
-                    <span><b>R</b> = Receive</span> &nbsp;&nbsp;&nbsp;
+                    {/* <span><b>R</b> = Receive</span> &nbsp;&nbsp;&nbsp;
                     <span><b>I</b> = Issued</span> &nbsp;&nbsp;&nbsp;
                     <span><b>C</b> = Checked</span> &nbsp;&nbsp;&nbsp;
-                    <span><b>A</b> = Approved</span>
+                    <span><b>A</b> = Approved</span> */}
                 </div>
             </div>
             <br></br>
@@ -323,12 +351,22 @@ function Createform() {
                 <table className='tableCreateform'>
                     <thead>
                         <tr>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '6%', fontSize: '12px' }}>On Process</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Action</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>DocNo</th>
+                            <th colSpan={11} style={{ fontSize: '25px' }}>Detail</th>
+                            <th colSpan={36} style={{ fontSize: '25px' }}>Actual Process</th>
+                        </tr>
+                        <tr>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '6%', fontSize: '12px' }}>Status</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Revise ECR(For Issuer only)</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>DCS NO</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>DRAWING</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>CLASS</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>ECR No</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '200px', fontSize: '12px' }}>Title</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Section</th>
-                            <th colSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Detail</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Attached file</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '200px', fontSize: '12px' }}>Comment</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Print</th>
+                            {/* <th colSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}></th> */}
                             <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>CREATE</th>
                             <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>PU</th>
                             <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>DD</th>
@@ -340,11 +378,57 @@ function Createform() {
                         </tr>
 
                         <tr colSpan={20} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>
-                            <th>File</th>
-                            <th>Remark</th>
-                            <th>Print</th>
+                            {/* <th>Attached file</th>
+                            <th>Comment</th>
+                            <th>Print</th> */}
                             <th colSpan={4}>(DIL Design Section)</th>
                             <th colSpan={4}>(DIL Quality Control Section)</th>
+                        </tr>
+
+                        <tr style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>
+                            <th>Received</th>
+                            <th>Issued</th>
+                            <th>Checked</th>
+                            <th>Approved</th>
+
+                            <th>Received</th>
+                            <th>Issued</th>
+                            <th>Checked</th>
+                            <th>Approved</th>
+
+                            <th>Received</th>
+                            <th>Issued</th>
+                            <th>Checked</th>
+                            <th>Approved</th>
+
+                            <th>Received</th>
+                            <th>Issued</th>
+                            <th>Checked</th>
+                            <th>Approved</th>
+
+                            <th>Received</th>
+                            <th>Issued</th>
+                            <th>Checked</th>
+                            <th>Approved</th>
+
+                            <th>Received</th>
+                            <th>Issued</th>
+                            <th>Checked</th>
+                            <th>Approved</th>
+
+                            <th>Received</th>
+                            <th>Issued</th>
+                            <th>Checked</th>
+                            <th>Approved</th>
+                            <th>Received</th>
+                            <th>Issued</th>
+                            <th>Checked</th>
+                            <th>Approved</th>
+
+                            <th>Received</th>
+                            <th>Issued</th>
+                            <th>Checked</th>
+                            <th>Approved</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -364,7 +448,7 @@ function Createform() {
                                         let hold = item[`${items}${iApp}SumDate`];
                                         let holdDate = item[`${items}${iApp}SumDate`]; //sumdate
                                         let namePending = item[`${items}${iApp}namepending`];
-                                        console.log(namePending)
+
 
 
                                         if (holdDate > 0) {
@@ -447,13 +531,11 @@ function Createform() {
                                     status = item[`${vSec.toLowerCase()}_status`] == 'U' ? (status == '' ? vSec : status) : status;
                                 });
 
-
+                                // {
+                                //     JSON.stringify(getdata)
+                                // }
 
                                 return <tr>
-                                    {/* {
-                                        JSON.stringify(getdata)
-                                    } */}
-
                                     <td style={{ backgroundColor: (status != '' ? 'rgb(255 252 106)' : 'rgb(72 229 23)') }}><p style={{ color: (status != '' ? 'red' : 'rgb(60 3 255)') }}>{(status != '' ? status : 'FINISH')}</p>
                                     </td>
                                     <td>
@@ -461,6 +543,9 @@ function Createform() {
                                             <center><FcFinePrint style={{ width: '35px', height: '45px' }} onClick={() => handleShowDetail(item.ecrno)} /></center>
                                         </Link>
                                     </td>
+                                    <td style={{ fontSize: '12px' }}>{item.notificationNo}</td>
+                                    <td style={{ fontSize: '12px' }}>{item.partNo}</td>
+                                    <td style={{ fontSize: '12px' }}>{item.strClass}</td>
                                     <td style={{ fontSize: '12px' }}>{item.ecrno}</td>
                                     <td style={{ fontSize: '12px' }}>{item.title}</td>
                                     <td style={{ fontSize: '12px' }}>
@@ -503,22 +588,20 @@ function Createform() {
                                             return <>
                                                 {
                                                     vSec.app.map((vApp, iApp) => {
-                                                        return <td style={{ backgroundColor: vApp.color }}>
-                                                            <div style={{ borderBottom: '1px solid black', fontWeight: 'bolder', height: '32px', width: '90px' }}>{vApp.title.substring(0, 1).toUpperCase()} {vApp.icon}</div>
+                                                        return <td style={{ backgroundColor: vApp.color, width: '30px' }}>
+                                                            {/* <div style={{ borderBottom: '1px solid black', fontWeight: 'bolder', height: '32px', width: '90px' }}>{vApp.title.substring(0, 1).toUpperCase()} {vApp.icon}</div> */}
 
-                                                            <div style={{ fontSize: '10px ', height: '50px', justifyContent: 'center', alignItems: 'center' }}>
-                                                                <br></br>
+                                                            <div style={{ fontSize: '11px ', height: '50px', justifyContent: 'center', alignItems: 'center', width: '90px', marginTop: '10px' }}>
                                                                 <div>
                                                                     {vApp.name}
                                                                 </div>
-                                                                <div style={{ fontSize: '9px' }}>
+                                                                <div style={{ fontSize: '10px' }}>
                                                                     {vApp.date}
                                                                 </div>
                                                                 <div style={{ color: vApp.colorHoldDate, fontSize: '11px', fontWeight: '700' }}>  {vApp.holdDate}
                                                                 </div>
                                                                 <div style={{ color: 'rgb(101 93 192)' }}>  {vApp.namePedning}</div>
                                                             </div>
-
                                                         </td>
                                                     })
                                                 }
