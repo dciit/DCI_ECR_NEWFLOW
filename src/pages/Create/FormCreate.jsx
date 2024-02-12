@@ -91,6 +91,7 @@ function FormCreate(props) {
     let position = permission[0]?.grpRole;
     const [employee, setemployee] = useState('');
     const [employeeArray, setEmployeeArray] = useState([]);
+    const [strposition, setPosition] = useState('');
     const [step, setStep] = useState('ISSUED');
     const stepArrayCre = ['CHECK', 'APPROVED'];
     const [tableNotify, setTableNotify] = useState([]);
@@ -160,7 +161,7 @@ function FormCreate(props) {
     // const empCode = localStorage.getItem("name");
     const empCode = Cookies.get('code')
     const [nbr, setNbr] = useState([])
-    const [strclass, setClass] = useState(['CLASS A']);
+    const [strclass, setClass] = useState('CLASS A');
     // ***************จบ ตัวแปร ส่งไป API ***********************
 
 
@@ -304,15 +305,28 @@ function FormCreate(props) {
     //******************SET NOTIFY TO*************** */
     const handleChangeEmployee = (event) => {
         setemployee(event.target.value);
+
+        getDataSrvPermiss.getPosition(event.target.value).then((res) => {
+            try {
+                setPosition(res.data);
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
     };
+
+    const posit = strposition[0]?.position;
+
 
     const handleChangeStep = (event) => {
         setStep(event.target.value);
     };
 
 
-    const postAddNotifyTo = (ecR_NO, section) => {
-        getDataSrvPermiss.postAddNotifyTo({ employeeCode: employee, employeeFullName: employee, ecrno: ecR_NO, step: step, createBy: empCode, section: section }).then((res) => {
+    const postAddNotifyTo = (ecR_NO, position, section) => {
+        getDataSrvPermiss.postAddNotifyTo({ employeeCode: employee, employeeFullName: employee, ecrno: ecR_NO, step: step, position: position, createBy: empCode, section: section }).then((res) => {
             try {
                 getDataSrvPermiss.getNotifyTo(ecR_NO).then((res) => {
                     try {
@@ -671,7 +685,7 @@ function FormCreate(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
-                                            <Form.Label>MERHOD Old : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Label>METHOD OLD : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                             <Form.Control as="textarea" rows={1} onChange={(event) => setMethodOld(event.target.value)} />
                                         </Col>
                                         {
@@ -695,7 +709,7 @@ function FormCreate(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
-                                            <Form.Label>MERHOD New : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Label>METHOD NEW : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                             <Form.Control as="textarea" rows={1} onChange={(event) => setMethodNew(event.target.value)} />
                                         </Col>
                                         <Col xs={12} md={6}></Col>
@@ -727,7 +741,6 @@ function FormCreate(props) {
                                     <br></br>
                                     {
                                         btnAddFile && <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                            <Col xs={12} md={2}></Col>
                                             <Col xs={12} md={4}>
                                                 <FormControl fullWidth>
                                                     <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
@@ -745,7 +758,11 @@ function FormCreate(props) {
                                                     </Select>
                                                 </FormControl>
                                             </Col>
-                                            <Col xs={12} md={4}>
+                                            <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                            </Col>
+                                            <Col xs={12} md={3}>
                                                 <FormControl fullWidth>
                                                     <InputLabel id="demo-simple-select-label">Status</InputLabel>
                                                     <Select
@@ -767,7 +784,7 @@ function FormCreate(props) {
                                                     permission.filter((item) => {
                                                         return ((permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == "ISSUED" || permission[0]?.grpRoleSect == "ADMIN"))
                                                     }).length ? <>
-                                                        <Button variant="success" onClick={() => postAddNotifyTo(nbr[0]?.runningNumber, "CREATE")}>
+                                                        <Button variant="success" onClick={() => postAddNotifyTo(nbr[0]?.runningNumber, posit, "CREATE")}>
                                                             + เพิ่มผู้ดำเนินการ
                                                         </Button>
                                                     </> : ""

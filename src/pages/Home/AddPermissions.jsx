@@ -95,7 +95,8 @@ function AddPermissions() {
     const handelDelete = (code, grpCode) => {
         getDataSrvPermiss.getDeletePermission(code, grpCode).then((res) => {
             try {
-                handelSearch();
+                //handelSearch();
+                loadPage();
             }
             catch (error) {
                 console.log(error);

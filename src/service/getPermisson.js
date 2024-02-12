@@ -65,6 +65,12 @@ const getDeletePermission = (code, grpCode) => {
     return http.APIPERMISSION.get(`getDeletePermission/${code}/${grpCode}`)
 }
 
+
+const getPosition = (empCode) => {
+    return http.APIPERMISSION.get(`getPosition/${empCode}`);
+}
+
+
 export default {
     getPermission,
     getPermissionMenu,
@@ -80,5 +86,6 @@ export default {
     getShowEmployee,
     getSearchEmployee,
     getTestLogin,
-    getDeletePermission
+    getDeletePermission,
+    getPosition,
 }

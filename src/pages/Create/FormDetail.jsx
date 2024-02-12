@@ -163,6 +163,10 @@ function FormDetail(props) {
     const [strclass, setClass] = useState('');
     const [requestPU, setRequestPU] = useState('');
     const [showDueDate, setShowDueDate] = useState(false)
+    const [strposition, setPosition] = useState('');
+
+
+
     useEffect(() => {
         if (show) {
             initFiles();
@@ -673,14 +677,27 @@ function FormDetail(props) {
 
     const handleChangeEmployee = (event) => {
         setemployee(event.target.value);
+
+        getDataSrvPermiss.getPosition(event.target.value).then((res) => {
+            try {
+                setPosition(res.data);
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
     };
+
+    const posit = strposition[0]?.position;
+
 
     const handleChangeStep = (event) => {
         setStep(event.target.value);
     };
 
-    const postAddNotifyTo = (ecR_NO, section) => {
-        getDataSrvPermiss.postAddNotifyTo({ employeeCode: employee, employeeFullName: employee, ecrno: ecR_NO, step: step, createBy: empCode, section: section }).then((res) => {
+    const postAddNotifyTo = (ecR_NO, position, section) => {
+        getDataSrvPermiss.postAddNotifyTo({ employeeCode: employee, employeeFullName: employee, ecrno: ecR_NO, step: step, position: position, createBy: empCode, section: section }).then((res) => {
             try {
                 getDataSrvPermiss.getNotifyTo(ecR_NO).then((res) => {
                     try {
@@ -790,15 +807,11 @@ function FormDetail(props) {
                             <div class="col-sm-7" style={{ display: 'flex' }}>
                                 <h6>TITLE</h6> &nbsp; &nbsp; <span style={{ color: 'red', fontSize: '18px' }}>*</span>
                                 {
-                                    dataModaldt[0]?.create_CheckBit != "F" ?
-                                        <>
-                                            <TextField id="txtTitle" variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.title)}
-                                                onChange={(e) => {
-                                                    dataModaldt[0].title = e.target.value;
-                                                    setDataModaldt([...dataModaldt]);
-                                                }} />
-                                        </> : <TextField id="txtTitle" variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.title)}
-                                            readOnly />
+                                    <TextField id="txtTitle" variant="standard" style={{ width: '95%' }} value={decodeURIComponent(dataModaldt[0]?.title)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                        onChange={(e) => {
+                                            dataModaldt[0].title = e.target.value;
+                                            setDataModaldt([...dataModaldt]);
+                                        }} />
                                 }
                                 <br></br><br></br>
                             </div>
@@ -1005,35 +1018,6 @@ function FormDetail(props) {
                                         </Col>
                                     </Row>
 
-                                    {/* <Row className='styleRowText'>
-                                        <Col xs={6} md={8}>
-                                            <Form.Label>วัตถุประสงค์,วิธีการ,ข้อมูลการส่งมอบ (Purposr,Method & Delivery Schedule)</Form.Label>
-                                            <Form.Control as="textarea" rows={5} id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.method)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].method = event.target.value;
-                                                    setMethod([...dataModaldt])
-                                                }} />
-                                        </Col>
-                                        <Col xs={6} md={4}>
-                                            <Form.Label>Due Date (Target)</Form.Label>
-                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                <DatePicker
-                                                    // 2023-10-31
-                                                    value={dayjs(dataModaldt[0]?.duedate)}
-                                                    slotProps={{
-                                                        textField: {
-                                                            format: 'YYYY-MM-DD',
-                                                        },
-                                                    }}
-                                                    onChange={(val) => {
-                                                        dataModaldt[0].duedate = val.format('YYYY-MM-DD');
-                                                        setDataModaldt([...dataModaldt])
-                                                    }}
-                                                    disabled={(position == "ISSUED" || position == "RECEIVED") ? false : true}
-                                                />
-                                            </LocalizationProvider>
-                                        </Col>
-                                    </Row> */}
 
 
                                     <Row className='styleRowText'>
@@ -1050,7 +1034,7 @@ function FormDetail(props) {
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                                                 <InputLabel id="demo-select-small-label">CLASS</InputLabel>
-                                                <Select
+                                                <Select disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                     labelId="demo-select-small-label"
                                                     id="demo-select-small"
                                                     value={strclass}
@@ -1136,7 +1120,7 @@ function FormDetail(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
-                                            <Form.Label>REQUEST PU  : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Label>REQUEST PU  : <span style={{ color: '#fc5757', fontSize: '18px', color: 'white' }}>*</span></Form.Label>
                                             {/* <Form.Control as="textarea" rows={1} onChange={(event) => setRequestPU(event.target.value)} /> */}
                                             <Form.Control as="textarea" rows={1} variant="standard" value={decodeURIComponent(dataModaldt[0]?.requestPU)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
@@ -1152,9 +1136,8 @@ function FormDetail(props) {
 
                                     <br></br>
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                        <Col xs={12} md={2}></Col>
                                         <Col xs={12} md={4}>
-                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                            <FormControl fullWidth disabled={(position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
                                                 <Select
                                                     labelId="demo-simple-select-label"
@@ -1170,8 +1153,12 @@ function FormDetail(props) {
                                                 </Select>
                                             </FormControl>
                                         </Col>
-                                        <Col xs={12} md={4}>
-                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                        <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                            <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                            <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                        </Col>
+                                        <Col xs={12} md={3}>
+                                            <FormControl fullWidth disabled={(position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">Status</InputLabel>
                                                 <Select
                                                     labelId="demo-simple-select-label"
@@ -1192,7 +1179,7 @@ function FormDetail(props) {
                                                 permission.filter((item) => {
                                                     return ((permission[0]?.grpRole == 'RECEIVED' || dataModaldt[0]?.grpRole != "ISSUED" || permission[0]?.grpRoleSect == "ADMIN") && dataModaldt[0]?.create_CheckBit != "F")
                                                 }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, "CREATE")}>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "CREATE")} disabled={(position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                         + เพิ่มผู้ดำเนินการ
                                                     </Button>
                                                 </> : ""
@@ -1268,7 +1255,7 @@ function FormDetail(props) {
                                         <Col xs={12} md={3}></Col>
                                         <Col xs={12} md={6}>
                                             <Form.Label>REQUEST PU :</Form.Label>
-                                            <Form.Control as="textarea" style={{ backgroundColor: 'red', color: 'while' }} disabled={position == "ISSUED" ? false : true} rows={2} value={dataModaldt[0]?.requestPU} readOnly />
+                                            <Form.Control as="textarea" style={{ backgroundColor: '#e5e7f3', color: 'red', fontSize: '24px' }} disabled={position == "ISSUED" ? false : true} rows={2} value={dataModaldt[0]?.requestPU} readOnly />
                                         </Col>
                                         <Col xs={12} md={3}></Col>
                                     </Row>
@@ -1278,7 +1265,7 @@ function FormDetail(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
                                             <Form.Label>2.1 &nbsp;&nbsp; PU Section : Effect Part stock control & Supplier (เฉพาะในกรณี 2 เท่านั้น)</Form.Label>
-                                            <Form.Control as="textarea" style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true} rows={10} value={dataModaldt[0]?.pU_Remark}
+                                            <Form.Control as="textarea" style={{ backgroundColor: (position == "ISSUED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} disabled={position == "ISSUED" ? false : true} rows={10} value={dataModaldt[0]?.pU_Remark}
                                                 onChange={(e) => {
                                                     dataModaldt[0].pU_Remark = e.target.value;
                                                     setRemarkPU([...dataModaldt]);
@@ -1293,7 +1280,7 @@ function FormDetail(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: 'rgb(216 96 8)', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.pU_Receive_Remark}
+                                            <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: 'rgb(216 96 8)', backgroundColor: (position == "RECEIVED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} value={dataModaldt[0]?.pU_Receive_Remark}
                                                 onChange={(e) => {
                                                     dataModaldt[0].pU_Receive_Remark = e.target.value;
                                                     setPU_Receive([...dataModaldt]);
@@ -1304,8 +1291,6 @@ function FormDetail(props) {
                                     <br></br>
 
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                        <Col xs={12} md={2}>
-                                        </Col>
                                         <Col xs={12} md={4}>
                                             <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
@@ -1323,7 +1308,11 @@ function FormDetail(props) {
                                                 </Select>
                                             </FormControl>
                                         </Col>
-                                        <Col xs={12} md={4}>
+                                        <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                            <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                            <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                        </Col>
+                                        <Col xs={12} md={3}>
                                             <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">Status</InputLabel>
                                                 <Select
@@ -1345,7 +1334,7 @@ function FormDetail(props) {
                                                 permission.filter((item) => {
                                                     return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
                                                 }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, "PU")}>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "PU")}>
                                                         + เพิ่มผู้ดำเนินการ
                                                     </Button>
                                                 </> : ""
@@ -1436,7 +1425,7 @@ function FormDetail(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <Form.Control as="textarea" style={{ backgroundColor: 'rgb(250 249 114)' }} rows={5} disabled={(position == "ISSUED") ? false : true} value={dataModaldt[0]?.dD_Remark2}
+                                            <Form.Control as="textarea" style={{ backgroundColor: (position == "ISSUED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} disabled={position == "ISSUED" ? false : true} rows={5} disabled={(position == "ISSUED") ? false : true} value={dataModaldt[0]?.dD_Remark2}
                                                 onChange={(e) => {
                                                     dataModaldt[0].dD_Remark2 = e.target.value;
                                                     setDD_Remark2([...dataModaldt]);
@@ -1448,7 +1437,7 @@ function FormDetail(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
                                             <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                            <Form.Control as="textarea" disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} rows={5} style={{ color: '#db7428', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.dD_Remark_Receive}
+                                            <Form.Control as="textarea" disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} rows={5} style={{ color: 'rgb(216 96 8)', backgroundColor: (position == "RECEIVED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} value={dataModaldt[0]?.dD_Remark_Receive}
                                                 onChange={(e) => {
                                                     dataModaldt[0].dD_Remark_Receive = e.target.value;
                                                     setDD_Receive([...dataModaldt]);
@@ -1459,7 +1448,6 @@ function FormDetail(props) {
                                     <br></br>
 
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                        <Col xs={12} md={2}></Col>
                                         <Col xs={12} md={4}>
                                             <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
@@ -1477,7 +1465,11 @@ function FormDetail(props) {
                                                 </Select>
                                             </FormControl>
                                         </Col>
-                                        <Col xs={12} md={4}>
+                                        <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                            <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                            <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                        </Col>
+                                        <Col xs={12} md={3}>
                                             <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">Status</InputLabel>
                                                 <Select
@@ -1499,7 +1491,7 @@ function FormDetail(props) {
                                                 permission.filter((item) => {
                                                     return permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.dD_ReceiveBit != "F"
                                                 }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, "DD")}>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "DD")}>
                                                         + เพิ่มผู้ดำเนินการ
                                                     </Button>
                                                 </> : ""
@@ -1563,7 +1555,7 @@ function FormDetail(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
                                             <Form.Label>2.3  Engineer Section : Procesee effect , Tool life  , MQ,PC</Form.Label>
-                                            <Form.Control as="textarea" style={{ backgroundColor: 'rgb(250 249 114)' }} rows={5} disabled={position == "ISSUED" ? false : true} value={dataModaldt[0]?.eN_Remark}
+                                            <Form.Control as="textarea" style={{ backgroundColor: (position == "ISSUED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} disabled={position == "ISSUED" ? false : true} rows={5} disabled={position == "ISSUED" ? false : true} value={dataModaldt[0]?.eN_Remark}
                                                 onChange={(e) => {
                                                     dataModaldt[0].eN_Remark = e.target.value;
                                                     setRemarkEN([...dataModaldt]);
@@ -1576,7 +1568,7 @@ function FormDetail(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
                                             <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                            <Form.Control as="textarea" disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} rows={5} style={{ color: '#db7428', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.eN_Remark_Receive}
+                                            <Form.Control as="textarea" disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} rows={5} style={{ color: 'rgb(216 96 8)', backgroundColor: (position == "RECEIVED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} value={dataModaldt[0]?.eN_Remark_Receive}
                                                 onChange={(e) => {
                                                     dataModaldt[0].eN_Remark_Receive = e.target.value;
                                                     setEN_Receive([...dataModaldt]);
@@ -1586,7 +1578,6 @@ function FormDetail(props) {
 
                                     <br></br>
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                        <Col xs={12} md={2}></Col>
                                         <Col xs={12} md={4}>
                                             <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
@@ -1604,7 +1595,11 @@ function FormDetail(props) {
                                                 </Select>
                                             </FormControl>
                                         </Col>
-                                        <Col xs={12} md={4}>
+                                        <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                            <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                            <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                        </Col>
+                                        <Col xs={12} md={3}>
                                             <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">Status</InputLabel>
                                                 <Select
@@ -1626,7 +1621,7 @@ function FormDetail(props) {
                                                 permission.filter((item) => {
                                                     return permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.eN_IssuedBit != "F"
                                                 }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, "EN")}>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "EN")}>
                                                         + เพิ่มผู้ดำเนินการ
                                                     </Button>
                                                 </> : ""
@@ -1712,7 +1707,6 @@ function FormDetail(props) {
 
                                     <br></br>
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                        <Col xs={12} md={2}></Col>
                                         <Col xs={12} md={4}>
                                             <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
@@ -1730,7 +1724,11 @@ function FormDetail(props) {
                                                 </Select>
                                             </FormControl>
                                         </Col>
-                                        <Col xs={12} md={4}>
+                                        <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                            <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                            <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                        </Col>
+                                        <Col xs={12} md={3}>
                                             <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">Status</InputLabel>
                                                 <Select
@@ -1752,7 +1750,7 @@ function FormDetail(props) {
                                                 permission.filter((item) => {
                                                     return permission[0]?.grpRoleSect == "SQC" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F"
                                                 }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, "SQC")}>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "SQC")}>
                                                         + เพิ่มผู้ดำเนินการ
                                                     </Button>
                                                 </> : ""
@@ -1887,7 +1885,6 @@ function FormDetail(props) {
 
                                     <br></br>
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                        <Col xs={12} md={2}></Col>
                                         <Col xs={12} md={4}>
                                             <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
@@ -1905,7 +1902,11 @@ function FormDetail(props) {
                                                 </Select>
                                             </FormControl>
                                         </Col>
-                                        <Col xs={12} md={4}>
+                                        <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                            <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                            <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                        </Col>
+                                        <Col xs={12} md={3}>
                                             <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">Status</InputLabel>
                                                 <Select
@@ -1927,7 +1928,7 @@ function FormDetail(props) {
                                                 permission.filter((item) => {
                                                     return (permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F"
                                                 }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, "QC")}>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QC")}>
                                                         + เพิ่มผู้ดำเนินการ
                                                     </Button>
                                                 </> : ""
@@ -2188,7 +2189,6 @@ function FormDetail(props) {
 
                                     <br></br>
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                        <Col xs={12} md={2}></Col>
                                         <Col xs={12} md={4}>
                                             <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
@@ -2206,7 +2206,11 @@ function FormDetail(props) {
                                                 </Select>
                                             </FormControl>
                                         </Col>
-                                        <Col xs={12} md={4}>
+                                        <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                            <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                            <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                        </Col>
+                                        <Col xs={12} md={3}>
                                             <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">Status</InputLabel>
                                                 <Select
@@ -2229,7 +2233,7 @@ function FormDetail(props) {
                                                 permission.filter((item) => {
                                                     return permission[0]?.grpRoleSect == "QA" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F"
                                                 }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, "QA")}>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QA")}>
                                                         + เพิ่มผู้ดำเนินการ
                                                     </Button>
                                                 </> : ""
@@ -2547,8 +2551,9 @@ function FormDetail(props) {
                                     return (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode) ||
                                         (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_ApprovedCode)
                                 }).length ? (
-                                    dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" ||
-                                        dataModaldt[0]?.dD_ReceiveBit != "F")
+                                    // dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" ||
+                                    //     dataModaldt[0]?.dD_ReceiveBit != "F")
+                                    (dataModaldt[0]?.pU_CheckBit == "F" && dataModaldt[0]?.dD_ReceiveBit != "F")
                                 )
                                 &&
                                 <>
@@ -2558,6 +2563,7 @@ function FormDetail(props) {
                                 </> : ""
                             }
 
+
                             {
                                 permission.filter((item) => {
                                     // return (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.create_ApprovedBit != "F") ||
@@ -2566,7 +2572,8 @@ function FormDetail(props) {
                                     return (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode) ||
                                         (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_ApprovedCode)
                                 }).length ? (
-                                    dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" || dataModaldt[0]?.dD_ReceiveBit != "F")
+                                    // dataModaldt[0]?.create_CheckBit == 'F' && (dataModaldt[0]?.pU_ReceiveBit != "F" || dataModaldt[0]?.dD_ReceiveBit != "F") ||
+                                    (dataModaldt[0]?.pU_CheckBit == "F" && dataModaldt[0]?.dD_ReceiveBit != "F")
                                 )
                                 && <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
                                     อนุมัติ (GM Approved) PU
@@ -2709,9 +2716,11 @@ function FormDetail(props) {
                                     return (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode) ||
                                         (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_ApprovedCode)
                                 }).length ? (
-                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.eN_ReceiveBit == "U") ||
-                                    dataModaldt[0]?.pU_ReceiveBit == "U" ||
-                                    dataModaldt[0]?.pU_ReceiveBit == "R"
+                                    // (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.eN_ReceiveBit == "U") ||
+                                    // dataModaldt[0]?.pU_ReceiveBit == "U" ||
+                                    // dataModaldt[0]?.pU_ReceiveBit == "R"
+                                    (dataModaldt[0]?.create_CheckBit == "F" && dataModaldt[0]?.pU_ReceiveBit != "F") ||
+                                    (dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.eN_ReceiveBit == "U")
                                 )
                                 &&
                                 <>
@@ -2729,9 +2738,11 @@ function FormDetail(props) {
                                     return (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode) ||
                                         (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_ApprovedCode)
                                 }).length ? (
-                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.eN_ReceiveBit == "U") ||
-                                    dataModaldt[0]?.pU_ReceiveBit == "U" ||
-                                    dataModaldt[0]?.pU_ReceiveBit == "R"
+                                    // (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.eN_ReceiveBit == "U") ||
+                                    // dataModaldt[0]?.pU_ReceiveBit == "U" ||
+                                    // dataModaldt[0]?.pU_ReceiveBit == "R" ||
+                                    (dataModaldt[0]?.create_CheckBit == "F" && dataModaldt[0]?.pU_ReceiveBit != "F") ||
+                                    (dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.eN_ReceiveBit == "U")
                                 )
                                 && <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0]?.ecR_NO, dataModaldt[0]?.section, dataModaldt[0]?.create_ApprovedBit)}>
                                     อนุมัติ (GM Approved) DD

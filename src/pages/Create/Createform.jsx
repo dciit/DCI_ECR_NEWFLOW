@@ -351,22 +351,22 @@ function Createform() {
                 <table className='tableCreateform'>
                     <thead>
                         <tr>
-                            <th colSpan={11} style={{ fontSize: '25px' }}>Detail</th>
+                            <th colSpan={12} style={{ fontSize: '25px' }}>Detail</th>
                             <th colSpan={36} style={{ fontSize: '25px' }}>Actual Process</th>
                         </tr>
                         <tr>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '6%', fontSize: '12px' }}>Target</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '6%', fontSize: '12px' }}>Status</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Revise ECR(For Issuer only)</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>DCS NO</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>DRAWING</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>CLASS</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>ECR No</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '200px', fontSize: '12px' }}>Title</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '400px', fontSize: '12px' }}>Title</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Section</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Attached file</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '200px', fontSize: '12px' }}>Comment</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Print</th>
-                            {/* <th colSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}></th> */}
                             <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>CREATE</th>
                             <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>PU</th>
                             <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>DD</th>
@@ -384,6 +384,7 @@ function Createform() {
                             <th colSpan={4}>(DIL Design Section)</th>
                             <th colSpan={4}>(DIL Quality Control Section)</th>
                         </tr>
+
 
                         <tr style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>
                             <th>Received</th>
@@ -536,6 +537,7 @@ function Createform() {
                                 // }
 
                                 return <tr>
+                                    <td style={{ fontSize: '12px' }}>{item.dueDate}</td>
                                     <td style={{ backgroundColor: (status != '' ? 'rgb(255 252 106)' : 'rgb(72 229 23)') }}><p style={{ color: (status != '' ? 'red' : 'rgb(60 3 255)') }}>{(status != '' ? status : 'FINISH')}</p>
                                     </td>
                                     <td>
@@ -547,7 +549,7 @@ function Createform() {
                                     <td style={{ fontSize: '12px' }}>{item.partNo}</td>
                                     <td style={{ fontSize: '12px' }}>{item.strClass}</td>
                                     <td style={{ fontSize: '12px' }}>{item.ecrno}</td>
-                                    <td style={{ fontSize: '12px' }}>{item.title}</td>
+                                    <td style={{ fontSize: '12px', width: '400px' }}>{item.title}</td>
                                     <td style={{ fontSize: '12px' }}>
                                         {
                                             showSection(item.section)
