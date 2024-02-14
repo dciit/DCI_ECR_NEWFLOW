@@ -1265,7 +1265,7 @@ function FormDetail(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
                                             <Form.Label>2.1 &nbsp;&nbsp; PU Section : Effect Part stock control & Supplier (เฉพาะในกรณี 2 เท่านั้น)</Form.Label>
-                                            <Form.Control as="textarea" style={{ backgroundColor: (position == "ISSUED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} disabled={position == "ISSUED" ? false : true} rows={10} value={dataModaldt[0]?.pU_Remark}
+                                            <Form.Control as="textarea" style={{ backgroundColor: (position == "ISSUED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} disabled={(position == "ISSUED" ? false : true)} rows={10} value={dataModaldt[0]?.pU_Remark}
                                                 onChange={(e) => {
                                                     dataModaldt[0].pU_Remark = e.target.value;
                                                     setRemarkPU([...dataModaldt]);
@@ -1425,7 +1425,7 @@ function FormDetail(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <Form.Control as="textarea" style={{ backgroundColor: (position == "ISSUED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} disabled={position == "ISSUED" ? false : true} rows={5} disabled={(position == "ISSUED") ? false : true} value={dataModaldt[0]?.dD_Remark2}
+                                            <Form.Control as="textarea" style={{ backgroundColor: (position == "ISSUED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} disabled={(position == "ISSUED" ? false : true)} rows={5} value={dataModaldt[0]?.dD_Remark2}
                                                 onChange={(e) => {
                                                     dataModaldt[0].dD_Remark2 = e.target.value;
                                                     setDD_Remark2([...dataModaldt]);
@@ -1555,7 +1555,7 @@ function FormDetail(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
                                             <Form.Label>2.3  Engineer Section : Procesee effect , Tool life  , MQ,PC</Form.Label>
-                                            <Form.Control as="textarea" style={{ backgroundColor: (position == "ISSUED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} disabled={position == "ISSUED" ? false : true} rows={5} disabled={position == "ISSUED" ? false : true} value={dataModaldt[0]?.eN_Remark}
+                                            <Form.Control as="textarea" style={{ backgroundColor: (position == "ISSUED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} disabled={(position == "ISSUED" ? false : true)} rows={5} value={dataModaldt[0]?.eN_Remark}
                                                 onChange={(e) => {
                                                     dataModaldt[0].eN_Remark = e.target.value;
                                                     setRemarkEN([...dataModaldt]);
@@ -1684,7 +1684,7 @@ function FormDetail(props) {
                                     <Form.Label>2.4 &nbsp;&nbsp; SQC : Quality part (PAS) / Peocess audit :</Form.Label>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <Form.Control as="textarea" rows={5} style={{ backgroundColor: 'rgb(250 249 114)' }} disabled={position == "ISSUED" ? false : true} value={dataModaldt[0]?.sqC_Remark}
+                                            <Form.Control as="textarea" rows={5} style={{ backgroundColor: (position == "ISSUED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} disabled={(position == "ISSUED" ? false : true)} value={dataModaldt[0]?.sqC_Remark}
                                                 onChange={(e) => {
                                                     dataModaldt[0].sqC_Remark = e.target.value;
                                                     setRemarkSQC([...dataModaldt]);
@@ -1697,7 +1697,7 @@ function FormDetail(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
                                             <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                            <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.sqC_Remark_Receive}
+                                            <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: 'rgb(216 96 8)', backgroundColor: (position == "RECEIVED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} value={dataModaldt[0]?.sqC_Remark_Receive}
                                                 onChange={(e) => {
                                                     dataModaldt[0].sqC_Remark_Receive = e.target.value;
                                                     setSQC_Receive([...dataModaldt]);
@@ -1812,7 +1812,8 @@ function FormDetail(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
                                             <Form.Label>2.5 &nbsp;&nbsp; QCD : (total Judgement) :</Form.Label>
-                                            <Form.Control as="textarea" rows={10} disabled={position == "ISSUED" ? false : true} type="text" variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.qC_Remark1)}
+                                            <Form.Control as="textarea" rows={10} disabled={(position == "ISSUED" ? false : true)}
+                                                type="text" variant="standard" style={{ width: '95%', backgroundColor: (position == "ISSUED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} value={decodeURIComponent(dataModaldt[0]?.qC_Remark1)}
                                                 onChange={(event) => {
                                                     dataModaldt[0].qC_Remark1 = event.target.value;
                                                     setRemarkQC1([...dataModaldt])
@@ -1875,7 +1876,7 @@ function FormDetail(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
                                             <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                            <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.qC_Remark_Receive}
+                                            <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: 'rgb(216 96 8)', backgroundColor: (position == "RECEIVED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} value={dataModaldt[0]?.qC_Remark_Receive}
                                                 onChange={(e) => {
                                                     dataModaldt[0].qC_Remark_Receive = e.target.value;
                                                     setQC_Receive([...dataModaldt]);

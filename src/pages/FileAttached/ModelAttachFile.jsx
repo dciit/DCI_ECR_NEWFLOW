@@ -22,6 +22,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
 import Cookies from 'js-cookie';
+import './ModelAttachFile.css'
 
 
 
@@ -88,9 +89,61 @@ function ModelAttachFile(props) {
 
     // ************ ADD FILE  ************
     const [selectedFile, setSelectedFile] = useState('');
+
+
+
+
+
+    const [pathPDF, setPathPDF] = useState('');
+    const [path, setPath] = useState('');
+
+    var W3CDOM = (document.createElement && document.getElementsByTagName);
+
+
     const changeHandler = (event) => {
+        // setPathPDF(event.target.files[0]);
         setSelectedFile(event.target.files[0]);
+
+
     };
+
+
+    function initFileUploads() {
+        if (!W3CDOM) return;
+        var fakeFileUpload = document.createElement('div');
+        fakeFileUpload.className = 'fakefile';
+        fakeFileUpload.appendChild(document.createElement('input'));
+        // var image = document.createElement('img');
+        // image.src = 'pix/button_select.gif';
+        // fakeFileUpload.appendChild(image);
+        var x = document.getElementsByTagName('input');
+        for (var i = 0; i < x.length; i++) {
+            if (x[i].type != 'file') continue;
+            if (x[i].parentNode.className != 'fileinputs') continue;
+            x[i].className = 'file hidden';
+            var clone = fakeFileUpload.cloneNode(true);
+            x[i].parentNode.appendChild(clone);
+            x[i].relatedElement = clone.getElementsByTagName('input')[0];
+            x[i].onchange = x[i].onmouseout = function () {
+                this.relatedElement.value = this.value;
+                setPath(this.value);
+            }
+        }
+    }
+
+    const onChange = (event) => {
+        const value = event.target.value;
+
+        // this will return C:\fakepath\somefile.ext
+        console.log(value);
+
+        const files = event.target.files;
+
+        //setPath(files);
+
+        //this will return an ARRAY of File object
+        console.log(files);
+    }
 
     const handleClear = () => {
         ref.current.value = null;
@@ -139,11 +192,15 @@ function ModelAttachFile(props) {
     }
 
 
+    const OpenFile = (pathfilename) => {
+        // navigate(`/ECR/PrintPage/${ecrno}`,
+        // );
+        window.open(`http://dciweb.dci.daikin.co.jp/ECR/asset/FileAttech/${pathfilename}`, '_blank', 'noopener,noreferrer');
+    }
 
 
     return (
         <>
-
             <BootstrapDialog
                 open={show}
             >
@@ -158,6 +215,8 @@ function ModelAttachFile(props) {
                         <Row>
                             <Col xs={12} md={7}>
                                 <b><h1>Add File</h1></b>
+                                <>1={path}</>
+                                <>2={pathPDF}</>
                             </Col>
                             <Col xs={12} md={5}>
                                 <p>ECR NO : {item.ecrno}</p>
@@ -178,13 +237,38 @@ function ModelAttachFile(props) {
                         <Typography gutterBottom>
                             <Container>
                                 <Row>
-                                    <Col xs={12} md={11}>
+                                    <Col xs={12} md={5}>
                                         {
                                             permission.filter((item) => {
                                                 return item.menuCode == "BTN0002" && item.rolE_VIEW == "True"
                                             }).length ? <input type="file" name="file" accept='application/pdf' ref={ref} onChange={changeHandler} />
                                                 :
                                                 ""
+                                        }
+                                    </Col>
+                                    <Col xs={12} md={6}>
+                                        {
+
+
+                                            <div style={{ display: 'flex' }}>
+                                                <div class="fileinputs">
+                                                    <input type="file" class="file" style={{ width: '300px' }} onChange={initFileUploads} />
+                                                    <div class="fakefile">
+                                                        <input />
+                                                        <button>Browse..</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+                                            //     <input
+                                            //         type="file"
+                                            //         id="directoryInput"
+                                            //         webkitdirectory
+                                            //         directory multiple
+                                            //         onChange={handleDirectorySelection}
+                                            //     />
                                         }
                                     </Col>
                                     <Col xs={12} md={1}>
@@ -221,9 +305,11 @@ function ModelAttachFile(props) {
                                                     <StyledTableCell align="center">{item.section}</StyledTableCell>
                                                     <StyledTableCell align="center">{item.addfileby}</StyledTableCell>
                                                     <StyledTableCell align="center">{item.addfiledate}</StyledTableCell>
-                                                    <StyledTableCell align="center">
-                                                        <a href={`http://dciweb.dci.daikin.co.jp/ECR/asset/FileAttech/${item.pathfilename}`}> <LuLink></LuLink>
-                                                        </a>
+                                                    <StyledTableCell align="center" style={{ color: '#0e68ff' }}>
+                                                        {/* <a href={`http://dciweb.dci.daikin.co.jp/ECR/asset/FileAttech/${item.pathfilename}`}> <LuLink></LuLink>
+                                                        </a> */}
+                                                        <LuLink onClick={() => OpenFile(item.pathfilename)}>
+                                                        </LuLink>
                                                     </StyledTableCell>
 
                                                     {

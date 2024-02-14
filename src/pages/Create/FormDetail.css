@@ -52,7 +52,6 @@
 }
 
 .styleRow {
-    /* width: 138%; */
     width: 100%;
     margin-top: 16px;
 }
@@ -166,15 +165,7 @@ table.tbCreateform {
     font-size: 15px;
 }
 
-/* .notify tr:nth-child(even) {
-    background-color: #f2f2f2;
-    font-size: 11px;
-}
 
-.notify tr:hover {
-    background-color: #ddd;
-    font-size: 11px;
-} */
 
 .notify th {
     padding-top: 12px;
@@ -184,15 +175,3 @@ table.tbCreateform {
     color: white;
     font-size: 15px;
 }
-
-/* .notify table,
-.notify td,
-.notify th {
-    border: 1px solid;
-    padding: 0px;
-}
-
-.notify table {
-    width: 100%;
-    border-collapse: collapse;
-} */

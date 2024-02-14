@@ -355,29 +355,29 @@ function Createform() {
                             <th colSpan={36} style={{ fontSize: '25px' }}>Actual Process</th>
                         </tr>
                         <tr>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '6%', fontSize: '12px' }}>Target</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '6%', fontSize: '12px' }}>Status</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Revise ECR(For Issuer only)</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>DCS NO</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>DRAWING</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>CLASS</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>ECR No</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '400px', fontSize: '12px' }}>Title</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Section</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Attached file</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '200px', fontSize: '12px' }}>Comment</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>Print</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>CREATE</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>PU</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>DD</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>EN</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>SQC</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>QC</th>
-                            <th colSpan={8} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>DIL</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>QA</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '6%', fontSize: '14px' }}>TARGET</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '6%', fontSize: '14px' }}>STATUS</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px', padding: '8px' }}>REVISE ECR<br></br><nobr>(For Issuer only)</nobr></th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>DCS NO</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>DRAWING</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px', padding: '8px' }}>CLASS</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>ECR No</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '400px', fontSize: '14px' }}>TITLE</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px', padding: '8px' }}>SECTION</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px', padding: '8px' }}>ATTACHED FILE</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '200px', fontSize: '14px', padding: '8px' }}>COMMENT</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>PRINT</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>CREATE</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>PU</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>DD</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>EN</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>SQC</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>QC</th>
+                            <th colSpan={8} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>DIL</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>QA</th>
                         </tr>
 
-                        <tr colSpan={20} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>
+                        <tr colSpan={20} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>
                             {/* <th>Attached file</th>
                             <th>Comment</th>
                             <th>Print</th> */}
@@ -386,7 +386,7 @@ function Createform() {
                         </tr>
 
 
-                        <tr style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '12px' }}>
+                        <tr style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>
                             <th>Received</th>
                             <th>Issued</th>
                             <th>Checked</th>
@@ -451,7 +451,6 @@ function Createform() {
                                         let namePending = item[`${items}${iApp}namepending`];
 
 
-
                                         if (holdDate > 0) {
                                             holdDate = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
                                         }
@@ -511,6 +510,7 @@ function Createform() {
                                         }
 
 
+
                                         iECR.app.push({
                                             name: name,
                                             date: date,
@@ -532,25 +532,40 @@ function Createform() {
                                     status = item[`${vSec.toLowerCase()}_status`] == 'U' ? (status == '' ? vSec : status) : status;
                                 });
 
-                                // {
-                                //     JSON.stringify(getdata)
+
+                                let targetDate = item.targetDate;
+                                let colorTargetDate = 'while'
+                                if (targetDate >= 0) {
+                                    colorTargetDate = 'red'
+                                }
+                                else if (targetDate = 3) {
+                                    colorTargetDate = 'rgb(255 184 18 / 74%)'
+                                }
+                                else if (targetDate >= 5) {
+                                    colorTargetDate = 'rgb(255 228 18 / 42%)'
+                                }
+                                // else {
+                                //     colorTargetDate = 'red';
                                 // }
 
+                                console.log(colorTargetDate)
+                                console.log(targetDate)
+
                                 return <tr>
-                                    <td style={{ fontSize: '12px' }}>{item.dueDate}</td>
-                                    <td style={{ backgroundColor: (status != '' ? 'rgb(255 252 106)' : 'rgb(72 229 23)') }}><p style={{ color: (status != '' ? 'red' : 'rgb(60 3 255)') }}>{(status != '' ? status : 'FINISH')}</p>
+                                    <td style={{ fontSize: '16px', padding: '8px', backgroundColor: (targetDate ? colorTargetDate : 'red') }}><nobr>{item.dueDate}</nobr></td>
+                                    <td style={{ backgroundColor: (status != '' ? 'yellow' : 'rgb(72 229 23)') }}><p style={{ padding: '8px', marginBottom: '-1px', color: (status != '' ? 'red' : 'rgb(60 3 255)') }}>{(status != '' ? status : 'FINISH')}</p>
                                     </td>
                                     <td>
                                         <Link underline="hover">
                                             <center><FcFinePrint style={{ width: '35px', height: '45px' }} onClick={() => handleShowDetail(item.ecrno)} /></center>
                                         </Link>
                                     </td>
-                                    <td style={{ fontSize: '12px' }}>{item.notificationNo}</td>
-                                    <td style={{ fontSize: '12px' }}>{item.partNo}</td>
-                                    <td style={{ fontSize: '12px' }}>{item.strClass}</td>
-                                    <td style={{ fontSize: '12px' }}>{item.ecrno}</td>
-                                    <td style={{ fontSize: '12px', width: '400px' }}>{item.title}</td>
-                                    <td style={{ fontSize: '12px' }}>
+                                    <td style={{ fontSize: '14px', padding: '8px' }}>{item.notificationNo}</td>
+                                    <td style={{ fontSize: '14px', padding: '8px' }}><nobr>{item.partNo}</nobr></td>
+                                    <td style={{ fontSize: '14px', padding: '8px' }}>{item.strClass}</td>
+                                    <td style={{ fontSize: '14px', padding: '8px' }}>{item.ecrno}</td>
+                                    <td style={{ fontSize: '14px', padding: '8px', width: '400px' }}><nobr>{item.title}</nobr></td>
+                                    <td style={{ fontSize: '14px', padding: '8px' }}>
                                         {
                                             showSection(item.section)
                                         }

@@ -22,70 +22,7 @@
         margin-left: -20px;
     }
 
-    /* .styleArrow {
-        position: absolute;
-        right: 113px;
-        width: 26px;
-        top: -30px;
-    }
 
-    .styleArrow2 {
-        position: absolute;
-        right: 113px;
-        width: 26px;
-        top: 273px;
-    }
-
-
-    .styleArrow3 {
-        position: absolute;
-        right: 113px;
-        width: 26px;
-        top: 390px;
-    }
-
-    .styleArrow4 {
-        position: absolute;
-        right: 113px;
-        width: 26px;
-        top: 529px;
-    }
-
-
-    .styleArrow5 {
-        position: absolute;
-        right: 113px;
-        width: 26px;
-        top: 645px;
-    }
-
-    .styleArrow6 {
-        position: absolute;
-        right: 113px;
-        width: 26px;
-        top: 785px;
-    }
-
-    .styleArrow7 {
-        position: absolute;
-        right: 113px;
-        width: 26px;
-        top: 904px;
-    }
-
-    .styleArrow8 {
-        position: absolute;
-        right: 110px;
-        width: 26px;
-        top: 1021px;
-    }
-
-    .styleArrow9 {
-        position: absolute;
-        right: 110px;
-        width: 26px;
-        top: 1134px;
-    } */
 
     .styleForDD {
         margin-top: -6pc;
@@ -124,7 +61,6 @@
     #SignSQC::after,
     #SignQC::after {
         content: url('/public/asset/Image/Arrow3.png');
-        /* content: url('http://dciweb.dci.daikin.co.jp/ECR/asset/Image/Arrow3.png'); */
         position: absolute;
         bottom: -60px;
         left: 75px;
@@ -133,7 +69,6 @@
 
     #SignQA::after {
         content: url('/public/asset/Image/Arrow3.png');
-        /* content: url('http://dciweb.dci.daikin.co.jp/ECR/asset/Image/Arrow3.png'); */
         position: absolute;
         bottom: -60px;
         left: 75px;
@@ -162,70 +97,7 @@
         margin-left: -10px;
     }
 
-    /* .styleArrow {
-        position: absolute;
-        right: 167px;
-        width: 26px;
-        top: -21px;
-    }
 
-    .styleArrow2 {
-        position: absolute;
-        right: 167px;
-        width: 26px;
-        top: 273px;
-    }
-
-
-    .styleArrow3 {
-        position: absolute;
-        right: 167px;
-        width: 26px;
-        top: 390px;
-    }
-
-    .styleArrow4 {
-        position: absolute;
-        right: 167px;
-        width: 26px;
-        top: 529px;
-    }
-
-
-    .styleArrow5 {
-        position: absolute;
-        right: 167px;
-        width: 26px;
-        top: 645px;
-    }
-
-    .styleArrow6 {
-        position: absolute;
-        right: 167px;
-        width: 26px;
-        top: 785px;
-    }
-
-    .styleArrow7 {
-        position: absolute;
-        right: 167px;
-        width: 26px;
-        top: 904px;
-    }
-
-    .styleArrow8 {
-        position: absolute;
-        right: 165px;
-        width: 26px;
-        top: 1021px;
-    }
-
-    .styleArrow9 {
-        position: absolute;
-        right: 165px;
-        width: 26px;
-        top: 1134px;
-    } */
 
     .styleForDD {
         margin-top: -6pc;
