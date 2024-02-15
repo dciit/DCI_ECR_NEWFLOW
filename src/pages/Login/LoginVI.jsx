@@ -82,7 +82,7 @@ function LoginVI() {
             <div class="relative">
                 <div class="absolute">
                     <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" class="img-fluid" alt="Sample image" style={{
-                        opacity: '0.2', width: '50%',
+                        opacity: '0.1', width: '50%',
                         height: 'auto'
                     }} />
                 </div>

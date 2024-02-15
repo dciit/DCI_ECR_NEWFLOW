@@ -355,29 +355,29 @@ function Createform() {
                             <th colSpan={36} style={{ fontSize: '25px' }}>Actual Process</th>
                         </tr>
                         <tr>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '6%', fontSize: '14px' }}>TARGET</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '6%', fontSize: '14px' }}>STATUS</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px', padding: '8px' }}>REVISE ECR<br></br><nobr>(For Issuer only)</nobr></th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>DCS NO</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>DRAWING</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px', padding: '8px' }}>CLASS</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>ECR No</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '400px', fontSize: '14px' }}>TITLE</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px', padding: '8px' }}>SECTION</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px', padding: '8px' }}>ATTACHED FILE</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', width: '200px', fontSize: '14px', padding: '8px' }}>COMMENT</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>PRINT</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>CREATE</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>PU</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>DD</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>EN</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>SQC</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>QC</th>
-                            <th colSpan={8} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>DIL</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>QA</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>TARGET</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>STATUS</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>REVISE ECR<br></br><nobr>(For Issuer only)</nobr></th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DCS NO</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DRAWING</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>CLASS</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>ECR No</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '400px', fontSize: '14px' }}>TITLE</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>SECTION</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>ATTACHED FILE</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '200px', fontSize: '14px', padding: '8px' }}>COMMENT</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>PRINT</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>CREATE</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>PU</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DD</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>EN</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>SQC</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>QC</th>
+                            <th colSpan={8} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>SENT TO DIL</th>
+                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>QA</th>
                         </tr>
 
-                        <tr colSpan={20} style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>
+                        <tr colSpan={20} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>
                             {/* <th>Attached file</th>
                             <th>Comment</th>
                             <th>Print</th> */}
@@ -386,7 +386,7 @@ function Createform() {
                         </tr>
 
 
-                        <tr style={{ color: 'white', backgroundColor: 'rgb(15 107 145)', fontSize: '14px' }}>
+                        <tr style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>
                             <th>Received</th>
                             <th>Issued</th>
                             <th>Checked</th>
@@ -548,12 +548,10 @@ function Createform() {
                                 //     colorTargetDate = 'red';
                                 // }
 
-                                console.log(colorTargetDate)
-                                console.log(targetDate)
 
                                 return <tr>
                                     <td style={{ fontSize: '16px', padding: '8px', backgroundColor: (targetDate ? colorTargetDate : 'red') }}><nobr>{item.dueDate}</nobr></td>
-                                    <td style={{ backgroundColor: (status != '' ? 'yellow' : 'rgb(72 229 23)') }}><p style={{ padding: '8px', marginBottom: '-1px', color: (status != '' ? 'red' : 'rgb(60 3 255)') }}>{(status != '' ? status : 'FINISH')}</p>
+                                    <td style={{ backgroundColor: (status != '' ? '#ffffa0' : 'rgb(72 229 23)') }}><p style={{ padding: '8px', marginBottom: '-1px', color: (status != '' ? 'red' : 'rgb(60 3 255)') }}>{(status != '' ? status : 'FINISH')}</p>
                                     </td>
                                     <td>
                                         <Link underline="hover">
