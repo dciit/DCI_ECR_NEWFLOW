@@ -535,19 +535,32 @@ function Createform() {
 
                                 let targetDate = item.targetDate;
                                 let colorTargetDate = 'while'
-                                if (targetDate >= 0) {
-                                    colorTargetDate = 'red'
-                                }
-                                else if (targetDate = 3) {
-                                    colorTargetDate = 'rgb(255 184 18 / 74%)'
-                                }
-                                else if (targetDate >= 5) {
-                                    colorTargetDate = 'rgb(255 228 18 / 42%)'
-                                }
+                                // if (targetDate >= 0 && targetDate <= 7) {
+                                //     colorTargetDate = 'red'
+                                // }
+                                // else if (targetDate >= 8 && targetDate <= 14) {
+                                //     colorTargetDate = 'yellow'
+                                // }
+                                // else if (targetDate < 0) {
+                                //     colorTargetDate = 'while'
+                                // }
                                 // else {
-                                //     colorTargetDate = 'red';
+                                //     colorTargetDate = 'while'
                                 // }
 
+
+                                if (targetDate >= 0 && targetDate <= 14) {
+                                    colorTargetDate = 'red'
+                                }
+                                else if (targetDate >= 15 && targetDate <= 21) {
+                                    colorTargetDate = 'yellow'
+                                }
+                                else {
+                                    colorTargetDate = 'while'
+                                }
+
+
+                                console.log(targetDate)
 
                                 return <tr>
                                     <td style={{ fontSize: '16px', padding: '8px', backgroundColor: (targetDate ? colorTargetDate : 'red') }}><nobr>{item.dueDate}</nobr></td>

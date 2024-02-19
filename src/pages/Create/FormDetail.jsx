@@ -822,9 +822,10 @@ function FormDetail(props) {
                             </div>
                         </Row>
 
-                        {/* {
+                        {
                             JSON.stringify(dataModaldt)
-                        } */}
+                        }
+
 
 
                         <Accordion expanded={expanded === 'CREATE'} onChange={handleChangeCollapse('CREATE')}>
@@ -1133,7 +1134,6 @@ function FormDetail(props) {
 
 
 
-
                                     <br></br>
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
                                         <Col xs={12} md={4}>
@@ -1177,7 +1177,7 @@ function FormDetail(props) {
                                         <Col xs={12} md={2}>
                                             {
                                                 permission.filter((item) => {
-                                                    return ((permission[0]?.grpRole == 'RECEIVED' || dataModaldt[0]?.grpRole != "ISSUED" || permission[0]?.grpRoleSect == "ADMIN") && dataModaldt[0]?.create_CheckBit != "F")
+                                                    return ((permission[0]?.grpRole == 'RECEIVED' || dataModaldt[0]?.grpRole != "ISSUED" || permission[0]?.grpRoleSect == "ADMIN") && dataModaldt[0]?.create_CheckBit != "F" && empCode == dataModaldt[0]?.createECRBy)
                                                 }).length ? <>
                                                     <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "CREATE")} disabled={(position == 'CHECK' || position == 'APPROVED') ? true : false}>
                                                         + เพิ่มผู้ดำเนินการ
@@ -1199,7 +1199,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.cre_approved}<br></br> {tableNotify[0]?.cre_approvedBit == 'F' ? tableNotify[0]?.cre_approvedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.cre_approved != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.create_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.cre_approvedCode, tableNotify[0]?.cre_approved_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.create_CheckBit != "F" && empCode == dataModaldt[0]?.createECRBy)) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.cre_approvedCode, tableNotify[0]?.cre_approved_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1209,7 +1209,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.cre_checked}<br></br>{tableNotify[0]?.cre_checkedBit == 'F' ? tableNotify[0]?.cre_checkedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.cre_checked != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.create_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.cre_checkedCode, tableNotify[0]?.cre_check_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.create_CheckBit != "F" && empCode == dataModaldt[0]?.createECRBy)) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.cre_checkedCode, tableNotify[0]?.cre_check_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
