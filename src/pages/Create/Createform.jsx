@@ -534,21 +534,10 @@ function Createform() {
 
 
                                 let targetDate = item.targetDate;
-                                let colorTargetDate = 'while'
-                                // if (targetDate >= 0 && targetDate <= 7) {
-                                //     colorTargetDate = 'red'
-                                // }
-                                // else if (targetDate >= 8 && targetDate <= 14) {
-                                //     colorTargetDate = 'yellow'
-                                // }
-                                // else if (targetDate < 0) {
-                                //     colorTargetDate = 'while'
-                                // }
-                                // else {
-                                //     colorTargetDate = 'while'
-                                // }
+                                let AlertDuedate = item.targetDate;
 
-
+                                console.log(targetDate)
+                                let colorTargetDate = 'ghostwhite'
                                 if (targetDate >= 0 && targetDate <= 14) {
                                     colorTargetDate = 'red'
                                 }
@@ -556,14 +545,24 @@ function Createform() {
                                     colorTargetDate = 'yellow'
                                 }
                                 else {
-                                    colorTargetDate = 'while'
+                                    colorTargetDate = 'ghostwhite'
                                 }
 
 
-                                console.log(targetDate)
+                                let datealertDuedate = "";
+                                if (AlertDuedate >= 1) {
+                                    datealertDuedate = `OVER` + " " + AlertDuedate + " วัน";
+                                }
+                                else if (AlertDuedate == 0) {
+                                    datealertDuedate = `DUEDATE` + " " + AlertDuedate + " วัน";
+                                }
+                                else if (AlertDuedate < -0) {
+                                    datealertDuedate = `REMAIN` + " " + AlertDuedate + " วัน";
+                                }
+
 
                                 return <tr>
-                                    <td style={{ fontSize: '16px', padding: '8px', backgroundColor: (targetDate ? colorTargetDate : 'red') }}><nobr>{item.dueDate}</nobr></td>
+                                    <td style={{ fontSize: '16px', padding: '8px', backgroundColor: (targetDate ? colorTargetDate : 'red') }}><nobr>{item.dueDate}<br></br><p style={{ fontSize: '14px', color: '#fcd83e', marginBottom: '1px' }}>{datealertDuedate}</p></nobr></td>
                                     <td style={{ backgroundColor: (status != '' ? '#ffffa0' : 'rgb(72 229 23)') }}><p style={{ padding: '8px', marginBottom: '-1px', color: (status != '' ? 'red' : 'rgb(60 3 255)') }}>{(status != '' ? status : 'FINISH')}</p>
                                     </td>
                                     <td>

@@ -822,10 +822,6 @@ function FormDetail(props) {
                             </div>
                         </Row>
 
-                        {
-                            JSON.stringify(dataModaldt)
-                        }
-
 
 
                         <Accordion expanded={expanded === 'CREATE'} onChange={handleChangeCollapse('CREATE')}>
