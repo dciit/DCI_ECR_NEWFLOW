@@ -13,7 +13,7 @@ import LoginVI from "./pages/Login/LoginVI";
 import PrintComponent from "./pages/Print/PrintComponent";
 let logintrue = false
 logintrue = localStorage.getItem('logintrue', false)
-
+import ModelAttachFile from "./pages/FileAttached/ModelAttachFile"
 
 const Routess = () => {
     const BASE_PATH = 'ECR'
@@ -34,6 +34,7 @@ const Routess = () => {
                     <Route path={BASE_PATH + '/Print/:ecrno'} element={<Print />} />
                     <Route path={BASE_PATH + '/Chat/:ecrno'} element={<Chat />} />
                     <Route path={BASE_PATH + '/ModalDetail'} element={<Detail />} />
+                    <Route path={BASE_PATH + '/a'} element={<ModelAttachFile />} />
                 </Route>
             </Routes>
         </BrowserRouter >

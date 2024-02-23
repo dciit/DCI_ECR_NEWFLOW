@@ -14,6 +14,11 @@ const postFile = (param) => {
     return http.SaveFile.post(`postFile`, param);
 }
 
+const postPathFile = (param) => {
+    console.log(param)
+    return http.SaveFile.post(`postPathFile`, param);
+}
+
 
 const getShowFile = (docNo) => {
     return http.SaveFile.get(`getShowFile/${docNo}`);
@@ -30,6 +35,7 @@ const getDataToAddFile = (ecrno) => {
 export default {
     getNbrAddFile,
     postFile,
+    postPathFile,
     getShowFile,
     getDeleteFile,
     getECRNO,

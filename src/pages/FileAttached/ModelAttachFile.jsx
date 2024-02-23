@@ -1,5 +1,5 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import getDataFile from '../../service/getFileAttech.js'
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
@@ -23,6 +23,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
 import Cookies from 'js-cookie';
 import './ModelAttachFile.css'
+import { useDropzone } from 'react-dropzone';
 
 
 
@@ -63,6 +64,7 @@ function ModelAttachFile(props) {
     const { show, close, item } = props;
     // const empCode = localStorage.getItem("name");
     const empCode = Cookies.get('code')
+    const [copyPath, setCopyPath] = useState('');
     const ref = useRef();
     const permission = useSelector((state) => state.reducer.permission);
 
@@ -91,59 +93,47 @@ function ModelAttachFile(props) {
     const [selectedFile, setSelectedFile] = useState('');
 
 
-
+    const changeHandler = (event) => {
+        // setPathPDF(event.target.files[0]);
+        setSelectedFile(event.target.files[0]);
+    };
 
 
     const [pathPDF, setPathPDF] = useState('');
     const [path, setPath] = useState('');
 
-    var W3CDOM = (document.createElement && document.getElementsByTagName);
 
 
-    const changeHandler = (event) => {
-        // setPathPDF(event.target.files[0]);
-        setSelectedFile(event.target.files[0]);
+
+    // var W3CDOM = (document.createElement && document.getElementsByTagName);
+
+    // function initFileUploads() {
+    //     if (!W3CDOM) return;
+    //     var fakeFileUpload = document.createElement('div');
+    //     fakeFileUpload.className = 'fakefile';
+    //     fakeFileUpload.appendChild(document.createElement('input'));
+    //     // var image = document.createElement('img');
+    //     // image.src = 'pix/button_select.gif';
+    //     // fakeFileUpload.appendChild(image);
+    //     var x = document.getElementsByTagName('input');
+    //     for (var i = 0; i < x.length; i++) {
+    //         if (x[i].type != 'file') continue;
+    //         if (x[i].parentNode.className != 'fileinputs') continue;
+    //         x[i].className = 'file hidden';
+    //         var clone = fakeFileUpload.cloneNode(true);
+    //         x[i].parentNode.appendChild(clone);
+    //         x[i].relatedElement = clone.getElementsByTagName('input')[0];
+    //         x[i].onchange = x[i].onmouseout = function () {
+    //             this.relatedElement.value = this.value;
+    //             setPath(this.value);
+    //         }
+    //     }
+    // }
 
 
-    };
 
 
-    function initFileUploads() {
-        if (!W3CDOM) return;
-        var fakeFileUpload = document.createElement('div');
-        fakeFileUpload.className = 'fakefile';
-        fakeFileUpload.appendChild(document.createElement('input'));
-        // var image = document.createElement('img');
-        // image.src = 'pix/button_select.gif';
-        // fakeFileUpload.appendChild(image);
-        var x = document.getElementsByTagName('input');
-        for (var i = 0; i < x.length; i++) {
-            if (x[i].type != 'file') continue;
-            if (x[i].parentNode.className != 'fileinputs') continue;
-            x[i].className = 'file hidden';
-            var clone = fakeFileUpload.cloneNode(true);
-            x[i].parentNode.appendChild(clone);
-            x[i].relatedElement = clone.getElementsByTagName('input')[0];
-            x[i].onchange = x[i].onmouseout = function () {
-                this.relatedElement.value = this.value;
-                setPath(this.value);
-            }
-        }
-    }
 
-    const onChange = (event) => {
-        const value = event.target.value;
-
-        // this will return C:\fakepath\somefile.ext
-        console.log(value);
-
-        const files = event.target.files;
-
-        //setPath(files);
-
-        //this will return an ARRAY of File object
-        console.log(files);
-    }
 
     const handleClear = () => {
         ref.current.value = null;
@@ -154,20 +144,25 @@ function ModelAttachFile(props) {
 
 
     const handleSubmission = () => {
-        getDataFile.postFile({
-            ECRNO: item.ecrno, SECTION: secPermission, DOCNAME: item.title, ACTION: 'UPDATE', LOGBY: empCode, FileAttached: selectedFile, StatusFile: 'INSERT'
-        }).then((res) => {
-            try {
-                // if (Object.keys(res.data).length) {
-                initFiles();
-                handleClear()
-                // }
-            }
-            catch (error) {
-                console.log(error);
-                return error;
-            }
-        });
+        if (selectedFile != '' && copyPath != '') {
+            getDataFile.postFile({
+                ECRNO: item.ecrno, SECTION: secPermission, DOCNAME: item.title, ACTION: 'UPDATE', LOGBY: empCode, FileAttached: selectedFile, StatusFile: 'INSERT', FILEPATH: copyPath
+            }).then((res) => {
+                try {
+                    initFiles();
+                    handleClear();
+                    setSelectedFile('');
+                    setCopyPath('');
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        }
+        else {
+            alert("กรุณากรอก Path File และ เลือกไฟล์ ให้ครบ");
+        }
     };
     // ************END  ADD FILE  ************
 
@@ -215,8 +210,8 @@ function ModelAttachFile(props) {
                         <Row>
                             <Col xs={12} md={7}>
                                 <b><h1>Add File</h1></b>
-                                <>1={path}</>
-                                <>2={pathPDF}</>
+                                {/* <>1={path}</>
+                                <>2={pathPDF}</> */}
                             </Col>
                             <Col xs={12} md={5}>
                                 <p>ECR NO : {item.ecrno}</p>
@@ -247,29 +242,25 @@ function ModelAttachFile(props) {
                                         }
                                     </Col>
                                     <Col xs={12} md={6}>
-                                        {
-
-
-                                            <div style={{ display: 'flex' }}>
-                                                <div class="fileinputs">
-                                                    <input type="file" class="file" style={{ width: '300px' }} onChange={initFileUploads} />
-                                                    <div class="fakefile">
-                                                        <input />
-                                                        <button>Browse..</button>
-                                                    </div>
+                                        {/* <div style={{ display: 'flex' }}>
+                                            <div class="fileinputs">
+                                                <input type="file" class="file" style={{ width: '300px' }} onChange={initFileUploads} />
+                                                <div class="fakefile">
+                                                    <input />
+                                                    <button>Browse..</button>
                                                 </div>
                                             </div>
+                                        </div> */}
 
 
 
-                                            //     <input
-                                            //         type="file"
-                                            //         id="directoryInput"
-                                            //         webkitdirectory
-                                            //         directory multiple
-                                            //         onChange={handleDirectorySelection}
-                                            //     />
-                                        }
+
+                                        <div>
+                                            <p>วาง Path File ที่นี้ </p>
+                                            <input type="text" style={{ width: '390px' }} value={copyPath} onChange={(event) => setCopyPath(event.target.value)} />
+                                        </div>
+
+
                                     </Col>
                                     <Col xs={12} md={1}>
                                         {
@@ -289,6 +280,7 @@ function ModelAttachFile(props) {
                                         <TableRow>
                                             <StyledTableCell align="center">#</StyledTableCell>
                                             <StyledTableCell align="center">File Name</StyledTableCell>
+                                            <StyledTableCell align="center">File Path</StyledTableCell>
                                             <StyledTableCell align="center">Section</StyledTableCell>
                                             <StyledTableCell align="center">Add By</StyledTableCell>
                                             <StyledTableCell align="center">Add Date</StyledTableCell>
@@ -302,6 +294,7 @@ function ModelAttachFile(props) {
                                                 return <StyledTableRow key={item.docid}>
                                                     <StyledTableCell align="center">{item.no}</StyledTableCell>
                                                     <StyledTableCell align="center">{item.filename}</StyledTableCell>
+                                                    <StyledTableCell align="center">{item.filepath}</StyledTableCell>
                                                     <StyledTableCell align="center">{item.section}</StyledTableCell>
                                                     <StyledTableCell align="center">{item.addfileby}</StyledTableCell>
                                                     <StyledTableCell align="center">{item.addfiledate}</StyledTableCell>
@@ -337,87 +330,6 @@ function ModelAttachFile(props) {
                 </Dialog>
             </BootstrapDialog >
         </>
-
-
-
-        // <Modal
-        //     {...props}
-        //     size="lg"
-        //     centered
-        // >
-        //     <Modal.Header closeButton>
-        //         <Modal.Title>ECR NO : {item.ecrno} </Modal.Title>
-        //         <Modal.Title style={{ display: 'none' }}>Title : {item.title}</Modal.Title>
-        //         <Modal.Title style={{ marginTop: '8px', marginLeft: '40%' }}><h6 >Section : {section}</h6></Modal.Title>
-        //     </Modal.Header>
-        //     <Modal.Body>
-        //         <Container>
-        //             <Row>
-        //                 <Col xs={12} md={8}>
-        //                     {
-        //                         permission.filter((item) => {
-        //                             return item.menuCode == "BTN0002" && item.rolE_VIEW == "True"
-        //                         }).length ? <input type="file" name="file" accept='application/pdf' ref={ref} onChange={changeHandler} />
-        //                             :
-        //                             ""
-        //                     }
-        //                 </Col>
-        //                 <Col xs={12} md={4}>
-        //                     {
-        //                         permission.filter((item) => {
-        //                             return item.menuCode == "BTN0003" && item.rolE_VIEW == "True"
-        //                         }).length ? <Button variant="success" onClick={(e) => { handleSubmission() }}>Add</Button>
-        //                             :
-        //                             ""
-        //                     }
-        //                 </Col>
-        //             </Row>
-        //         </Container>
-        //         <br></br>
-        //         <TableContainer component={Paper}>
-        //             <Table>
-        //                 <TableHead>
-        //                     <TableRow>
-        //                         <StyledTableCell align="center">#</StyledTableCell>
-        //                         <StyledTableCell align="center">File Name</StyledTableCell>
-        //                         <StyledTableCell align="center">Section</StyledTableCell>
-        //                         <StyledTableCell align="center">Add By</StyledTableCell>
-        //                         <StyledTableCell align="center">Add Date</StyledTableCell>
-        //                         <StyledTableCell align="center">Detail</StyledTableCell>
-        //                         <StyledTableCell align="center">Delete</StyledTableCell>
-        //                     </TableRow>
-        //                 </TableHead>
-        //                 <TableBody>
-        //                     {
-        //                         showFile?.map((item, index) => {
-        //                             return <StyledTableRow key={item.docid}>
-        //                                 <StyledTableCell align="center">{item.no}</StyledTableCell>
-        //                                 <StyledTableCell align="center">{item.docfile}</StyledTableCell>
-        //                                 <StyledTableCell align="center">{item.section}</StyledTableCell>
-        //                                 <StyledTableCell align="center">{item.addfileby}</StyledTableCell>
-        //                                 <StyledTableCell align="center">{item.addfiledate}</StyledTableCell>
-        //                                 <StyledTableCell align="center">
-        //                                     <a href={`http://localhost:5173/asset/FileAttech/${item.pathfilename}`}> <LuLink></LuLink>
-        //                                     </a>
-        //                                 </StyledTableCell>
-        //                                 {
-        //                                     permission.filter((item) => {
-        //                                         return item.menuCode == "BTN0003" && item.rolE_VIEW == "True"
-        //                                     }).length ? <StyledTableCell align="center" onClick={() => handleDelete(item.docid)}><Link><FcFullTrash></FcFullTrash></Link></StyledTableCell>
-        //                                         :
-        //                                         <StyledTableCell />
-        //                                 }
-        //                             </StyledTableRow>
-        //                         })
-        //                     }
-        //                 </TableBody>
-        //             </Table>
-        //         </TableContainer>
-        //     </Modal.Body>
-        //     <Modal.Footer>
-        //     </Modal.Footer>
-        // </Modal>
-
     )
 }
 
