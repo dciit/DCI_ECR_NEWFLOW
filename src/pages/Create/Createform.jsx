@@ -450,7 +450,7 @@ function Createform() {
                                         let holdDate = item[`${items}${iApp}SumDate`]; //sumdate
                                         let namePending = item[`${items}${iApp}namepending`];
 
-
+                                        console.log(name)
                                         if (holdDate > 0) {
                                             holdDate = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
                                         }

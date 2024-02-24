@@ -38,6 +38,10 @@ import Select from '@mui/material/Select';
 import TableRow from '@mui/material/TableRow';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import { json } from 'react-router-dom';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
 
 
 
@@ -164,7 +168,8 @@ function FormDetail(props) {
     const [requestPU, setRequestPU] = useState('');
     const [showDueDate, setShowDueDate] = useState(false)
     const [strposition, setPosition] = useState('');
-
+    const [radioDILDD, setRadioDILDD] = React.useState('NEED');
+    const [radioDILQC, setRadioDILQC] = React.useState('NEED');
 
 
     useEffect(() => {
@@ -651,6 +656,23 @@ function FormDetail(props) {
     //****************************END FUNCTION APPROVED************ */
 
 
+
+    //**************************** FUNCTION APPROVED DIL************ */
+    const ApprovedDIL = (ecrno) => {
+        getDataSrvDT.postApprovedDIL({ ecrno: ecrno, empcode: empCode, remarkdd: radioDILDD, remarkqc: radioDILQC }).then((res) => {
+            try {
+                refresh();
+                close(false);
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+    //****************************END FUNCTION APPROVED DIL************ */
+
+
     //**************************** FUNCTION RECEIVE************ */
     const getReturn = (ecrno) => {
         if (remarkCancel != "") {
@@ -757,6 +779,14 @@ function FormDetail(props) {
         }
     };
 
+    const handleChangeRadioDILDD = (event) => {
+        setRadioDILDD(event.target.value);
+    };
+
+
+    const handleChangeRadioDILQC = (event) => {
+        setRadioDILQC(event.target.value);
+    };
 
     return (
         <div>
@@ -1988,16 +2018,30 @@ function FormDetail(props) {
                                     <Form.Label>3. JUDGEMENT ( DIL Design Section )</Form.Label>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <Form.Control as="textarea" style={{ backgroundColor: 'rgb(250 249 114)' }} rows={2} value={dataModaldt[0]?.diL_DD_REMARK}
+                                            <FormControl>
+                                                <FormLabel id="demo-controlled-radio-buttons-group"></FormLabel>
+                                                <RadioGroup
+                                                    aria-labelledby="demo-controlled-radio-buttons-group"
+                                                    name="controlled-radio-buttons-group"
+                                                    value={radioDILDD}
+                                                    onChange={handleChangeRadioDILDD}
+                                                >
+                                                    <FormControlLabel value="NEED" control={<Radio />} label="NEED" />
+                                                    <FormControlLabel value="NO NEED" control={<Radio />} label="NO NEED" />
+                                                </RadioGroup>
+                                            </FormControl>
+
+
+                                            {/* <Form.Control as="textarea" style={{ backgroundColor: 'rgb(250 249 114)' }} rows={2} value={dataModaldt[0]?.diL_DD_REMARK}
                                                 onChange={(event) => {
                                                     dataModaldt[0].diL_DD_REMARK = event.target.value;
                                                     setRemarkDILDD([...dataModaldt])
                                                 }}
-                                            />
+                                            /> */}
                                         </Col>
                                     </Row>
 
-                                    <Row className='styleRowText'>
+                                    {/* <Row className='styleRowText'>
                                         <Col xs={12} md={4} style={{ display: 'flex' }}>
                                             <b>Issued </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_DD_IssuedBy} style={{ backgroundColor: 'rgb(250 249 114)' }}
                                                 onChange={(event) => {
@@ -2019,20 +2063,35 @@ function FormDetail(props) {
                                                     setApprovedDILDD([...dataModaldt])
                                                 }} />
                                         </Col>
-                                    </Row>
+                                    </Row> */}
                                     <hr></hr>
                                     <Form.Label>4. JUDGEMENT ( DIL Quality Control Section ) [Incase necessary]</Form.Label>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <Form.Control as="textarea" rows={2} style={{ backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.diL_QC_REMARK}
+                                            <FormControl>
+                                                <FormLabel id="demo-controlled-radio-buttons-group"></FormLabel>
+                                                <RadioGroup
+                                                    aria-labelledby="demo-controlled-radio-buttons-group"
+                                                    name="controlled-radio-buttons-group"
+                                                    value={radioDILQC}
+                                                    onChange={handleChangeRadioDILQC}
+                                                >
+                                                    <FormControlLabel value="NEED" control={<Radio />} label="NEED" />
+                                                    <FormControlLabel value="NO NEED" control={<Radio />} label="NO NEED" />
+                                                </RadioGroup>
+                                            </FormControl>
+
+
+
+                                            {/* <Form.Control as="textarea" rows={2} style={{ backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.diL_QC_REMARK}
                                                 onChange={(event) => {
                                                     dataModaldt[0].diL_QC_REMARK = event.target.value;
                                                     setRemarkDILQC([...dataModaldt])
-                                                }} />
+                                                }} /> */}
                                         </Col>
                                     </Row>
 
-                                    <Row className='styleRowText'>
+                                    {/* <Row className='styleRowText'>
                                         <Col xs={12} md={4} style={{ display: 'flex' }}>
                                             <b>Issued </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_IssuedBy} style={{ backgroundColor: 'rgb(250 249 114)' }}
                                                 onChange={(event) => {
@@ -2054,11 +2113,11 @@ function FormDetail(props) {
                                                     setApprovedDILQC([...dataModaldt])
                                                 }} />
                                         </Col>
-                                    </Row>
+                                    </Row> */}
 
                                     <hr></hr>
 
-                                    <Row className='styleRowText'>
+                                    {/* <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
                                             <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
                                             <Form.Control as="textarea" rows={5} disabled={(position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.diL_Remark_Receive}
@@ -2067,7 +2126,7 @@ function FormDetail(props) {
                                                     setDIL_Receive([...dataModaldt]);
                                                 }} />
                                         </Col>
-                                    </Row>
+                                    </Row> */}
 
                                 </Typography>
                             </AccordionDetails>
@@ -2679,7 +2738,7 @@ function FormDetail(props) {
                                 &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) DD CHECK
+                                        ตีกลับ (Return) DD
                                     </Button>
                                 </> : ""
                             }
@@ -2759,7 +2818,7 @@ function FormDetail(props) {
                                 }).length ?
                                     <>
                                         <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                            ตีกลับ (Return)
+                                            ตีกลับ (Return) EN
                                         </Button>
                                     </> : ""
                             }
@@ -2769,7 +2828,7 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0027" && item.rolE_VIEW == "True" && dataModaldt[0]?.dD_ApprovedBit == "F" && dataModaldt[0]?.eN_IssuedBit != "F"
                                 }).length ? <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
-                                    รับเอกสาร (Receive)
+                                    รับเอกสาร (Receive) EN
                                 </Button>
                                     :
                                     ""
@@ -2784,7 +2843,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.eN_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) EN
                                     </Button>
                                 </> : ""
                             }
@@ -2795,7 +2854,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.eN_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
-                                        ออกเอกสาร (Issued)
+                                        ออกเอกสาร (Issued) EN
                                     </Button>
                                 </>
                                     : ""
@@ -2811,7 +2870,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.eN_ApprovedBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) EN
                                     </Button>
                                 </> : ""
                             }
@@ -2821,7 +2880,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0029" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_IssuedBit == "F" && empCode == dataModaldt[0]?.eN_CheckCode
                                 }).length ? dataModaldt[0]?.eN_ApprovedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                    อนุมัติ (MG Approved)
+                                    อนุมัติ (MG Approved) EN
                                 </Button>
                                     :
                                     ""
@@ -2836,7 +2895,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.sqC_ReceiveBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) EN
                                     </Button>
                                 </> : ""
                             }
@@ -2846,7 +2905,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0030" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_CheckBit == "F" && empCode == dataModaldt[0]?.eN_ApprovedCode
                                 }).length ? dataModaldt[0]?.sqC_ReceiveBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                    อนุมัติ (GM Approved)
+                                    อนุมัติ (GM Approved) EN
                                 </Button>
                                     :
                                     ""
@@ -2864,7 +2923,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.sqC_IssuedBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) SQC
                                     </Button>
                                 </> : ""
                             }
@@ -2875,7 +2934,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0035" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_ApprovedBit == "F"
                                 }).length ? dataModaldt[0]?.sqC_IssuedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
-                                    รับเอกสาร (Receive)
+                                    รับเอกสาร (Receive) SQC
                                 </Button>
                                     :
                                     ""
@@ -2889,7 +2948,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.sqC_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) SQC
                                     </Button>
                                 </> : ""
                             }
@@ -2900,7 +2959,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.sqC_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
-                                        ออกเอกสาร (Issued)
+                                        ออกเอกสาร (Issued) SQC
                                     </Button>
                                 </>
                                     : ""
@@ -2916,7 +2975,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.sqC_ApprovedBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) SQC
                                     </Button>
                                 </> : ""
                             }
@@ -2926,7 +2985,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0037" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_IssuedBit == "F" && empCode == dataModaldt[0]?.sqC_CheckCode
                                 }).length ? dataModaldt[0]?.sqC_ApprovedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                    อนุมัติ (MG Approved)
+                                    อนุมัติ (MG Approved) SQC
                                 </Button>
                                     :
                                     ""
@@ -2941,7 +3000,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.qC_ReceiveBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) SQC
                                     </Button>
                                 </> : ""
                             }
@@ -2951,7 +3010,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0038" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_CheckBit == "F" && empCode == dataModaldt[0]?.sqC_ApprovedCode
                                 }).length ? dataModaldt[0]?.qC_ReceiveBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                    อนุมัติ (GM Approved)
+                                    อนุมัติ (GM Approved) SQC
                                 </Button>
                                     :
                                     ""
@@ -2969,7 +3028,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.qC_IssuedBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) QC
                                     </Button>
                                 </> : ""
                             }
@@ -2980,7 +3039,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0043" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_ApprovedBit == "F"
                                 }).length ? dataModaldt[0]?.qC_IssuedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
-                                    รับเอกสาร (Receive)
+                                    รับเอกสาร (Receive) QC
                                 </Button>
                                     :
                                     ""
@@ -2994,7 +3053,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.qC_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) QC
                                     </Button>
                                 </> : ""
                             }
@@ -3005,7 +3064,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.qC_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
-                                        ออกเอกสาร (Issued)
+                                        ออกเอกสาร (Issued) QC
                                     </Button>
                                 </>
                                     : ""
@@ -3021,7 +3080,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.qC_ApprovedBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) QC
                                     </Button>
                                 </> : ""
                             }
@@ -3031,7 +3090,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0045" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_IssuedBit == "F" && empCode == dataModaldt[0]?.qC_CheckCode
                                 }).length ? dataModaldt[0]?.qC_ApprovedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                    อนุมัติ (MG Approved)
+                                    อนุมัติ (MG Approved) QC
                                 </Button>
                                     :
                                     ""
@@ -3046,7 +3105,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.diL_RECEIVEBIT != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) QC
                                     </Button>
                                 </> : ""
                             }
@@ -3056,7 +3115,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0046" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_CheckBit == "F" && empCode == dataModaldt[0]?.qC_ApprovedCode
                                 }).length ? dataModaldt[0]?.diL_RECEIVEBIT != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                    อนุมัติ (GM Approved)
+                                    อนุมัติ (GM Approved) QC
                                 </Button>
                                     :
                                     ""
@@ -3074,7 +3133,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) DIL
                                     </Button>
                                 </> : ""
                             }
@@ -3084,8 +3143,8 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0048" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ApprovedBit == "F"
                                 }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
-                                <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
-                                    รับเอกสาร (Receive)
+                                <Button autoFocus variant="success" onClick={() => ApprovedDIL(dataModaldt[0].ecR_NO)}>
+                                    อนุมัติ (GM Approved) DIL
                                 </Button>
                                     :
                                     ""
@@ -3104,7 +3163,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) QA
                                     </Button>
                                 </> : ""
                             }
@@ -3115,7 +3174,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0053" && item.rolE_VIEW == "True" && dataModaldt[0]?.diL_RECEIVEBIT == "F"
                                 }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
-                                    รับเอกสาร (Receive)
+                                    รับเอกสาร (Receive) QA
                                 </Button>
                                     :
                                     ""
@@ -3129,7 +3188,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.qA_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) QA
                                     </Button>
                                 </> : ""
                             }
@@ -3140,7 +3199,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.qA_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
-                                        ออกเอกสาร (Issued)
+                                        ออกเอกสาร (Issued) QA
                                     </Button>
                                 </>
                                     : ""
@@ -3155,7 +3214,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.qA_ApprovedBit != "F" &&
                                 <>
                                     <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)
+                                        ตีกลับ (Return) QA
                                     </Button>
                                 </> : ""
                             }
@@ -3165,7 +3224,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0055" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_IssuedBit == "F" && empCode == dataModaldt[0]?.qA_CheckCode
                                 }).length ? dataModaldt[0]?.qA_ApprovedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                    อนุมัติ (MG Approved)
+                                    อนุมัติ (MG Approved) QA
                                 </Button>
                                     :
                                     ""
@@ -3181,7 +3240,7 @@ function FormDetail(props) {
                                 }).length ?
                                     <>
                                         <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                            ตีกลับ (Return)
+                                            ตีกลับ (Return) QA
                                         </Button>
                                     </> : ""
                             }
@@ -3191,7 +3250,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0056" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_CheckBit == "F" && empCode == dataModaldt[0]?.qA_ApprovedCode
                                 }).length ?
                                     <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                        อนุมัติ (GM Approved)
+                                        อนุมัติ (GM Approved) QA
                                     </Button>
                                     :
                                     ""
