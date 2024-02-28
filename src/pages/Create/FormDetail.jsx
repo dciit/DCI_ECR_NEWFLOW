@@ -673,6 +673,23 @@ function FormDetail(props) {
     //****************************END FUNCTION APPROVED DIL************ */
 
 
+
+    //**************************** FUNCTION RETURN DIL************ */
+    const ReturnDIL = (ecrno) => {
+        getDataSrvDT.postReturnDIL({ ecrno: ecrno, empcode: empCode, remarkdd: radioDILDD, remarkqc: radioDILQC }).then((res) => {
+            try {
+                refresh();
+                close(false);
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+    //****************************END FUNCTION RETURN DIL************ */
+
+
     //**************************** FUNCTION RECEIVE************ */
     const getReturn = (ecrno) => {
         if (remarkCancel != "") {
@@ -2018,7 +2035,7 @@ function FormDetail(props) {
                                     <Form.Label>3. JUDGEMENT ( DIL Design Section )</Form.Label>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <FormControl>
+                                            <FormControl disabled={dataModaldt[0]?.diL_DD_ReceiveBit != "U" ? false : true}>
                                                 <FormLabel id="demo-controlled-radio-buttons-group"></FormLabel>
                                                 <RadioGroup
                                                     aria-labelledby="demo-controlled-radio-buttons-group"
@@ -2068,7 +2085,8 @@ function FormDetail(props) {
                                     <Form.Label>4. JUDGEMENT ( DIL Quality Control Section ) [Incase necessary]</Form.Label>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <FormControl>
+
+                                            <FormControl disabled={dataModaldt[0]?.diL_QC_ReceiveBit != "U" ? false : true}>
                                                 <FormLabel id="demo-controlled-radio-buttons-group"></FormLabel>
                                                 <RadioGroup
                                                     aria-labelledby="demo-controlled-radio-buttons-group"
@@ -3125,14 +3143,18 @@ function FormDetail(props) {
 
 
 
-                            {/* **************************** BUTTON SECTION DIL **************************/}
+                            {/* **************************** BUTTON SECTION DIL DD**************************/}
                             {/* RECEIVE  */}
+                            {/* {
+                                JSON.stringify(dataModaldt)
+                            } */}
                             {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0047" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ApprovedBit == "F"
+                                        && dataModaldt[0]?.diL_QC_ReceiveBit != "F"
                                 }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                    <Button autoFocus variant="danger" onClick={() => ReturnDIL(dataModaldt[0].ecR_NO)}>
                                         ตีกลับ (Return) DIL
                                     </Button>
                                 </> : ""
@@ -3142,6 +3164,7 @@ function FormDetail(props) {
                             {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0048" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ApprovedBit == "F"
+                                        && dataModaldt[0]?.diL_QC_ReceiveBit != "F"
                                 }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => ApprovedDIL(dataModaldt[0].ecR_NO)}>
                                     อนุมัติ (GM Approved) DIL
@@ -3150,7 +3173,37 @@ function FormDetail(props) {
                                     ""
                             }
                             {/* END RECEIVE  */}
-                            {/* **************************** BUTTON SECTION DIL **************************/}
+                            {/* **************************** BUTTON SECTION DIL DD**************************/}
+
+
+                            {/* **************************** BUTTON SECTION DIL QC**************************/}
+                            {/* RECEIVE  */}
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0059" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ApprovedBit == "F"
+                                        && dataModaldt[0]?.qA_ReceiveBit != "F" && dataModaldt[0]?.diL_DD_ReceiveBit == "F"
+                                }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
+                                <>
+                                    <Button autoFocus variant="danger" onClick={() => ReturnDIL(dataModaldt[0].ecR_NO)}>
+                                        ตีกลับ (Return) DIL
+                                    </Button>
+                                </> : ""
+                            }
+
+
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0060" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ApprovedBit == "F"
+                                        && dataModaldt[0]?.qA_ReceiveBit != "F" && dataModaldt[0]?.diL_DD_ReceiveBit == "F"
+                                }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
+                                <Button autoFocus variant="success" onClick={() => ApprovedDIL(dataModaldt[0].ecR_NO)}>
+                                    อนุมัติ (GM Approved) DIL
+                                </Button>
+                                    :
+                                    ""
+                            }
+                            {/* END RECEIVE  */}
+                            {/* **************************** BUTTON SECTION DIL QC**************************/}
 
 
 

@@ -167,7 +167,7 @@ function Createform() {
         getDataSrvHD.postECRList({ section: selectSection, ecrno: ECRNo, title: Title, model: Model, partName: PartName, drawingNo: DrawingNo, brno: BRNo, status: selectStatus, strclass: strClass }).then((res) => {
             try {
                 setGetdata(res.data)
-                // console.log(res.data)
+                console.log(res.data)
             }
             catch (error) {
                 console.log(error);
@@ -187,8 +187,10 @@ function Createform() {
         }
     }
     //****************************END BUTTON SEARCH ************ *
-    const sectionArray = ['CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
-    const sectionArrayAll = ['ALL', 'CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
+    // const sectionArray = ['CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
+    const sectionArray = ['CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL_DD', 'DIL_QC', 'QA']
+    // const sectionArrayAll = ['ALL', 'CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
+    const sectionArrayAll = ['ALL', 'CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL_DD', 'DIL_QC', 'QA']
     const classArray = ['ALL', 'CLASS A', 'CLASS B', 'CLASS C', 'CLASS D', 'CLASS E']
 
 
@@ -435,6 +437,7 @@ function Createform() {
                     <tbody>
                         {
                             getdata?.map((item, index) => {  // ข้อมูลใหญ่
+                                //let oCols = ['cre', 'pu', 'dd', 'en', 'sqc', 'qc', 'dil', 'dil', 'qa'];
                                 let oCols = ['cre', 'pu', 'dd', 'en', 'sqc', 'qc', 'dil_dd', 'dil_qc', 'qa'];
                                 let oApps = ['received', 'issued', 'check', 'approved'];
                                 let oEcr = [];
@@ -450,7 +453,7 @@ function Createform() {
                                         let holdDate = item[`${items}${iApp}SumDate`]; //sumdate
                                         let namePending = item[`${items}${iApp}namepending`];
 
-                                        console.log(name)
+                                        //   console.log(holdDate)
                                         if (holdDate > 0) {
                                             holdDate = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
                                         }
@@ -536,7 +539,6 @@ function Createform() {
                                 let targetDate = item.targetDate;
                                 let AlertDuedate = item.targetDate;
 
-                                console.log(targetDate)
                                 let colorTargetDate = 'ghostwhite'
                                 if (targetDate >= 0 && targetDate <= 14) {
                                     colorTargetDate = 'red'

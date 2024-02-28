@@ -18,6 +18,11 @@ const postApprovedDIL = (param) => {
     return http.APIDETAIL.post(`postApprovedDIL`, param);
 }
 
+const postReturnDIL = (param) => {
+    console.log(param)
+    return http.APIDETAIL.post(`postReturnDIL`, param);
+}
+
 
 
 export default {
@@ -25,4 +30,5 @@ export default {
     postIssued,
     getReturn,
     postApprovedDIL,
+    postReturnDIL,
 };

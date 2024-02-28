@@ -36,7 +36,7 @@ function AddPermissions() {
         setSelectStep(event.target.value);
     };
 
-    const sectionArray = ['ADMIN', 'CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
+    const sectionArray = ['ADMIN', 'CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'DIL-DD', 'DIL-QC', 'QA']
     const stepArray = ['ADMIN', 'CREATE', 'RECEIVED', 'ISSUED ', 'CHECK', 'APPROVED']
 
 
@@ -96,7 +96,7 @@ function AddPermissions() {
         getDataSrvPermiss.getDeletePermission(code, grpCode).then((res) => {
             try {
                 //handelSearch();
-                loadPage();
+                handelSearch();
             }
             catch (error) {
                 console.log(error);

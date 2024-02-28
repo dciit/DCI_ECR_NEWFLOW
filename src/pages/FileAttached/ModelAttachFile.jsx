@@ -253,11 +253,17 @@ function ModelAttachFile(props) {
                                         </div> */}
 
 
-
-
                                         <div>
-                                            <p>วาง Path File ที่นี้ </p>
-                                            <input type="text" style={{ width: '390px' }} value={copyPath} onChange={(event) => setCopyPath(event.target.value)} />
+                                            {
+                                                permission.filter((item) => {
+                                                    return item.menuCode == "BTN0003" && item.rolE_VIEW == "True"
+                                                }).length ? <>
+                                                    <p>วาง Path File ที่นี้ </p>
+                                                    <input type="text" style={{ width: '390px' }} value={copyPath} onChange={(event) => setCopyPath(event.target.value)} />
+                                                </>
+                                                    :
+                                                    ""
+                                            }
                                         </div>
 
 
