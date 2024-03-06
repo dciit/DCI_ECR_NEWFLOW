@@ -544,8 +544,12 @@ function FormDetail(props) {
             getDataSrv.postUpdateData(dataModaldt[0]).then((res) => {
                 try {
                     refresh();
-                    //close(false);
-                    alert("successfully")
+                    Swal.fire({
+                        icon: "success",
+                        title: "Update Successfully",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
                 catch (error) {
                     return error;
@@ -558,92 +562,137 @@ function FormDetail(props) {
 
 
     //**************************** FUNCTION RECEIVE************ */
-    const getReceive = (ecrno) => {
-        let sectionReceive = "";
-        if (section == 'PU') {
-            sectionReceive = dataModaldt[0].pU_Receive_Remark
-        }
-        else if (section == 'DD') {
-            sectionReceive = dataModaldt[0].dD_Remark_Receive
-        }
-        else if (section == 'EN') {
-            sectionReceive = dataModaldt[0].eN_Remark_Receive
-        }
-        else if (section == 'SQC') {
-            sectionReceive = dataModaldt[0].sqC_Remark_Receive
-        }
-        else if (section == 'QC') {
-            sectionReceive = dataModaldt[0].qC_Remark_Receive
-        }
-        else if (section == 'DIL') {
-            sectionReceive = dataModaldt[0].diL_Remark_Receive
-        }
-        else if (section == 'QA') {
-            sectionReceive = dataModaldt[0].qA_Remark_Receive
-        }
+    const getReceive = (ecrno, shortSec = '') => { // shortSec = pu,dd,en ...
+        if (tableNotify[0][`${shortSec}_issuedBit`] != 'U' && shortSec != '') {
 
-        // console.log(object)
-        // return false
+            let sectionReceive = "";
+            if (section == 'PU') {
+                sectionReceive = dataModaldt[0].pU_Receive_Remark
+            }
+            else if (section == 'DD') {
+                sectionReceive = dataModaldt[0].dD_Remark_Receive
+            }
+            else if (section == 'EN') {
+                sectionReceive = dataModaldt[0].eN_Remark_Receive
+            }
+            else if (section == 'SQC') {
+                sectionReceive = dataModaldt[0].sqC_Remark_Receive
+            }
+            else if (section == 'QC') {
+                sectionReceive = dataModaldt[0].qC_Remark_Receive
+            }
+            else if (section == 'DIL') {
+                sectionReceive = dataModaldt[0].diL_Remark_Receive
+            }
+            else if (section == 'QA') {
+                sectionReceive = dataModaldt[0].qA_Remark_Receive
+            }
 
-        getDataSrvDT.postReceive({ ecrno: ecrno, remark: sectionReceive, issued: empCode, section: section }).then((res) => {
-            try {
-                refresh();
-                close(false);
-            }
-            catch (error) {
-                console.log(error);
-                return error;
-            }
-        });
+            getDataSrvDT.postReceive({ ecrno: ecrno, remark: sectionReceive, issued: empCode, section: section }).then((res) => {
+                try {
+                    refresh();
+                    close(false);
+                    Swal.fire({
+                        icon: "success",
+                        title: "Successfully",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        }
+        else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาเลือกผู้ Issued เอกสาร ECR ใน Section ของคุณ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+        }
     };
     //****************************END FUNCTION RECEIVE************ */
 
 
     //**************************** FUNCTION ISSUED************ */
-    const getIssued = (ecrno) => {
-        data[0] = { ...data[0], group: section }
-        data[0] = { ...data[0], empcode: empCode }
-        //data[0] = { ...data[0], qA_InformationDate: dataModaldt[0].qA_InformationDate }
-        setDataModaldt(data);
-        setDataModaldt([...dataModaldt]);
-        if (dataModaldt[0]?.qA_InformationDate == "") {
-            data[0] = { ...data[0], qA_InformationDate: informationDate }
+    const getIssued = (ecrno, shortSec = '') => {
+        if (tableNotify[0][`${shortSec}_checkedBit`] != 'U' && shortSec != '') {
+
+            data[0] = { ...data[0], group: section }
+            data[0] = { ...data[0], empcode: empCode }
+            setDataModaldt(data);
+            setDataModaldt([...dataModaldt]);
+            if (dataModaldt[0]?.qA_InformationDate == "") {
+                data[0] = { ...data[0], qA_InformationDate: informationDate }
+            }
+            else {
+
+            }
+
+            getDataSrvDT.postIssued(dataModaldt[0]).then((res) => {
+                try {
+                    refresh();
+                    close(false);
+                    Swal.fire({
+                        icon: "success",
+                        title: "Successfully",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
         }
         else {
-
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาเลือกผู้ Check เอกสาร ECR ใน Section ของคุณ",
+                showConfirmButton: false,
+                timer: 2000
+            });
         }
-
-        getDataSrvDT.postIssued(dataModaldt[0]).then((res) => {
-            try {
-                refresh();
-                close(false);
-            }
-            catch (error) {
-                console.log(error);
-                return error;
-            }
-        });
     };
     //****************************END FUNCTION ISSUED************ */
 
 
     //**************************** FUNCTION CHECK************ */
-    const getCheck = (ecrno, ecrCreateBySection, ecrCreateStatus) => {
+    const getCheck = (ecrno, ecrCreateBySection, ecrCreateStatus, shortSec = '') => {
+        if (tableNotify[0][`${shortSec}_approvedBit`] != null && shortSec != '') {
 
-        let createBySection = (ecrCreateBySection == 'Design') ? 'DD' : 'PU';
+            let createBySection = (ecrCreateBySection == 'Design') ? 'DD' : 'PU';
+            let _section = (createBySection == section) ? (ecrCreateStatus == 'U' || ecrCreateStatus == 'R') ? 'CREATE' : section : section;
 
-        let _section = (createBySection == section) ? (ecrCreateStatus == 'U' || ecrCreateStatus == 'R') ? 'CREATE' : section : section;
-
-        getDataSrvHD.getCheck(ecrno, empCode, _section).then((res) => {
-            try {
-                refresh();
-                close(false);
-            }
-            catch (error) {
-                console.log(error);
-                return error;
-            }
-        });
+            getDataSrvHD.getCheck(ecrno, empCode, _section).then((res) => {
+                try {
+                    refresh();
+                    close(false);
+                    Swal.fire({
+                        icon: "success",
+                        title: "Successfully",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        }
+        else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาเลือกผู้ Approve เอกสาร ECR ใน Section ของคุณ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+        }
     };
     //****************************END FUNCTION CHECK************ */
 
@@ -651,12 +700,18 @@ function FormDetail(props) {
     //**************************** FUNCTION APPROVED************ */
     const getApproved = (ecrno, ecrCreateBySection, ecrCreateStatus) => {
         let createBySection = (ecrCreateBySection == 'Design') ? 'DD' : 'PU';
-
         let _section = (createBySection == section) ? (ecrCreateStatus == 'U' || ecrCreateStatus == 'R') ? 'CREATE' : section : section;
+
         getDataSrvHD.getApproved(ecrno, empCode, _section).then((res) => {
             try {
                 refresh();
                 close(false);
+                Swal.fire({
+                    icon: "success",
+                    title: "Successfully",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }
             catch (error) {
                 console.log(error);
@@ -762,29 +817,39 @@ function FormDetail(props) {
     };
 
     const postAddNotifyTo = (ecR_NO, position, section) => {
-        getDataSrvPermiss.postAddNotifyTo({ employeeCode: employee, employeeFullName: employee, ecrno: ecR_NO, step: step, position: position, createBy: empCode, section: section }).then((res) => {
-            try {
-                getDataSrvPermiss.getNotifyTo(ecR_NO).then((res) => {
-                    try {
-                        setTableNotify(res.data);
-                        Swal.fire({
-                            icon: "success",
-                            title: "Your work has been saved",
-                            showConfirmButton: false,
-                            timer: 2000,
-                        });
-                    }
-                    catch (error) {
-                        console.log(error);
-                        return error;
-                    }
-                });
-            }
-            catch (error) {
-                console.log(error);
-                return error;
-            }
-        });
+        if (employee != "" && step != "" && position != "" && section != "") {
+            getDataSrvPermiss.postAddNotifyTo({ employeeCode: employee, employeeFullName: employee, ecrno: ecR_NO, step: step, position: position, createBy: empCode, section: section }).then((res) => {
+                try {
+                    getDataSrvPermiss.getNotifyTo(ecR_NO).then((res) => {
+                        try {
+                            setTableNotify(res.data);
+                            Swal.fire({
+                                icon: "success",
+                                title: "เพิ่มผู้ดำเนินการเรียบร้อย",
+                                showConfirmButton: false,
+                                timer: 1500,
+                            });
+                        }
+                        catch (error) {
+                            console.log(error);
+                            return error;
+                        }
+                    });
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        }
+        else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาระบุ ชื่อ และ Status ที่จะใช้ดำเนินการเอกสาร",
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
     };
 
 
@@ -865,10 +930,10 @@ function FormDetail(props) {
                             <div class="col-sm-2">  </div>
                             <div class="col-sm-10">
                                 <h5 style={{ marginLeft: '10%' }}>ENGINEERING CHANGE REQUEST</h5>
-                                {
-                                    JSON.stringify(dataModaldt)
-                                    //JSON.stringify(tableNotify)
-                                }
+                                {/* {
+                                    //JSON.stringify(dataModaldt)
+                                    JSON.stringify(tableNotify)
+                                } */}
                             </div>
                         </div>
 
@@ -1206,7 +1271,7 @@ function FormDetail(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
-                                            <Form.Label>REQUEST PU  : <span style={{ color: '#fc5757', fontSize: '18px', color: 'white' }}>*</span></Form.Label>
+                                            <Form.Label>REQUEST PU  : <span style={{ color: '#fc5757', fontSize: '18px' }}>*</span></Form.Label>
                                             {/* <Form.Control as="textarea" rows={1} onChange={(event) => setRequestPU(event.target.value)} /> */}
                                             <Form.Control as="textarea" rows={3} variant="standard" value={decodeURIComponent(dataModaldt[0]?.requestPU)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
@@ -1459,7 +1524,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.pu_issued}<br></br> {tableNotify[0]?.pu_issuedBit == 'F' ? tableNotify[0]?.pu_issuedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.pu_issued != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_issuedCode, tableNotify[0]?.pu_issued_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.pU_ReceiveBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_issuedCode, tableNotify[0]?.pu_issued_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1746,7 +1811,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.en_issued}<br></br> {tableNotify[0]?.en_issuedBit == 'F' ? tableNotify[0]?.en_issuedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.en_issued != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.eN_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_issuedCode, tableNotify[0]?.en_issued_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.eN_ReceiveBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_issuedCode, tableNotify[0]?.en_issued_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1875,7 +1940,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.sqc_issued}<br></br> {tableNotify[0]?.sqc_issuedBit == 'F' ? tableNotify[0]?.sqc_issuedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.sqc_issued != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_issuedCode, tableNotify[0]?.sqc_issued_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_ReceiveBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_issuedCode, tableNotify[0]?.sqc_issued_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -2055,7 +2120,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.qc_issued}<br></br> {tableNotify[0]?.qc_issuedBit == 'F' ? tableNotify[0]?.qc_issuedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.qc_issued != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_issuedCode, tableNotify[0]?.qc_issued_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_ReceiveBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_issuedCode, tableNotify[0]?.qc_issued_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -2401,7 +2466,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.qa_issued}<br></br> {tableNotify[0]?.qa_issuedBit == 'F' ? tableNotify[0]?.qa_issuedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.qa_issued != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_issuedCode, tableNotify[0]?.qa_issued_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_ReceiveBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_issuedCode, tableNotify[0]?.qa_issued_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -2508,7 +2573,7 @@ function FormDetail(props) {
                                     //     dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F"
                                     // )
                                     // &&
-                                    <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                    <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit, 'cre')}>
                                         <FontAwesomeIcon icon={faCheck} /> อนุมัติ (MG Approved) CREATE
                                     </Button>
                                     :
@@ -2581,7 +2646,7 @@ function FormDetail(props) {
                                 }).length ? (
                                     dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_IssuedBit != "F"
                                 )
-                                && <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
+                                && <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO, 'pu')}>
                                     <FontAwesomeIcon icon={faCheck} /> รับเอกสาร (Receive)  PU
                                 </Button>
                                     :
@@ -2619,7 +2684,7 @@ function FormDetail(props) {
                                     (dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F")
                                 )
                                 && <>
-                                    <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
+                                    <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO, 'pu')}>
                                         <FontAwesomeIcon icon={faCheck} />  ออกเอกสาร (Issued) PU
                                     </Button>
                                 </>
@@ -2659,7 +2724,7 @@ function FormDetail(props) {
                                     (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F")
                                 )
                                 &&
-                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit, 'pu')}>
                                     <FontAwesomeIcon icon={faCheck} /> อนุมัติ (MG Approved) PU
                                 </Button>
                                     :
@@ -2738,7 +2803,7 @@ function FormDetail(props) {
                                     (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.dD_ReceiveBit != "F") ||
                                     (dataModaldt[0]?.pU_ApprovedBit == "F" && dataModaldt[0]?.dD_IssuedBit != "F")
                                 )
-                                && <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
+                                && <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO, 'dd')}>
                                     <FontAwesomeIcon icon={faCheck} /> รับเอกสาร (Receive) DD
                                 </Button>
                                     :
@@ -2784,7 +2849,7 @@ function FormDetail(props) {
                                     dataModaldt[0]?.create_CheckBit != "F"
                                 )
                                 && <>
-                                    <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
+                                    <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO, 'dd')}>
                                         <FontAwesomeIcon icon={faCheck} />  ออกเอกสาร (Issued) DD
                                     </Button>
                                 </>
@@ -2825,7 +2890,7 @@ function FormDetail(props) {
                                     (dataModaldt[0]?.dD_CheckBit != "R" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ApprovedBit != "F" && dataModaldt[0]?.dD_IssuedBit == "F")
                                 )
                                 &&
-                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit, 'dd')}>
                                     <FontAwesomeIcon icon={faCheck} /> อนุมัติ (MG Approved) DD
                                 </Button>
                                     :
@@ -2898,7 +2963,7 @@ function FormDetail(props) {
                             {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0027" && item.rolE_VIEW == "True" && dataModaldt[0]?.dD_ApprovedBit == "F" && dataModaldt[0]?.eN_IssuedBit != "F"
-                                }).length ? <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
+                                }).length ? <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO, 'en')}>
                                     <FontAwesomeIcon icon={faCheck} /> รับเอกสาร (Receive) EN
                                 </Button>
                                     :
@@ -2924,7 +2989,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0028" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_ReceiveBit == "F" && empCode == dataModaldt[0]?.eN_IssuedCode
                                 }).length ? dataModaldt[0]?.eN_CheckBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
+                                    <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO, 'en')}>
                                         <FontAwesomeIcon icon={faCheck} />  ออกเอกสาร (Issued) EN
                                     </Button>
                                 </>
@@ -2950,7 +3015,7 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0029" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_IssuedBit == "F" && empCode == dataModaldt[0]?.eN_CheckCode
                                 }).length ? dataModaldt[0]?.eN_ApprovedBit != "F" &&
-                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit, 'en')}>
                                     <FontAwesomeIcon icon={faCheck} />  อนุมัติ (MG Approved) EN
                                 </Button>
                                     :
@@ -3004,7 +3069,7 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0035" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_ApprovedBit == "F"
                                 }).length ? dataModaldt[0]?.sqC_IssuedBit != "F" &&
-                                <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
+                                <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO, 'sqc')}>
                                     <FontAwesomeIcon icon={faCheck} />   รับเอกสาร (Receive) SQC
                                 </Button>
                                     :
@@ -3029,7 +3094,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0036" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_ReceiveBit == "F" && empCode == dataModaldt[0]?.sqC_IssuedCode
                                 }).length ? dataModaldt[0]?.sqC_CheckBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
+                                    <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO, 'sqc')}>
                                         <FontAwesomeIcon icon={faCheck} />  ออกเอกสาร (Issued) SQC
                                     </Button>
                                 </>
@@ -3055,7 +3120,7 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0037" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_IssuedBit == "F" && empCode == dataModaldt[0]?.sqC_CheckCode
                                 }).length ? dataModaldt[0]?.sqC_ApprovedBit != "F" &&
-                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit, 'sqc')}>
                                     <FontAwesomeIcon icon={faCheck} />  อนุมัติ (MG Approved) SQC
                                 </Button>
                                     :
@@ -3109,7 +3174,7 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0043" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_ApprovedBit == "F"
                                 }).length ? dataModaldt[0]?.qC_IssuedBit != "F" &&
-                                <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
+                                <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO, 'qc')}>
                                     <FontAwesomeIcon icon={faCheck} />  รับเอกสาร (Receive) QC
                                 </Button>
                                     :
@@ -3134,7 +3199,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0044" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ReceiveBit == "F" && empCode == dataModaldt[0]?.qC_IssuedCode
                                 }).length ? dataModaldt[0]?.qC_CheckBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
+                                    <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO, 'qc')}>
                                         <FontAwesomeIcon icon={faCheck} />  ออกเอกสาร (Issued) QC
                                     </Button>
                                 </>
@@ -3160,7 +3225,7 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0045" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_IssuedBit == "F" && empCode == dataModaldt[0]?.qC_CheckCode
                                 }).length ? dataModaldt[0]?.qC_ApprovedBit != "F" &&
-                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit, 'qc')}>
                                     <FontAwesomeIcon icon={faCheck} />  อนุมัติ (MG Approved) QC
                                 </Button>
                                     :
@@ -3277,7 +3342,7 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0053" && item.rolE_VIEW == "True" && dataModaldt[0]?.diL_RECEIVEBIT == "F"
                                 }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
-                                <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
+                                <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO, 'qa')}>
                                     <FontAwesomeIcon icon={faCheck} /> รับเอกสาร (Receive) QA
                                 </Button>
                                     :
@@ -3302,7 +3367,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0054" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_ReceiveBit == "F" && empCode == dataModaldt[0]?.qA_IssuedCode
                                 }).length ? dataModaldt[0]?.qA_CheckBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
+                                    <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO, 'qa')}>
                                         <FontAwesomeIcon icon={faCheck} />  ออกเอกสาร (Issued) QA
                                     </Button>
                                 </>
@@ -3327,7 +3392,7 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0055" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_IssuedBit == "F" && empCode == dataModaldt[0]?.qA_CheckCode
                                 }).length ? dataModaldt[0]?.qA_ApprovedBit != "F" &&
-                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit, 'qa')}>
                                     <FontAwesomeIcon icon={faCheck} />  อนุมัติ (MG Approved) QA
                                 </Button>
                                     :
