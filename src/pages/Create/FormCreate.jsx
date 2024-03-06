@@ -34,6 +34,8 @@ import InputLabel from '@mui/material/InputLabel';
 import { Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -161,7 +163,9 @@ function FormCreate(props) {
     // const empCode = localStorage.getItem("name");
     const empCode = Cookies.get('code')
     const [nbr, setNbr] = useState([])
-    const [strclass, setClass] = useState('CLASS A');
+    const [strclass, setClass] = useState('CLASS E');
+    const [filesDrawing, setFilesDrawing] = useState({})
+    const [filesBR, setFilesBR] = useState({})
     // ***************จบ ตัวแปร ส่งไป API ***********************
 
 
@@ -279,14 +283,17 @@ function FormCreate(props) {
         var modelot = modelOther != "" ? modelOther : "-";
         var lineOt = lineOther != "" ? lineOther : "-";
 
-
-        if (title != "" && cbitem != "" && noti != "" && selectItem(cbMODEL) != "" && selectItem(cbLINE) != "" && partNo != "" && partName != "" && remark != "" && purpose != "" && methodOld != "" && methodNew != "" && detail != "" && requestPU != "") {
+        // if (title != "" && cbitem != "" && selectItem(cbMODEL) != "" && selectItem(cbLINE) != "" && partNo != "" && partName != "" && remark != "" && purpose != "" && methodOld != "" && methodNew != "" && detail != "" && requestPU != "" && (filesDrawing.length | 0) > 0 && (filesBR.length | 0) > 0) {
+        if (title != "" && cbitem != "" && selectItem(cbMODEL) != "" && selectItem(cbLINE) != "" && partNo != "" && partName != "" && remark != "" && purpose != "" && methodOld != "" && methodNew != "" && detail != "" && requestPU != "") {
             setbtnAddFile(true);
+            // console.log(filesDrawing, filesBR)
             getDataSrv.postInputData({
                 Ecrno: nbr[0]?.runningNumber, TitleNane: title, Section: grpSection, Item: cbitem, ItemOther: itOther, Notificaion: noti, DRNo: drno, Model: selectItem(cbMODEL), ModelOther: modelot, Line: selectItem(cbLINE), LineOther: lineOt, EmpCode: empCode, PartNo: partNo, PartName: partName, Remark: remark, DueDate: duedate, Method: methodRemark, SecForDD: secForDD, purpose: purpose, methodOld: methodOld, methodNew: methodNew, detail: detail, requestPU: requestPU, strclass: strclass
             }).then((res) => {
                 try {
                     refresh();
+                    setFilesDrawing('');
+                    setFilesBR('');
                     // close(false)
                 }
                 catch (error) {
@@ -296,7 +303,7 @@ function FormCreate(props) {
             });
         }
         else {
-            alert("กรุณากรอกเอกสารให้ครบถ้วน (*)");
+            alert("กรุณากรอกเอกสาร และ แนบไฟล์ให้ครบถ้วน ตามที่ทำเครื่องหมาย (*) ไว้");
         }
     };
     //***************************END FUNCTON INPUT DATA*************************** */
@@ -330,6 +337,7 @@ function FormCreate(props) {
             try {
                 getDataSrvPermiss.getNotifyTo(ecR_NO).then((res) => {
                     try {
+                        alert('successfully');
                         setTableNotify(res.data);
                     }
                     catch (error) {
@@ -368,18 +376,27 @@ function FormCreate(props) {
     };
     //******************END DELETE NOTIFY TO*************** */
 
-    const classArray = ['CLASS A', 'CLASS B', 'CLASS C', 'CLASS D', 'CLASS E']
+    const classArray = ['CLASS C', 'CLASS D', 'CLASS E']
 
 
     const handleChangeClass = (event) => {
         setClass(event.target.value);
         console.log(event.target.value)
-        if (event.target.value == "CLASS C" || event.target.value == "CLASS D" || event.target.value == "CLASS E") {
+        if (event.target.value == "CLASS C") {
             setShowDueDate(true)
         }
         else {
             setShowDueDate(false)
         }
+    };
+
+
+    const addFilesDrawing = (event) => {
+        setFilesDrawing(event.target.files)
+    };
+
+    const addFilesBR = (event) => {
+        setFilesBR(event.target.files)
     };
 
 
@@ -635,16 +652,19 @@ function FormCreate(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={6} md={4}>
                                             <Form.Label>PART NO (DRAWING) <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <p>(Please input new revision of part) </p>
                                             {/* <Form.Control type="text" onChange={(event) => setpartNo(event.target.value)} /> */}
                                             <Form.Control as="textarea" rows={5} onChange={(event) => setpartNo(event.target.value)} />
                                         </Col>
                                         <Col xs={6} md={4}>
                                             <Form.Label>PART NAME <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <p>-</p>
                                             {/* <Form.Control type="text" onChange={(event) => setpartName(event.target.value)} /> */}
                                             <Form.Control as="textarea" rows={5} onChange={(event) => setpartName(event.target.value)} />
                                         </Col>
                                         <Col xs={12} md={4}>
                                             <Form.Label>REMARK / MODEL <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <p>-</p>
                                             {/* <Form.Control as="textarea" onChange={(event) => setremark(event.target.value)} /> */}
                                             <Form.Control as="textarea" rows={5} onChange={(event) => setremark(event.target.value)} />
                                         </Col>
@@ -660,8 +680,26 @@ function FormCreate(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
-                                            <Form.Label>PURPOSE : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
-                                            <Form.Control as="textarea" rows={1} onChange={(event) => setPurpose(event.target.value)} />
+                                            <Form.Label>PURPOSE / PROJECT: <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Control as="textarea" rows={3} onChange={(event) => setPurpose(event.target.value)} />
+                                        </Col>
+                                        <Col xs={12} md={6}>
+                                            <div className='styleCard'>
+                                                <p style={{ fontSize: '14px' }}>
+                                                    C =  เริ่มใช้ PART ใหม่หรือวิธีการใหม่ตามเดือนที่กำหนดทันที โดยไม่สามารถใช้ PART SPEC.เก่าหรือวิธีการเก่าในการผลิต
+                                                    <br></br>
+                                                    D = สามารถใช้ PART เก่าให้หมดก่อนเริ่มใช้ PART ใหม่ได้ตามความเหมาะสมของสถานการณ์ของDCI แต่ไม่สามารถใช้PARTเก่าและใหม่ปนกันได้
+                                                    <br></br>
+                                                    E =  เป็นการแก้ไขเอกสารให้ถูกต้องตามการปฏิบัติงานจริงหรือ PART ที่ใช้งานจริง
+                                                </p>
+                                            </div>
+                                        </Col>
+                                    </Row>
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>DRAWING NO OLD : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Control as="textarea" rows={3} onChange={(event) => setMethodOld(event.target.value)} />
                                         </Col>
                                         <Col xs={12} md={6}>
                                             <Form.Label>CLASS : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
@@ -683,10 +721,11 @@ function FormCreate(props) {
                                         </Col>
                                     </Row>
 
+
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
-                                            <Form.Label>METHOD OLD : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
-                                            <Form.Control as="textarea" rows={1} onChange={(event) => setMethodOld(event.target.value)} />
+                                            <Form.Label>DRAWING NO NEW : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Control as="textarea" rows={3} onChange={(event) => setMethodNew(event.target.value)} />
                                         </Col>
                                         {
                                             showDueDate && <Col xs={12} md={6}>
@@ -709,17 +748,8 @@ function FormCreate(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
-                                            <Form.Label>METHOD NEW : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
-                                            <Form.Control as="textarea" rows={1} onChange={(event) => setMethodNew(event.target.value)} />
-                                        </Col>
-                                        <Col xs={12} md={6}></Col>
-                                    </Row>
-
-
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={6}>
-                                            <Form.Label>DETAIL : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
-                                            <Form.Control as="textarea" rows={1} onChange={(event) => setDetail(event.target.value)} />
+                                            <Form.Label>DETAIL / CHENGE POINT : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Control as="textarea" rows={3} onChange={(event) => setDetail(event.target.value)} />
                                         </Col>
                                         <Col xs={12} md={6}> </Col>
                                     </Row>
@@ -728,13 +758,29 @@ function FormCreate(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
                                             <Form.Label>REQUEST PU  : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
-                                            <Form.Control as="textarea" rows={1} onChange={(event) => setRequestPU(event.target.value)} />
+                                            <Form.Control as="textarea" rows={3} onChange={(event) => setRequestPU(event.target.value)} />
                                         </Col>
                                         <Col xs={12} md={6}> </Col>
                                     </Row>
 
 
 
+                                    {/* <Row className='styleRowText'>
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>ADD FILE DRAWING  : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <input type="file" name="file" accept='application/pdf' onChange={addFilesDrawing} />
+                                            {
+                                                filesDrawing.length | 0
+                                            }
+                                        </Col>
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>ADD FILE BR : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <input type="file" name="file" accept='application/pdf' onChange={addFilesBR} />
+                                            {
+                                                filesBR.length | 0
+                                            }
+                                        </Col>
+                                    </Row> */}
 
 
 
@@ -838,7 +884,11 @@ function FormCreate(props) {
                     </DialogActions>
                     <div className='styleButtonCreate'>
                         <Stack direction={'row'} gap={3}>
-                            <Button variant="secondary" onClick={() => close(false)}>
+                            <Button variant="secondary" onClick={() => {
+                                setFilesDrawing({});
+                                setFilesBR({});
+                                close(false);
+                            }}>
                                 Close
                             </Button>
                             {
@@ -849,7 +899,7 @@ function FormCreate(props) {
                                     })
                                     setOpenAttrFile(true);
                                     // close(false)
-                                }}> Add File</Button>
+                                }}><FontAwesomeIcon icon={faFileCirclePlus} /> Add File</Button>
                             }
                         </Stack>
                         <div>

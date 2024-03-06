@@ -23,6 +23,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useHref } from 'react-router';
 import { FcFinePrint, FcPrint, FcSms, FcDocument } from "react-icons/fc";
 import { LegendToggleOutlined } from '@mui/icons-material';
+import { faFile, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 function Createform() {
@@ -67,6 +69,7 @@ function Createform() {
     const [getdata, setGetdata] = useState([])
     useEffect(() => {
         loadPage();
+
     }, [])
 
 
@@ -141,7 +144,6 @@ function Createform() {
 
     const [selectSection, setSelectSection] = useState(grp(permission[0]?.grpRoleSect));
 
-
     const handleChange = (event) => {
         setSelectSection(event.target.value);
     };
@@ -167,7 +169,7 @@ function Createform() {
         getDataSrvHD.postECRList({ section: selectSection, ecrno: ECRNo, title: Title, model: Model, partName: PartName, drawingNo: DrawingNo, brno: BRNo, status: selectStatus, strclass: strClass }).then((res) => {
             try {
                 setGetdata(res.data)
-                console.log(res.data)
+                //console.log(res.data)
             }
             catch (error) {
                 console.log(error);
@@ -189,15 +191,15 @@ function Createform() {
     //****************************END BUTTON SEARCH ************ *
     // const sectionArray = ['CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
     const sectionArray = ['CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL_DD', 'DIL_QC', 'QA']
-    // const sectionArrayAll = ['ALL', 'CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
-    const sectionArrayAll = ['ALL', 'CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL_DD', 'DIL_QC', 'QA']
+    const sectionArrayAll = ['ALL', 'CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
+    // const sectionArrayAll = ['ALL', 'CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL_DD', 'DIL_QC', 'QA']
     const classArray = ['ALL', 'CLASS A', 'CLASS B', 'CLASS C', 'CLASS D', 'CLASS E']
 
 
     return (<>
         <div className='stylePagee'>
             <div class="card ">
-                <h5 class="card-header bg-info text-white border-0">ค้นหา เอกสาร ECR</h5>  {/* 😉🤣😍😒😁🤞👏💋🌹🎂✔🤳💖😢😎🎶🤳💕 */}
+                <h5 class="card-header bg-info text-white border-0">ค้นหาเอกสาร ECR</h5>  {/* 😉🤣😍😒😁🤞👏💋🌹🎂✔🤳💖😢😎🎶🤳💕 */}
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-auto">
@@ -321,11 +323,11 @@ function Createform() {
                             <div class="col col-lg-2">
                             </div>
                             <div class="col-md-auto">
-                                <button type="submit" class="btn btn-primary" onClick={getSearch}>Search</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="submit" class="btn btn-primary" onClick={getSearch}><FontAwesomeIcon icon={faMagnifyingGlass} /> Search</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 {
                                     permission.filter((item) => {
                                         return item.menuCode == "BTN0001" && item.rolE_VIEW == "True"
-                                    }).length ? <Button variant="success" onClick={handleShow}>สร้างเอกสาร ECR ใหม่</Button>
+                                    }).length ? <Button variant="success" onClick={handleShow}> <FontAwesomeIcon icon={faFile} /> สร้างเอกสาร ECR ใหม่</Button>
                                         :
                                         ""
                                 }
@@ -359,7 +361,7 @@ function Createform() {
                         <tr>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>TARGET</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>STATUS</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>REVISE ECR<br></br><nobr>(For Issuer only)</nobr></th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>CHECK DETAIL</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DCS NO</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DRAWING</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>CLASS</th>
@@ -453,7 +455,7 @@ function Createform() {
                                         let holdDate = item[`${items}${iApp}SumDate`]; //sumdate
                                         let namePending = item[`${items}${iApp}namepending`];
 
-                                        //   console.log(holdDate)
+                                        //console.log(name)
                                         if (holdDate > 0) {
                                             holdDate = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
                                         }
@@ -531,8 +533,21 @@ function Createform() {
                                 });
 
                                 var status = ''
+                                let lSec = '';
                                 sectionArray.filter((vSec, iSec) => {
-                                    status = item[`${vSec.toLowerCase()}_status`] == 'U' ? (status == '' ? vSec : status) : status;
+                                    if (vSec == "DIL_DD") {
+                                        lSec = "DIL";
+                                    }
+                                    else if (vSec == "DIL_QC") {
+                                        lSec = "DIL";
+                                    }
+                                    else {
+                                        lSec = vSec;
+                                    }
+
+                                    //console.log(lSec)
+                                    status = item[`${lSec.toLowerCase()}_status`] == 'U' ? (status == '' ? lSec : status) : status;
+                                    // console.log(status)
                                 });
 
 
@@ -564,8 +579,8 @@ function Createform() {
 
 
                                 return <tr>
-                                    <td style={{ fontSize: '16px', padding: '8px', backgroundColor: (targetDate ? colorTargetDate : 'red') }}><nobr>{item.dueDate}<br></br><p style={{ fontSize: '14px', color: '#fcd83e', marginBottom: '1px' }}>{datealertDuedate}</p></nobr></td>
-                                    <td style={{ backgroundColor: (status != '' ? '#ffffa0' : 'rgb(72 229 23)') }}><p style={{ padding: '8px', marginBottom: '-1px', color: (status != '' ? 'red' : 'rgb(60 3 255)') }}>{(status != '' ? status : 'FINISH')}</p>
+                                    <td style={{ fontSize: '16px', padding: '8px', backgroundColor: (targetDate ? colorTargetDate : 'red') }}><nobr>{item.dueDate}<br></br><p style={{ fontSize: '14px', color: 'rgb(94 66 201)', marginBottom: '1px' }}>{datealertDuedate}</p></nobr></td>
+                                    <td style={{ backgroundColor: (status != '' ? '#ffffa0' : 'rgb(72 229 23)') }}><p style={{ padding: '8px', marginBottom: '-1px', color: (status != '' ? '#076bad' : 'rgb(60 3 255)') }}>{(status != '' ? status : 'FINISH')}</p>
                                     </td>
                                     <td>
                                         <Link underline="hover">

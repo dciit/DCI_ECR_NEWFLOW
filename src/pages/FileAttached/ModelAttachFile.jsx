@@ -236,7 +236,10 @@ function ModelAttachFile(props) {
                                         {
                                             permission.filter((item) => {
                                                 return item.menuCode == "BTN0002" && item.rolE_VIEW == "True"
-                                            }).length ? <input type="file" name="file" accept='application/pdf' ref={ref} onChange={changeHandler} />
+                                            }).length ? <>
+                                                <p>-</p>
+                                                <input type="file" name="file" accept='application/pdf' ref={ref} onChange={changeHandler} />
+                                            </>
                                                 :
                                                 ""
                                         }
@@ -258,8 +261,8 @@ function ModelAttachFile(props) {
                                                 permission.filter((item) => {
                                                     return item.menuCode == "BTN0003" && item.rolE_VIEW == "True"
                                                 }).length ? <>
-                                                    <p>วาง Path File ที่นี้ </p>
-                                                    <input type="text" style={{ width: '390px' }} value={copyPath} onChange={(event) => setCopyPath(event.target.value)} />
+                                                    <p>วาง Path File ที่นี้ <span style={{ color: 'red', fontSize: '18px' }}>*</span></p>
+                                                    <input type="text" autoFocus style={{ width: '390px' }} value={copyPath} onChange={(event) => setCopyPath(event.target.value)} />
                                                 </>
                                                     :
                                                     ""
@@ -280,6 +283,9 @@ function ModelAttachFile(props) {
                                 </Row>
                             </Container>
                             <br></br>
+                            {/* {
+                                JSON.stringify(showFile)
+                            } */}
                             <TableContainer component={Paper}>
                                 <Table>
                                     <TableHead>

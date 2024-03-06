@@ -58,6 +58,7 @@ function LoginVI() {
                             setData(res.data);
                             navigate("/ECR/createform");
                             location.reload();
+                            console.log(res.data)
                         }
                         catch (error) {
                             console.log(error); // You might send an exception to your error tracker like AppSignal

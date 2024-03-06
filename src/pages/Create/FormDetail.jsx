@@ -42,6 +42,9 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBan, faCheck, faFileCirclePlus, faPenToSquare, faRotateLeft, faTShirt, faTrashCan, faXmark } from '@fortawesome/free-solid-svg-icons';
+import Swal from 'sweetalert2'
 
 
 
@@ -195,6 +198,7 @@ function FormDetail(props) {
             try {
                 if (Object.keys(res.data).length) {
                     setDataModaldt(res.data.detail);
+                    console.log(res.data.detail)
                     setcbPUEdit(res.data.pu);
                     setcbDDEdit(res.data.dd);
                     setcbMODELEdit(res.data.model);
@@ -442,7 +446,14 @@ function FormDetail(props) {
         setCBDistribution([...cbDistribution]);
     }
 
+    function handleChangeRadioDILDD(event) {
+        setRadioDILDD(event.target.value);
+    };
 
+
+    function handleChangeRadioDILQC(value) {
+        setRadioDILQC(event.target.value);
+    };
 
 
     function handleCheckBoxQCEdit(qcCode, checked, type) {
@@ -676,6 +687,21 @@ function FormDetail(props) {
 
     //**************************** FUNCTION RETURN DIL************ */
     const ReturnDIL = (ecrno) => {
+        // data[0] = { ...data[0], group: section }
+        // data[0] = { ...data[0], empcode: empCode }
+        // //data[0] = { ...data[0], qA_InformationDate: dataModaldt[0].qA_InformationDate }
+        // setDataModaldt(data);
+        // setDataModaldt([...dataModaldt]);
+        // if (dataModaldt[0]?.qA_InformationDate == "") {
+        //     data[0] = { ...data[0], qA_InformationDate: informationDate }
+        // }
+        // else {
+
+        // }
+
+
+        // console.log(dataModaldt[0])
+        // return false
         getDataSrvDT.postReturnDIL({ ecrno: ecrno, empcode: empCode, remarkdd: radioDILDD, remarkqc: radioDILQC }).then((res) => {
             try {
                 refresh();
@@ -741,6 +767,12 @@ function FormDetail(props) {
                 getDataSrvPermiss.getNotifyTo(ecR_NO).then((res) => {
                     try {
                         setTableNotify(res.data);
+                        Swal.fire({
+                            icon: "success",
+                            title: "Your work has been saved",
+                            showConfirmButton: false,
+                            timer: 2000,
+                        });
                     }
                     catch (error) {
                         console.log(error);
@@ -777,7 +809,7 @@ function FormDetail(props) {
     };
 
 
-    const classArray = ['CLASS A', 'CLASS B', 'CLASS C', 'CLASS D', 'CLASS E']
+    const classArray = ['CLASS C', 'CLASS D', 'CLASS E']
 
 
     const handleChangeClass = (event) => {
@@ -796,17 +828,12 @@ function FormDetail(props) {
         }
     };
 
-    const handleChangeRadioDILDD = (event) => {
-        setRadioDILDD(event.target.value);
-    };
-
-
-    const handleChangeRadioDILQC = (event) => {
-        setRadioDILQC(event.target.value);
-    };
 
     return (
         <div>
+            {/* {
+                JSON.stringify(dataModaldt)
+            } */}
             <BootstrapDialog
                 aria-labelledby="customized-dialog-title"
                 open={show}
@@ -838,6 +865,10 @@ function FormDetail(props) {
                             <div class="col-sm-2">  </div>
                             <div class="col-sm-10">
                                 <h5 style={{ marginLeft: '10%' }}>ENGINEERING CHANGE REQUEST</h5>
+                                {
+                                    JSON.stringify(dataModaldt)
+                                    //JSON.stringify(tableNotify)
+                                }
                             </div>
                         </div>
 
@@ -845,7 +876,7 @@ function FormDetail(props) {
                             <div class="col-sm-7"></div>
                             <div class="col-sm-5">
                                 <Form.Label>ECR NO :</Form.Label>
-                                <Form.Control type="text" className='FormControl' style={{ backgroundColor: 'rgb(255 141 0)', color: 'white' }} value={dataModaldt[0]?.ecR_NO} readOnly />
+                                <Form.Control type="text" className='FormControl' style={{ backgroundColor: 'rgb(47 29 241)', color: 'white' }} value={dataModaldt[0]?.ecR_NO} readOnly />
                             </div>
                         </div>
                         <hr></hr>
@@ -1038,7 +1069,8 @@ function FormDetail(props) {
                                     <Row className='styleRowText'>
                                         <Col xs={6} md={4}>
                                             <Form.Label>PART NO (DRAWING) <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
-                                            <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.partno)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                            <p>(Please input new revision of part) </p>
+                                            <Form.Control as="textarea" rows={5} id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.partno)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].partno = event.target.value;
                                                     setpartNo([...dataModaldt])
@@ -1046,7 +1078,8 @@ function FormDetail(props) {
                                         </Col>
                                         <Col xs={6} md={4}>
                                             <Form.Label>PART NAME <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
-                                            <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.partName)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                            <p>-</p>
+                                            <Form.Control as="textarea" rows={5} id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.partName)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].partName = event.target.value;
                                                     setpartName([...dataModaldt])
@@ -1054,7 +1087,8 @@ function FormDetail(props) {
                                         </Col>
                                         <Col xs={6} md={4}>
                                             <Form.Label>REMARK / MODEL <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
-                                            <Form.Control type="text" id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.remarkCreate)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                            <p>-</p>
+                                            <Form.Control as="textarea" rows={5} id="txtOtherModel" label="Other..." variant="standard" style={{ width: '95%', backgroundColor: 'rgb(250 249 114)' }} value={decodeURIComponent(dataModaldt[0]?.remarkCreate)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].remarkCreate = event.target.value;
                                                     setremark([...dataModaldt])
@@ -1066,14 +1100,40 @@ function FormDetail(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
-                                            <Form.Label>Purpose : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
-                                            <Form.Control as="textarea" rows={1} variant="standard" value={decodeURIComponent(dataModaldt[0]?.purpose)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                            <Form.Label>PURPOSE / PROJECT: <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Control as="textarea" rows={4} variant="standard" value={decodeURIComponent(dataModaldt[0]?.purpose)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].purpose = event.target.value;
                                                     setPurpose([...dataModaldt])
                                                 }} />
                                         </Col>
                                         <Col xs={12} md={6}>
+                                            <br></br>
+                                            <div className='styleCard'>
+                                                <p style={{ fontSize: '14px' }}>
+                                                    C =  เริ่มใช้ PART ใหม่หรือวิธีการใหม่ตามเดือนที่กำหนดทันที โดยไม่สามารถใช้ PART SPEC.เก่าหรือวิธีการเก่าในการผลิต
+                                                    <br></br>
+                                                    D = สามารถใช้ PART เก่าให้หมดก่อนเริ่มใช้ PART ใหม่ได้ตามความเหมาะสมของสถานการณ์ของDCI แต่ไม่สามารถใช้PARTเก่าและใหม่ปนกันได้
+                                                    <br></br>
+                                                    E =  เป็นการแก้ไขเอกสารให้ถูกต้องตามการปฏิบัติงานจริงหรือ PART ที่ใช้งานจริง
+                                                </p>
+                                            </div>
+                                        </Col>
+                                    </Row>
+
+
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={6}>
+                                            <Form.Label>DRAWING NO OLD : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Control as="textarea" rows={3} variant="standard" value={decodeURIComponent(dataModaldt[0]?.methodOld)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                                onChange={(event) => {
+                                                    dataModaldt[0].methodOld = event.target.value;
+                                                    setMethodOld([...dataModaldt])
+                                                }} />
+                                        </Col>
+                                        <Col xs={12} md={6}>
+                                            <br></br>
                                             <Form.Label>CLASS : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
@@ -1097,16 +1157,14 @@ function FormDetail(props) {
                                     </Row>
 
 
-
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
-                                            <Form.Label>Method Old : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
-                                            <Form.Control as="textarea" rows={1} variant="standard" value={decodeURIComponent(dataModaldt[0]?.methodOld)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                            <Form.Label>DRAWING NO NEW : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Control as="textarea" rows={3} variant="standard" value={decodeURIComponent(dataModaldt[0]?.methodNew)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
-                                                    dataModaldt[0].methodOld = event.target.value;
-                                                    setMethodOld([...dataModaldt])
+                                                    dataModaldt[0].methodNew = event.target.value;
+                                                    setMethodNew([...dataModaldt])
                                                 }} />
-                                            {/* <Form.Control as="textarea" rows={1} onChange={(event) => setMethodOld(event.target.value)} /> */}
                                         </Col>
                                         <Col xs={12} md={6}>
                                             <Form.Label>Due Date (Target) : &nbsp;&nbsp;</Form.Label>
@@ -1133,24 +1191,8 @@ function FormDetail(props) {
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
-                                            <Form.Label>Method New : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
-                                            <Form.Control as="textarea" rows={1} variant="standard" value={decodeURIComponent(dataModaldt[0]?.methodNew)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].methodNew = event.target.value;
-                                                    setMethodNew([...dataModaldt])
-                                                }} />
-                                            {/* <Form.Control as="textarea" rows={1} onChange={(event) => setMethodNew(event.target.value)} /> */}
-                                        </Col>
-                                        <Col xs={12} md={6}>
-                                        </Col>
-                                    </Row>
-
-
-
-                                    <Row className='styleRowText'>
-                                        <Col xs={12} md={6}>
-                                            <Form.Label>Detail : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
-                                            <Form.Control as="textarea" rows={1} variant="standard" value={decodeURIComponent(dataModaldt[0]?.detail)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                            <Form.Label>DETAIL / CHENGE POINT : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                            <Form.Control as="textarea" rows={5} variant="standard" value={decodeURIComponent(dataModaldt[0]?.detail)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].detail = event.target.value;
                                                     setDetail([...dataModaldt])
@@ -1166,7 +1208,7 @@ function FormDetail(props) {
                                         <Col xs={12} md={6}>
                                             <Form.Label>REQUEST PU  : <span style={{ color: '#fc5757', fontSize: '18px', color: 'white' }}>*</span></Form.Label>
                                             {/* <Form.Control as="textarea" rows={1} onChange={(event) => setRequestPU(event.target.value)} /> */}
-                                            <Form.Control as="textarea" rows={1} variant="standard" value={decodeURIComponent(dataModaldt[0]?.requestPU)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
+                                            <Form.Control as="textarea" rows={3} variant="standard" value={decodeURIComponent(dataModaldt[0]?.requestPU)} disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
                                                 onChange={(event) => {
                                                     dataModaldt[0].requestPU = event.target.value;
                                                     setRequestPU([...dataModaldt])
@@ -1175,12 +1217,14 @@ function FormDetail(props) {
                                         <Col xs={12} md={6}> </Col>
                                     </Row>
 
-
+                                    {/* {
+                                        JSON.stringify(dataModaldt)
+                                    } */}
 
                                     <br></br>
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
                                         <Col xs={12} md={4}>
-                                            <FormControl fullWidth disabled={(position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
                                                 <Select
                                                     labelId="demo-simple-select-label"
@@ -1201,7 +1245,7 @@ function FormDetail(props) {
                                             <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
                                         </Col>
                                         <Col xs={12} md={3}>
-                                            <FormControl fullWidth disabled={(position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">Status</InputLabel>
                                                 <Select
                                                     labelId="demo-simple-select-label"
@@ -1220,9 +1264,9 @@ function FormDetail(props) {
                                         <Col xs={12} md={2}>
                                             {
                                                 permission.filter((item) => {
-                                                    return ((permission[0]?.grpRole == 'RECEIVED' || dataModaldt[0]?.grpRole != "ISSUED" || permission[0]?.grpRoleSect == "ADMIN") && dataModaldt[0]?.create_CheckBit != "F" && empCode == dataModaldt[0]?.createECRBy)
+                                                    return (((permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'CHECK') || dataModaldt[0]?.grpRole != "ISSUED" || permission[0]?.grpRoleSect == "ADMIN") && dataModaldt[0]?.create_CheckBit != "F")
                                                 }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "CREATE")} disabled={(position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "CREATE")} disabled={(position == 'APPROVED') ? true : false}>
                                                         + เพิ่มผู้ดำเนินการ
                                                     </Button>
                                                 </> : ""
@@ -1242,7 +1286,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.cre_approved}<br></br> {tableNotify[0]?.cre_approvedBit == 'F' ? tableNotify[0]?.cre_approvedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.cre_approved != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.create_CheckBit != "F" && empCode == dataModaldt[0]?.createECRBy)) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.cre_approvedCode, tableNotify[0]?.cre_approved_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.create_ApprovedBit != "F" || permission[0]?.grpRole == 'CHECK')) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.cre_approvedCode, tableNotify[0]?.cre_approved_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1252,14 +1296,11 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.cre_checked}<br></br>{tableNotify[0]?.cre_checkedBit == 'F' ? tableNotify[0]?.cre_checkedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.cre_checked != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.create_CheckBit != "F" && empCode == dataModaldt[0]?.createECRBy)) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.cre_checkedCode, tableNotify[0]?.cre_check_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.create_ApprovedBit != "F" && empCode == dataModaldt[0]?.createECRBy)) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.cre_checkedCode, tableNotify[0]?.cre_check_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
                                                     }
-                                                    {/* {
-                                                        JSON.stringify(tableNotify)
-                                                    } */}
                                                 </td>
                                             </tr>
                                         </table>
@@ -1335,7 +1376,7 @@ function FormDetail(props) {
 
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
                                         <Col xs={12} md={4}>
-                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
                                                 <Select
                                                     labelId="demo-simple-select-label"
@@ -1356,7 +1397,7 @@ function FormDetail(props) {
                                             <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
                                         </Col>
                                         <Col xs={12} md={3}>
-                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">Status</InputLabel>
                                                 <Select
                                                     labelId="demo-simple-select-label"
@@ -1375,7 +1416,7 @@ function FormDetail(props) {
                                         <Col xs={12} md={2}>
                                             {
                                                 permission.filter((item) => {
-                                                    return permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F"
+                                                    return permission[0]?.grpRoleSect == "PU" && dataModaldt[0]?.pU_CheckBit != "F"
                                                 }).length ? <>
                                                     <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "PU")}>
                                                         + เพิ่มผู้ดำเนินการ
@@ -1398,7 +1439,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.pu_approved}<br></br> {tableNotify[0]?.pu_approvedBit == 'F' ? tableNotify[0]?.pu_approvedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.pu_approved != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_approvedCode, tableNotify[0]?.pu_approved_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'CHECK') && dataModaldt[0]?.pU_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_approvedCode, tableNotify[0]?.pu_approved_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1408,7 +1449,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.pu_checked}<br></br>{tableNotify[0]?.pu_checkedBit == 'F' ? tableNotify[0]?.pu_checkedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.pu_checked != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_checkedCode, tableNotify[0]?.pu_checked_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_checkedCode, tableNotify[0]?.pu_checked_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1418,7 +1459,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.pu_issued}<br></br> {tableNotify[0]?.pu_issuedBit == 'F' ? tableNotify[0]?.pu_issuedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.pu_issued != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_issuedCode, tableNotify[0]?.pu_issued_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_issuedCode, tableNotify[0]?.pu_issued_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1492,7 +1533,7 @@ function FormDetail(props) {
 
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
                                         <Col xs={12} md={4}>
-                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
                                                 <Select
                                                     labelId="demo-simple-select-label"
@@ -1513,7 +1554,7 @@ function FormDetail(props) {
                                             <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
                                         </Col>
                                         <Col xs={12} md={3}>
-                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">Status</InputLabel>
                                                 <Select
                                                     labelId="demo-simple-select-label"
@@ -1532,7 +1573,7 @@ function FormDetail(props) {
                                         <Col xs={12} md={2}>
                                             {
                                                 permission.filter((item) => {
-                                                    return permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.dD_ReceiveBit != "F"
+                                                    return permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.dD_ApprovedBit != "F"
                                                 }).length ? <>
                                                     <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "DD")}>
                                                         + เพิ่มผู้ดำเนินการ
@@ -1555,7 +1596,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.dd_approved}<br></br> {tableNotify[0]?.dd_approvedBit == 'F' ? tableNotify[0]?.dd_approvedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.dd_approved != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.dD_ReceiveBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_approvedCode, tableNotify[0]?.dd_approved_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && (permission[0]?.grpRole == 'CHECK' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.dD_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_approvedCode, tableNotify[0]?.dd_approved_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1565,7 +1606,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.dd_checked}<br></br>{tableNotify[0]?.dd_checkedBit == 'F' ? tableNotify[0]?.dd_checkedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.dd_checked != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.dD_ReceiveBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_checkedCode, tableNotify[0]?.dd_checked_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.dD_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_checkedCode, tableNotify[0]?.dd_checked_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1622,7 +1663,7 @@ function FormDetail(props) {
                                     <br></br>
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
                                         <Col xs={12} md={4}>
-                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
                                                 <Select
                                                     labelId="demo-simple-select-label"
@@ -1643,7 +1684,7 @@ function FormDetail(props) {
                                             <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
                                         </Col>
                                         <Col xs={12} md={3}>
-                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">Status</InputLabel>
                                                 <Select
                                                     labelId="demo-simple-select-label"
@@ -1662,7 +1703,7 @@ function FormDetail(props) {
                                         <Col xs={12} md={2}>
                                             {
                                                 permission.filter((item) => {
-                                                    return permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.eN_IssuedBit != "F"
+                                                    return permission[0]?.grpRoleSect == "EN" && dataModaldt[0]?.eN_ApprovedBit != "F"
                                                 }).length ? <>
                                                     <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "EN")}>
                                                         + เพิ่มผู้ดำเนินการ
@@ -1685,7 +1726,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.en_approved}<br></br> {tableNotify[0]?.en_approvedBit == 'F' ? tableNotify[0]?.en_approvedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.en_approved != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.eN_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_approvedCode, tableNotify[0]?.en_approved_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'CHECK' && dataModaldt[0]?.eN_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_approvedCode, tableNotify[0]?.en_approved_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1695,7 +1736,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.en_checked}<br></br>{tableNotify[0]?.en_checkedBit == 'F' ? tableNotify[0]?.en_checkedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.en_checked != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.eN_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_checkedCode, tableNotify[0]?.en_checked_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.eN_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_checkedCode, tableNotify[0]?.en_checked_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1751,7 +1792,7 @@ function FormDetail(props) {
                                     <br></br>
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
                                         <Col xs={12} md={4}>
-                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
                                                 <Select
                                                     labelId="demo-simple-select-label"
@@ -1772,7 +1813,7 @@ function FormDetail(props) {
                                             <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
                                         </Col>
                                         <Col xs={12} md={3}>
-                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">Status</InputLabel>
                                                 <Select
                                                     labelId="demo-simple-select-label"
@@ -1791,7 +1832,7 @@ function FormDetail(props) {
                                         <Col xs={12} md={2}>
                                             {
                                                 permission.filter((item) => {
-                                                    return permission[0]?.grpRoleSect == "SQC" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F"
+                                                    return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.sqC_CheckBit != "F"
                                                 }).length ? <>
                                                     <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "SQC")}>
                                                         + เพิ่มผู้ดำเนินการ
@@ -1814,7 +1855,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.sqc_approved}<br></br> {tableNotify[0]?.sqc_approvedBit == 'F' ? tableNotify[0]?.sqc_approvedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.sqc_approved != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "SQC" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_approvedCode, tableNotify[0]?.sqc_approved_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.sqC_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_approvedCode, tableNotify[0]?.sqc_approved_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1824,7 +1865,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.sqc_checked}<br></br>{tableNotify[0]?.sqc_checkedBit == 'F' ? tableNotify[0]?.sqc_checkedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.sqc_checked != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "SQC" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_checkedCode, tableNotify[0]?.sqc_checked_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.sqC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_checkedCode, tableNotify[0]?.sqc_checked_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1834,7 +1875,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.sqc_issued}<br></br> {tableNotify[0]?.sqc_issuedBit == 'F' ? tableNotify[0]?.sqc_issuedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.sqc_issued != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "SQC" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_issuedCode, tableNotify[0]?.sqc_issued_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_issuedCode, tableNotify[0]?.sqc_issued_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1930,7 +1971,7 @@ function FormDetail(props) {
                                     <br></br>
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
                                         <Col xs={12} md={4}>
-                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
                                                 <Select
                                                     labelId="demo-simple-select-label"
@@ -1951,7 +1992,7 @@ function FormDetail(props) {
                                             <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
                                         </Col>
                                         <Col xs={12} md={3}>
-                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">Status</InputLabel>
                                                 <Select
                                                     labelId="demo-simple-select-label"
@@ -1970,7 +2011,7 @@ function FormDetail(props) {
                                         <Col xs={12} md={2}>
                                             {
                                                 permission.filter((item) => {
-                                                    return (permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F"
+                                                    return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qC_CheckBit != "F"
                                                 }).length ? <>
                                                     <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QC")}>
                                                         + เพิ่มผู้ดำเนินการ
@@ -1994,7 +2035,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.qc_approved}<br></br> {tableNotify[0]?.qc_approvedBit == 'F' ? tableNotify[0]?.qc_approvedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.qc_approved != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_approvedCode, tableNotify[0]?.qc_approved_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qC_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_approvedCode, tableNotify[0]?.qc_approved_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -2004,7 +2045,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.qc_checked}<br></br>{tableNotify[0]?.qc_checkedBit == 'F' ? tableNotify[0]?.qc_checkedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.qc_checked != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_checkedCode, tableNotify[0]?.qc_checked_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.qC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_checkedCode, tableNotify[0]?.qc_checked_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -2014,7 +2055,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.qc_issued}<br></br> {tableNotify[0]?.qc_issuedBit == 'F' ? tableNotify[0]?.qc_issuedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.qc_issued != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_issuedCode, tableNotify[0]?.qc_issued_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_issuedCode, tableNotify[0]?.qc_issued_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -2033,15 +2074,23 @@ function FormDetail(props) {
                             <AccordionDetails>
                                 <Typography>
                                     <Form.Label>3. JUDGEMENT ( DIL Design Section )</Form.Label>
+                                    {/* {
+                                        JSON.stringify(dataModaldt)
+                                    } */}
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-                                            <FormControl disabled={dataModaldt[0]?.diL_DD_ReceiveBit != "U" ? false : true}>
+                                            <FormControl disabled={(dataModaldt[0]?.diL_QC_ReceiveBit != "F" && (permission[0]?.grpRoleSect == "DD") && permission[0]?.grpRole == 'APPROVED' ? false : true)} >
                                                 <FormLabel id="demo-controlled-radio-buttons-group"></FormLabel>
                                                 <RadioGroup
                                                     aria-labelledby="demo-controlled-radio-buttons-group"
                                                     name="controlled-radio-buttons-group"
                                                     value={radioDILDD}
                                                     onChange={handleChangeRadioDILDD}
+                                                // value={dataModaldt[0]?.diL_DD_REMARK}
+                                                // onChange={(event) => {
+                                                //     dataModaldt[0].diL_DD_REMARK = event.target.value;
+                                                //     setRadioDILDD([...dataModaldt])
+                                                // }}
                                                 >
                                                     <FormControlLabel value="NEED" control={<Radio />} label="NEED" />
                                                     <FormControlLabel value="NO NEED" control={<Radio />} label="NO NEED" />
@@ -2085,14 +2134,18 @@ function FormDetail(props) {
                                     <Form.Label>4. JUDGEMENT ( DIL Quality Control Section ) [Incase necessary]</Form.Label>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={12}>
-
-                                            <FormControl disabled={dataModaldt[0]?.diL_QC_ReceiveBit != "U" ? false : true}>
+                                            <FormControl disabled={(dataModaldt[0]?.qA_ReceiveBit != "F" && (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA" && permission[0]?.grpRole == 'APPROVED') ? false : true)}>
                                                 <FormLabel id="demo-controlled-radio-buttons-group"></FormLabel>
                                                 <RadioGroup
                                                     aria-labelledby="demo-controlled-radio-buttons-group"
                                                     name="controlled-radio-buttons-group"
                                                     value={radioDILQC}
-                                                    onChange={handleChangeRadioDILQC}
+                                                    onChange={(event) => handleChangeRadioDILQC(event.target.value)}
+                                                // value={dataModaldt[0]?.diL_QC_REMARK}
+                                                // onChange={(event) => {
+                                                //     dataModaldt[0].diL_QC_REMARK = event.target.value;
+                                                //     setRadioDILQC([...dataModaldt])
+                                                // }}
                                                 >
                                                     <FormControlLabel value="NEED" control={<Radio />} label="NEED" />
                                                     <FormControlLabel value="NO NEED" control={<Radio />} label="NO NEED" />
@@ -2264,7 +2317,7 @@ function FormDetail(props) {
                                     <br></br>
                                     <Row style={{ display: 'flex', alignItems: 'center' }} >
                                         <Col xs={12} md={4}>
-                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
                                                 <Select
                                                     labelId="demo-simple-select-label"
@@ -2285,7 +2338,7 @@ function FormDetail(props) {
                                             <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
                                         </Col>
                                         <Col xs={12} md={3}>
-                                            <FormControl fullWidth disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false}>
+                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
                                                 <InputLabel id="demo-simple-select-label">Status</InputLabel>
                                                 <Select
                                                     labelId="demo-simple-select-label"
@@ -2305,7 +2358,7 @@ function FormDetail(props) {
                                         <Col xs={12} md={2}>
                                             {
                                                 permission.filter((item) => {
-                                                    return permission[0]?.grpRoleSect == "QA" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F"
+                                                    return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qA_CheckBit != "F"
                                                 }).length ? <>
                                                     <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QA")}>
                                                         + เพิ่มผู้ดำเนินการ
@@ -2328,7 +2381,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.qa_approved}<br></br> {tableNotify[0]?.qa_approvedBit == 'F' ? tableNotify[0]?.qa_approvedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.qa_approved != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "QA" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_approvedCode, tableNotify[0]?.qa_approved_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qA_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_approvedCode, tableNotify[0]?.qa_approved_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -2338,7 +2391,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.qa_checked}<br></br>{tableNotify[0]?.qa_checkedBit == 'F' ? tableNotify[0]?.qa_checkedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.qa_checked != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "QA" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_checkedCode, tableNotify[0]?.qa_checked_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.qA_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_checkedCode, tableNotify[0]?.qa_checked_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -2348,7 +2401,7 @@ function FormDetail(props) {
                                                     <center>{tableNotify[0]?.qa_issued}<br></br> {tableNotify[0]?.qa_issuedBit == 'F' ? tableNotify[0]?.qa_issuedDate : ''}</center>
                                                     {
                                                         tableNotify[0]?.qa_issued != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "QA" && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_issuedCode, tableNotify[0]?.qa_issued_step)}>
+                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_issuedCode, tableNotify[0]?.qa_issued_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -2392,7 +2445,7 @@ function FormDetail(props) {
                                         ecrno: idECR, title: title, section: section
                                     })
                                     setOpenAttrFile(true);
-                                }}> Add File</Button>
+                                }}> <FontAwesomeIcon icon={faFileCirclePlus} /> Add File</Button>
                                     :
                                     ""
                             }
@@ -2405,8 +2458,8 @@ function FormDetail(props) {
                                     return (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && creSec == roleSec && dataModaldt[0]?.createBy == item.code || item.grpRole == "ADMIN") ||
                                         (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && permission[0]?.grpRoleSect == "ADMIN" && dataModaldt[0]?.createBy == item.code)
                                 }).length ? (dataModaldt[0]?.create_CheckBit == "U" || dataModaldt[0]?.create_CheckBit == "R") && <>
-                                    <Button variant="danger" onClick={() => getDeleteDoc(dataModaldt[0]?.ecR_NO)}>
-                                        ลบเอกสาร (Delete)
+                                    <Button variant="danger" onClick={() => getDeleteDoc(dataModaldt[0]?.ecR_NO)} >
+                                        <FontAwesomeIcon icon={faTrashCan} /> ลบเอกสาร (Delete)
                                     </Button>
                                 </> : ""
                             }
@@ -2416,7 +2469,7 @@ function FormDetail(props) {
                                     return (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && creSec == roleSec && (dataModaldt[0]?.createBy == item.code || item.grpRole == "ADMIN")) ||
                                         (item.menuCode == "BTN0005" && item.rolE_VIEW == "True" && permission[0]?.grpRoleSect == "ADMIN" && (dataModaldt[0]?.createBy == item.code || item.grpRole == "ADMIN"))
                                 }).length ? (dataModaldt[0]?.create_CheckBit == "U" || dataModaldt[0]?.create_CheckBit == "R") && <><Button autoFocus variant="primary" onClick={() => upDateData(dataModaldt[0].ecR_NO)}>
-                                    แก้ไขเอกสาร (Update)
+                                    <FontAwesomeIcon icon={faPenToSquare} />  แก้ไขเอกสาร (Update)
                                 </Button></>
                                     :
                                     ""
@@ -2437,8 +2490,8 @@ function FormDetail(props) {
                                     // )
                                     //  &&
                                     <>
-                                        <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO)}>
-                                            ตีกลับ (Return) CREATE
+                                        <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO)}>
+                                            <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) CREATE
                                         </Button>
                                     </> : ""
                             }
@@ -2456,7 +2509,7 @@ function FormDetail(props) {
                                     // )
                                     // &&
                                     <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        อนุมัติ (MG Approved) CREATE
+                                        <FontAwesomeIcon icon={faCheck} /> อนุมัติ (MG Approved) CREATE
                                     </Button>
                                     :
                                     ""
@@ -2478,8 +2531,8 @@ function FormDetail(props) {
                                     // )
                                     // &&
                                     <>
-                                        <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                            ตีกลับ (Return) CREATE
+                                        <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                            <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) CREATE
                                         </Button>
                                     </> : ""
                             }
@@ -2495,7 +2548,7 @@ function FormDetail(props) {
                                     // )
                                     // && 
                                     <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                        อนุมัติ (GM Approved) CREATE
+                                        <FontAwesomeIcon icon={faCheck} /> อนุมัติ (GM Approved) CREATE
                                     </Button>
                                     :
                                     ""
@@ -2515,8 +2568,8 @@ function FormDetail(props) {
                                 )
                                 &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return)  PU
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return)  PU
                                     </Button>
                                 </> : ""
                             }
@@ -2529,7 +2582,7 @@ function FormDetail(props) {
                                     dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_IssuedBit != "F"
                                 )
                                 && <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
-                                    รับเอกสาร (Receive)  PU
+                                    <FontAwesomeIcon icon={faCheck} /> รับเอกสาร (Receive)  PU
                                 </Button>
                                     :
                                     ""
@@ -2551,8 +2604,8 @@ function FormDetail(props) {
                                 )
                                 &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) PU
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) PU
                                     </Button>
                                 </> : ""
                             }
@@ -2567,7 +2620,7 @@ function FormDetail(props) {
                                 )
                                 && <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
-                                        ออกเอกสาร (Issued) PU
+                                        <FontAwesomeIcon icon={faCheck} />  ออกเอกสาร (Issued) PU
                                     </Button>
                                 </>
                                     :
@@ -2589,8 +2642,8 @@ function FormDetail(props) {
                                 )
                                 &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO)}>
-                                        ตีกลับ (Return) PU
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} /> ตีกลับ (Return) PU
                                     </Button>
                                 </> : ""
                             }
@@ -2607,7 +2660,7 @@ function FormDetail(props) {
                                 )
                                 &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                    อนุมัติ (MG Approved) PU
+                                    <FontAwesomeIcon icon={faCheck} /> อนุมัติ (MG Approved) PU
                                 </Button>
                                     :
                                     ""
@@ -2631,8 +2684,8 @@ function FormDetail(props) {
                                 )
                                 &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                        ตีกลับ (Return)  PU
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return)  PU
                                     </Button>
                                 </> : ""
                             }
@@ -2650,7 +2703,7 @@ function FormDetail(props) {
                                     (dataModaldt[0]?.pU_CheckBit == "F" && dataModaldt[0]?.dD_ReceiveBit != "F")
                                 )
                                 && <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                    อนุมัติ (GM Approved) PU
+                                    <FontAwesomeIcon icon={faCheck} />  อนุมัติ (GM Approved) PU
                                 </Button>
                                     :
                                     ""
@@ -2671,8 +2724,8 @@ function FormDetail(props) {
                                 )
                                 &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) DD
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) DD
                                     </Button>
                                 </> : ""
                             }
@@ -2686,7 +2739,7 @@ function FormDetail(props) {
                                     (dataModaldt[0]?.pU_ApprovedBit == "F" && dataModaldt[0]?.dD_IssuedBit != "F")
                                 )
                                 && <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
-                                    รับเอกสาร (Receive) DD
+                                    <FontAwesomeIcon icon={faCheck} /> รับเอกสาร (Receive) DD
                                 </Button>
                                     :
                                     ""
@@ -2713,8 +2766,8 @@ function FormDetail(props) {
                                 )
                                 &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) DD
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) DD
                                     </Button>
                                 </> : ""
                             }
@@ -2732,7 +2785,7 @@ function FormDetail(props) {
                                 )
                                 && <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
-                                        ออกเอกสาร (Issued) DD
+                                        <FontAwesomeIcon icon={faCheck} />  ออกเอกสาร (Issued) DD
                                     </Button>
                                 </>
                                     : ""
@@ -2755,8 +2808,8 @@ function FormDetail(props) {
                                 )
                                 &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) DD
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) DD
                                     </Button>
                                 </> : ""
                             }
@@ -2773,7 +2826,7 @@ function FormDetail(props) {
                                 )
                                 &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                    อนุมัติ (MG Approved) DD
+                                    <FontAwesomeIcon icon={faCheck} /> อนุมัติ (MG Approved) DD
                                 </Button>
                                     :
                                     ""
@@ -2798,8 +2851,8 @@ function FormDetail(props) {
                                 )
                                 &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) DD
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) DD
                                     </Button>
                                 </> : ""
                             }
@@ -2819,7 +2872,7 @@ function FormDetail(props) {
                                     (dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.eN_ReceiveBit == "U")
                                 )
                                 && <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0]?.ecR_NO, dataModaldt[0]?.section, dataModaldt[0]?.create_ApprovedBit)}>
-                                    อนุมัติ (GM Approved) DD
+                                    <FontAwesomeIcon icon={faCheck} />  อนุมัติ (GM Approved) DD
                                 </Button>
                                     :
                                     ""
@@ -2835,8 +2888,8 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0023" && item.rolE_VIEW == "True" && dataModaldt[0]?.dD_ApprovedBit == "F" && dataModaldt[0]?.eN_IssuedBit != "F"
                                 }).length ?
                                     <>
-                                        <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                            ตีกลับ (Return) EN
+                                        <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                            <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) EN
                                         </Button>
                                     </> : ""
                             }
@@ -2846,7 +2899,7 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0027" && item.rolE_VIEW == "True" && dataModaldt[0]?.dD_ApprovedBit == "F" && dataModaldt[0]?.eN_IssuedBit != "F"
                                 }).length ? <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
-                                    รับเอกสาร (Receive) EN
+                                    <FontAwesomeIcon icon={faCheck} /> รับเอกสาร (Receive) EN
                                 </Button>
                                     :
                                     ""
@@ -2860,8 +2913,8 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0024" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_ReceiveBit == "F" && empCode == dataModaldt[0]?.eN_IssuedCode
                                 }).length ? dataModaldt[0]?.eN_CheckBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) EN
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) EN
                                     </Button>
                                 </> : ""
                             }
@@ -2872,7 +2925,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.eN_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
-                                        ออกเอกสาร (Issued) EN
+                                        <FontAwesomeIcon icon={faCheck} />  ออกเอกสาร (Issued) EN
                                     </Button>
                                 </>
                                     : ""
@@ -2887,8 +2940,8 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0025" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_IssuedBit == "F" && empCode == dataModaldt[0]?.eN_CheckCode
                                 }).length ? dataModaldt[0]?.eN_ApprovedBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) EN
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) EN
                                     </Button>
                                 </> : ""
                             }
@@ -2898,7 +2951,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0029" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_IssuedBit == "F" && empCode == dataModaldt[0]?.eN_CheckCode
                                 }).length ? dataModaldt[0]?.eN_ApprovedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                    อนุมัติ (MG Approved) EN
+                                    <FontAwesomeIcon icon={faCheck} />  อนุมัติ (MG Approved) EN
                                 </Button>
                                     :
                                     ""
@@ -2912,8 +2965,8 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0026" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_CheckBit == "F" && empCode == dataModaldt[0]?.eN_ApprovedCode
                                 }).length ? dataModaldt[0]?.sqC_ReceiveBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) EN
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} /> ตีกลับ (Return) EN
                                     </Button>
                                 </> : ""
                             }
@@ -2940,8 +2993,8 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0031" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_ApprovedBit == "F"
                                 }).length ? dataModaldt[0]?.sqC_IssuedBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) SQC
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} /> ตีกลับ (Return) SQC
                                     </Button>
                                 </> : ""
                             }
@@ -2952,7 +3005,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0035" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_ApprovedBit == "F"
                                 }).length ? dataModaldt[0]?.sqC_IssuedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
-                                    รับเอกสาร (Receive) SQC
+                                    <FontAwesomeIcon icon={faCheck} />   รับเอกสาร (Receive) SQC
                                 </Button>
                                     :
                                     ""
@@ -2965,8 +3018,8 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0032" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_ReceiveBit == "F" && empCode == dataModaldt[0]?.sqC_IssuedCode
                                 }).length ? dataModaldt[0]?.sqC_CheckBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) SQC
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) SQC
                                     </Button>
                                 </> : ""
                             }
@@ -2977,7 +3030,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.sqC_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
-                                        ออกเอกสาร (Issued) SQC
+                                        <FontAwesomeIcon icon={faCheck} />  ออกเอกสาร (Issued) SQC
                                     </Button>
                                 </>
                                     : ""
@@ -2992,8 +3045,8 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0033" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_IssuedBit == "F" && empCode == dataModaldt[0]?.sqC_CheckCode
                                 }).length ? dataModaldt[0]?.sqC_ApprovedBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) SQC
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) SQC
                                     </Button>
                                 </> : ""
                             }
@@ -3003,7 +3056,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0037" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_IssuedBit == "F" && empCode == dataModaldt[0]?.sqC_CheckCode
                                 }).length ? dataModaldt[0]?.sqC_ApprovedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                    อนุมัติ (MG Approved) SQC
+                                    <FontAwesomeIcon icon={faCheck} />  อนุมัติ (MG Approved) SQC
                                 </Button>
                                     :
                                     ""
@@ -3017,8 +3070,8 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0034" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_CheckBit == "F" && empCode == dataModaldt[0]?.sqC_ApprovedCode
                                 }).length ? dataModaldt[0]?.qC_ReceiveBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) SQC
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />   ตีกลับ (Return) SQC
                                     </Button>
                                 </> : ""
                             }
@@ -3028,7 +3081,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0038" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_CheckBit == "F" && empCode == dataModaldt[0]?.sqC_ApprovedCode
                                 }).length ? dataModaldt[0]?.qC_ReceiveBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                    อนุมัติ (GM Approved) SQC
+                                    <FontAwesomeIcon icon={faCheck} />   อนุมัติ (GM Approved) SQC
                                 </Button>
                                     :
                                     ""
@@ -3045,8 +3098,8 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0039" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_ApprovedBit == "F"
                                 }).length ? dataModaldt[0]?.qC_IssuedBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) QC
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} /> ตีกลับ (Return) QC
                                     </Button>
                                 </> : ""
                             }
@@ -3057,7 +3110,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0043" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_ApprovedBit == "F"
                                 }).length ? dataModaldt[0]?.qC_IssuedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
-                                    รับเอกสาร (Receive) QC
+                                    <FontAwesomeIcon icon={faCheck} />  รับเอกสาร (Receive) QC
                                 </Button>
                                     :
                                     ""
@@ -3070,8 +3123,8 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0040" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ReceiveBit == "F" && empCode == dataModaldt[0]?.qC_IssuedCode
                                 }).length ? dataModaldt[0]?.qC_CheckBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) QC
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) QC
                                     </Button>
                                 </> : ""
                             }
@@ -3082,7 +3135,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.qC_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
-                                        ออกเอกสาร (Issued) QC
+                                        <FontAwesomeIcon icon={faCheck} />  ออกเอกสาร (Issued) QC
                                     </Button>
                                 </>
                                     : ""
@@ -3097,8 +3150,8 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0041" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_IssuedBit == "F" && empCode == dataModaldt[0]?.qC_CheckCode
                                 }).length ? dataModaldt[0]?.qC_ApprovedBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) QC
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) QC
                                     </Button>
                                 </> : ""
                             }
@@ -3108,7 +3161,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0045" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_IssuedBit == "F" && empCode == dataModaldt[0]?.qC_CheckCode
                                 }).length ? dataModaldt[0]?.qC_ApprovedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                    อนุมัติ (MG Approved) QC
+                                    <FontAwesomeIcon icon={faCheck} />  อนุมัติ (MG Approved) QC
                                 </Button>
                                     :
                                     ""
@@ -3120,10 +3173,10 @@ function FormDetail(props) {
                             {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0042" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_CheckBit == "F" && empCode == dataModaldt[0]?.qC_ApprovedCode
-                                }).length ? dataModaldt[0]?.diL_RECEIVEBIT != "F" &&
+                                }).length ? dataModaldt[0]?.diL_DD_ReceiveBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) QC
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) QC
                                     </Button>
                                 </> : ""
                             }
@@ -3131,9 +3184,9 @@ function FormDetail(props) {
                             {
                                 permission.filter((item) => {
                                     return item.menuCode == "BTN0046" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_CheckBit == "F" && empCode == dataModaldt[0]?.qC_ApprovedCode
-                                }).length ? dataModaldt[0]?.diL_RECEIVEBIT != "F" &&
+                                }).length ? dataModaldt[0]?.diL_DD_ReceiveBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                    อนุมัติ (GM Approved) QC
+                                    <FontAwesomeIcon icon={faCheck} />  อนุมัติ (GM Approved) QC
                                 </Button>
                                     :
                                     ""
@@ -3154,8 +3207,8 @@ function FormDetail(props) {
                                         && dataModaldt[0]?.diL_QC_ReceiveBit != "F"
                                 }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => ReturnDIL(dataModaldt[0].ecR_NO)}>
-                                        ตีกลับ (Return) DIL
+                                    <Button autoFocus variant="warning" onClick={() => ReturnDIL(dataModaldt[0].ecR_NO)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) DIL
                                     </Button>
                                 </> : ""
                             }
@@ -3167,7 +3220,7 @@ function FormDetail(props) {
                                         && dataModaldt[0]?.diL_QC_ReceiveBit != "F"
                                 }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => ApprovedDIL(dataModaldt[0].ecR_NO)}>
-                                    อนุมัติ (GM Approved) DIL
+                                    <FontAwesomeIcon icon={faCheck} />  อนุมัติ (GM Approved) DIL
                                 </Button>
                                     :
                                     ""
@@ -3180,12 +3233,11 @@ function FormDetail(props) {
                             {/* RECEIVE  */}
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0059" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ApprovedBit == "F"
-                                        && dataModaldt[0]?.qA_ReceiveBit != "F" && dataModaldt[0]?.diL_DD_ReceiveBit == "F"
-                                }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
+                                    return item.menuCode == "BTN0059" && item.rolE_VIEW == "True" && dataModaldt[0]?.diL_DD_ReceiveBit == "F"
+                                }).length ? dataModaldt[0]?.qA_ReceiveBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => ReturnDIL(dataModaldt[0].ecR_NO)}>
-                                        ตีกลับ (Return) DIL
+                                    <Button autoFocus variant="warning" onClick={() => ReturnDIL(dataModaldt[0].ecR_NO)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) DIL
                                     </Button>
                                 </> : ""
                             }
@@ -3193,11 +3245,10 @@ function FormDetail(props) {
 
                             {
                                 permission.filter((item) => {
-                                    return item.menuCode == "BTN0060" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ApprovedBit == "F"
-                                        && dataModaldt[0]?.qA_ReceiveBit != "F" && dataModaldt[0]?.diL_DD_ReceiveBit == "F"
-                                }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
+                                    return item.menuCode == "BTN0060" && item.rolE_VIEW == "True" && dataModaldt[0]?.diL_DD_ReceiveBit == "F"
+                                }).length ? dataModaldt[0]?.qA_ReceiveBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => ApprovedDIL(dataModaldt[0].ecR_NO)}>
-                                    อนุมัติ (GM Approved) DIL
+                                    <FontAwesomeIcon icon={faCheck} /> อนุมัติ (GM Approved) DIL
                                 </Button>
                                     :
                                     ""
@@ -3215,8 +3266,8 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0049" && item.rolE_VIEW == "True" && dataModaldt[0]?.diL_RECEIVEBIT == "F"
                                 }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) QA
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) QA
                                     </Button>
                                 </> : ""
                             }
@@ -3227,7 +3278,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0053" && item.rolE_VIEW == "True" && dataModaldt[0]?.diL_RECEIVEBIT == "F"
                                 }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO)}>
-                                    รับเอกสาร (Receive) QA
+                                    <FontAwesomeIcon icon={faCheck} /> รับเอกสาร (Receive) QA
                                 </Button>
                                     :
                                     ""
@@ -3240,8 +3291,8 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0050" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_ReceiveBit == "F" && empCode == dataModaldt[0]?.qA_IssuedCode
                                 }).length ? dataModaldt[0]?.qA_CheckBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) QA
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) QA
                                     </Button>
                                 </> : ""
                             }
@@ -3252,7 +3303,7 @@ function FormDetail(props) {
                                 }).length ? dataModaldt[0]?.qA_CheckBit != "F" &&
                                 <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO)}>
-                                        ออกเอกสาร (Issued) QA
+                                        <FontAwesomeIcon icon={faCheck} />  ออกเอกสาร (Issued) QA
                                     </Button>
                                 </>
                                     : ""
@@ -3266,8 +3317,8 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0051" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_IssuedBit == "F" && empCode == dataModaldt[0]?.qA_CheckCode
                                 }).length ? dataModaldt[0]?.qA_ApprovedBit != "F" &&
                                 <>
-                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                        ตีกลับ (Return) QA
+                                    <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) QA
                                     </Button>
                                 </> : ""
                             }
@@ -3277,7 +3328,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0055" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_IssuedBit == "F" && empCode == dataModaldt[0]?.qA_CheckCode
                                 }).length ? dataModaldt[0]?.qA_ApprovedBit != "F" &&
                                 <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                    อนุมัติ (MG Approved) QA
+                                    <FontAwesomeIcon icon={faCheck} />  อนุมัติ (MG Approved) QA
                                 </Button>
                                     :
                                     ""
@@ -3292,8 +3343,8 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0052" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_CheckBit == "F" && empCode == dataModaldt[0]?.qA_ApprovedCode
                                 }).length ?
                                     <>
-                                        <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                            ตีกลับ (Return) QA
+                                        <Button autoFocus variant="warning" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                            <FontAwesomeIcon icon={faRotateLeft} />   ตีกลับ (Return) QA
                                         </Button>
                                     </> : ""
                             }
@@ -3303,7 +3354,7 @@ function FormDetail(props) {
                                     return item.menuCode == "BTN0056" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_CheckBit == "F" && empCode == dataModaldt[0]?.qA_ApprovedCode
                                 }).length ?
                                     <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                        อนุมัติ (GM Approved) QA
+                                        <FontAwesomeIcon icon={faCheck} />   อนุมัติ (GM Approved) QA
                                     </Button>
                                     :
                                     ""
