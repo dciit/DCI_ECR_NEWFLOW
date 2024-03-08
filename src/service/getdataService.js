@@ -28,7 +28,6 @@ const postInputData = (param) => {
 }
 
 
-
 const postUpdateData = (param) => {
     return http.APIECR.post(`postUpdateData`, param);
 }
@@ -51,6 +50,10 @@ const getDeleteDoc = (ecrno) => {
 }
 
 
+const getDetailDIL = (ecrno) => {
+    return http.APIECR.get(`getDetailDIL/${ecrno}`);
+}
+
 
 
 
@@ -65,4 +68,5 @@ export default {
     getDetailCreate,
     getSearchECRNO,
     getDeleteDoc,
+    getDetailDIL,
 };

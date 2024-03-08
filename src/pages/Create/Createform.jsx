@@ -69,7 +69,6 @@ function Createform() {
     const [getdata, setGetdata] = useState([])
     useEffect(() => {
         loadPage();
-
     }, [])
 
 
@@ -77,6 +76,7 @@ function Createform() {
         getDataSrvHD.getECRListLoad(selectSection, selectStatus).then((res) => {
             try {
                 setGetdata(res.data)
+                // console.log(res.data)
             }
             catch (error) {
                 console.log(error);
@@ -190,10 +190,12 @@ function Createform() {
     }
     //****************************END BUTTON SEARCH ************ *
     // const sectionArray = ['CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
+    // const sectionArrayAll = ['ALL', 'CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL_DD', 'DIL_QC', 'QA']
     const sectionArray = ['CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL_DD', 'DIL_QC', 'QA']
     const sectionArrayAll = ['ALL', 'CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL', 'QA']
-    // const sectionArrayAll = ['ALL', 'CREATE', 'PU', 'DD', 'EN', 'SQC', 'QC', 'DIL_DD', 'DIL_QC', 'QA']
     const classArray = ['ALL', 'CLASS A', 'CLASS B', 'CLASS C', 'CLASS D', 'CLASS E']
+
+
 
 
     return (<>
@@ -451,18 +453,28 @@ function Createform() {
                                         let name = item[`${items}${iApp}by`]; // by
                                         let date = item[`${items}${iApp}date`]; // date
                                         let status = item[`${items}${iApp}bit`]; //bit
-                                        let hold = item[`${items}${iApp}SumDate`];
-                                        let holdDate = item[`${items}${iApp}SumDate`]; //sumdate
+                                        let pending = item[`${items}${iApp}SumDate`];
+                                        let pendingDay = item[`${items}${iApp}SumDate`]; //sumdate
                                         let namePending = item[`${items}${iApp}namepending`];
+                                        let holdDay = item[`${items}${iApp}HoldDate`];
 
-                                        //console.log(name)
-                                        if (holdDate > 0) {
-                                            holdDate = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
+                                        console.log(status)
+                                        if (pendingDay > 0) {
+                                            pendingDay = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
                                         }
                                         else {
-                                            holdDate = ""
+                                            pendingDay = ""
                                         }
 
+                                        if (holdDay > 0) {
+                                            holdDay = item[`${items}${iApp}HoldDate`] + '  ' + 'Day'; //sumdate
+                                        }
+                                        else {
+                                            holdDay = ""
+                                        }
+
+
+                                        let alertHold = "";
                                         let color = 'rgb(254 253 239)';
                                         if (status == 'F') {
                                             if (items == 'cre') {
@@ -492,9 +504,15 @@ function Createform() {
                                         } else if (status == 'R') {
                                             color = 'red'
                                         }
+                                        else if (status == "H") {
+                                            color = 'yellow'
+                                            alertHold = <span className='circle gelatine'></span>;
+                                        }
                                         else {
                                             color = 'rgb(254 253 239)'
                                         }
+
+
                                         let icon = '';
                                         if (status == "F" || status == "R") {
                                             if (iApp == "received" || iApp == "issued" || iApp == "check") {
@@ -505,13 +523,13 @@ function Createform() {
                                             }
                                         }
 
-                                        let colorHoldDate = 'rgb(54 145 245)'
+                                        let colorPendingDate = 'rgb(54 145 245)'
 
-                                        if (hold >= 3) {
-                                            colorHoldDate = 'red'
+                                        if (pending >= 3) {
+                                            colorPendingDate = 'red'
                                         }
                                         else {
-                                            colorHoldDate = 'rgb(54 145 245)'
+                                            colorPendingDate = 'rgb(54 145 245)'
                                         }
 
 
@@ -523,9 +541,11 @@ function Createform() {
                                             color: color,
                                             title: iApp,
                                             icon: icon,
-                                            holdDate: holdDate,
-                                            colorHoldDate: colorHoldDate,
+                                            pendingDay: pendingDay,
+                                            colorPendingDate: colorPendingDate,
                                             namePedning: namePending,
+                                            holdDay: holdDay,
+                                            alertHold: alertHold,
                                         });
                                     });
                                     oEcr.push(iECR);
@@ -545,9 +565,7 @@ function Createform() {
                                         lSec = vSec;
                                     }
 
-                                    //console.log(lSec)
                                     status = item[`${lSec.toLowerCase()}_status`] == 'U' ? (status == '' ? lSec : status) : status;
-                                    // console.log(status)
                                 });
 
 
@@ -578,9 +596,24 @@ function Createform() {
                                 }
 
 
-                                return <tr>
-                                    <td style={{ fontSize: '16px', padding: '8px', backgroundColor: (targetDate ? colorTargetDate : 'red') }}><nobr>{item.dueDate}<br></br><p style={{ fontSize: '14px', color: 'rgb(94 66 201)', marginBottom: '1px' }}>{datealertDuedate}</p></nobr></td>
-                                    <td style={{ backgroundColor: (status != '' ? '#ffffa0' : 'rgb(72 229 23)') }}><p style={{ padding: '8px', marginBottom: '-1px', color: (status != '' ? '#076bad' : 'rgb(60 3 255)') }}>{(status != '' ? status : 'FINISH')}</p>
+                                let lcount = "";
+                                if (item.count > 0) {
+                                    lcount = <span className='hithere content' >{item.count}</span>;
+                                }
+                                else {
+                                    lcount = "";
+                                }
+
+
+
+
+
+                                return <tr style={{ backgroundColor: (item.counthold > 0 ? 'yellow' : '') }}>
+                                    {/* <td style={{ fontSize: '16px', padding: '8px', backgroundColor: (targetDate ? colorTargetDate : 'red') }}><nobr>{item.dueDate}<br></br><p style={{ fontSize: '14px', color: 'rgb(94 66 201)', marginBottom: '1px' }}>{datealertDuedate}</p></nobr></td> */}
+                                    <td style={{ fontSize: '16px', padding: '8px' }}><nobr>{item.dueDate}<br></br><p style={{ fontSize: '14px', color: 'rgb(94 66 201)', marginBottom: '1px' }}>{datealertDuedate}</p></nobr></td>
+                                    <td>
+                                        <p style={{ padding: '8px', marginBottom: '-1px' }}>{(status != '' ? status : 'FINISH')}</p>
+                                        <p className='pulse' style={{ color: '#f1720de6' }}>{(item.counthold > 0 ? 'HOLD' : '')}</p>
                                     </td>
                                     <td>
                                         <Link underline="hover">
@@ -607,7 +640,7 @@ function Createform() {
                                     </td>
                                     <td>
                                         <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'row-reverse' }}>
-                                            <span className='content'>{item.count}</span>
+                                            {lcount}
                                             <center>
                                                 <FcSms style={{
                                                     width: '28px', height: '35px'
@@ -633,16 +666,17 @@ function Createform() {
                                                 {
                                                     vSec.app.map((vApp, iApp) => {
                                                         return <td style={{ backgroundColor: vApp.color, width: '30px' }}>
-                                                            {/* <div style={{ borderBottom: '1px solid black', fontWeight: 'bolder', height: '32px', width: '90px' }}>{vApp.title.substring(0, 1).toUpperCase()} {vApp.icon}</div> */}
-
                                                             <div style={{ fontSize: '11px ', height: '50px', justifyContent: 'center', alignItems: 'center', width: '90px', marginTop: '10px' }}>
                                                                 <div>
-                                                                    {vApp.name}
+                                                                    {vApp.name} <span>{vApp.alertHold}</span>
                                                                 </div>
                                                                 <div style={{ fontSize: '10px' }}>
                                                                     {vApp.date}
                                                                 </div>
-                                                                <div style={{ color: vApp.colorHoldDate, fontSize: '11px', fontWeight: '700' }}>  {vApp.holdDate}
+                                                                <div style={{ fontSize: '10px', color: 'blue' }}>
+                                                                    {vApp.holdDay}
+                                                                </div>
+                                                                <div style={{ color: vApp.colorPendingDate, fontSize: '11px', fontWeight: '700' }}>  {vApp.pendingDay}
                                                                 </div>
                                                                 <div style={{ color: 'rgb(101 93 192)' }}>  {vApp.namePedning}</div>
                                                             </div>

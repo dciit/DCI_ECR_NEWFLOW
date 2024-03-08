@@ -36,7 +36,7 @@ import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
-
+import Swal from 'sweetalert2'
 
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -94,7 +94,7 @@ function FormCreate(props) {
     const [employee, setemployee] = useState('');
     const [employeeArray, setEmployeeArray] = useState([]);
     const [strposition, setPosition] = useState('');
-    const [step, setStep] = useState('ISSUED');
+    const [step, setStep] = useState('CHECK');
     const stepArrayCre = ['CHECK', 'APPROVED'];
     const [tableNotify, setTableNotify] = useState([]);
 
@@ -105,7 +105,6 @@ function FormCreate(props) {
             setbtnAddFile(false);
             setShowDueDate(false)
         }
-
     }, [show]);
 
 
@@ -294,7 +293,15 @@ function FormCreate(props) {
                     refresh();
                     setFilesDrawing('');
                     setFilesBR('');
-                    // close(false)
+                    getDataSrvPermiss.getNotifyTo(nbr[0]?.runningNumber).then((res) => {
+                        try {
+                            setTableNotify(res.data);
+                        }
+                        catch (error) {
+                            console.log(error);
+                            return error;
+                        }
+                    });
                 }
                 catch (error) {
                     console.log(error);
@@ -308,6 +315,24 @@ function FormCreate(props) {
     };
     //***************************END FUNCTON INPUT DATA*************************** */
 
+
+    //***************************FUNCTON CLOSE*************************** */
+    const Functionclose = () => {
+        if (tableNotify[0]?.cre_checkedCode != null && title != "") {
+            setFilesDrawing({});
+            setFilesBR({});
+            close(false);
+        }
+        else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาเลือกผู้ Check เอกสาร ECR ใน Section ของคุณ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+        }
+    };
+    //***************************END FUNCTON CLOSE*************************** */
 
     //******************SET NOTIFY TO*************** */
     const handleChangeEmployee = (event) => {
@@ -337,8 +362,13 @@ function FormCreate(props) {
             try {
                 getDataSrvPermiss.getNotifyTo(ecR_NO).then((res) => {
                     try {
-                        alert('successfully');
                         setTableNotify(res.data);
+                        Swal.fire({
+                            icon: "success",
+                            title: "เพิ่มผู้ดำเนินการเรียบร้อยแล้ว",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
                     }
                     catch (error) {
                         console.log(error);
@@ -414,7 +444,7 @@ function FormCreate(props) {
                     aria-labelledby="scroll-dialog-title"
                     aria-describedby="scroll-dialog-description"
                 >
-                    <IconButton aria-label="close" onClick={() => close(false)}
+                    {/* <IconButton aria-label="close" onClick={() => close(false)}
                         sx={{
                             position: 'absolute',
                             right: 8,
@@ -423,7 +453,7 @@ function FormCreate(props) {
                         }}
                     >
                         <CloseIcon />
-                    </IconButton>
+                    </IconButton> */}
                     <DialogContent dividers>
                         <Container>
                             <div class="row">
@@ -884,11 +914,7 @@ function FormCreate(props) {
                     </DialogActions>
                     <div className='styleButtonCreate'>
                         <Stack direction={'row'} gap={3}>
-                            <Button variant="secondary" onClick={() => {
-                                setFilesDrawing({});
-                                setFilesBR({});
-                                close(false);
-                            }}>
+                            <Button variant="secondary" onClick={Functionclose}>
                                 Close
                             </Button>
                             {

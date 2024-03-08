@@ -1,6 +1,7 @@
 export const SOAP_URL_PART = "http://websrv01.dci.daikin.co.jp/BudgetCharts/BudgetRestService/api/"
 export const TEST_API = "http://dciweb2.dci.daikin.co.jp/multiskillcerAPI/"
 
+
 export const API_ECR = "https://localhost:7256/api/ECR/"
 export const API_REPORT = "https://localhost:7256/api/CReportECR/"
 export const API_ADDFILE = "https://localhost:7256/api/CAddFile/"

@@ -5,7 +5,6 @@ const postReceive = (param) => {
 }
 
 const postIssued = (param) => {
-    console.log(param)
     return http.APIDETAIL.post(`postIssued`, param);
 }
 
@@ -14,14 +13,18 @@ const getReturn = (param) => {
 }
 
 const postApprovedDIL = (param) => {
-    console.log(param)
     return http.APIDETAIL.post(`postApprovedDIL`, param);
 }
 
 const postReturnDIL = (param) => {
-    console.log(param)
     return http.APIDETAIL.post(`postReturnDIL`, param);
 }
+
+
+const postHold = (param) => {
+    return http.APIDETAIL.post(`postHold`, param);
+}
+
 
 
 
@@ -31,4 +34,5 @@ export default {
     getReturn,
     postApprovedDIL,
     postReturnDIL,
+    postHold,
 };

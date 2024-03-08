@@ -109,7 +109,8 @@ function Chat(props) {
                                 <table className='customers'>
                                     <thead>
                                         <tr>
-                                            <th>Section</th>
+                                            <th>Request From Section</th>
+                                            <th>Request To Section</th>
                                             <th>Remark</th>
                                             <th>Remark By</th>
                                             <th>Date Time</th>
@@ -119,6 +120,7 @@ function Chat(props) {
                                         showChat?.map((item, index) => {
                                             return <tr key={item.ecrno}>
                                                 <td align="center" style={{ textAlign: 'center' }}>{item.section}</td>
+                                                <td align="center" style={{ textAlign: 'center' }}>{item.tosection}</td>
                                                 <td align="center" style={{ color: 'red' }}>{item.remark}</td>
                                                 <td align="center" style={{ textAlign: 'right' }}>{item.remarkby}</td>
                                                 <td align="center" style={{ textAlign: 'right' }}>{item.remarkdate}</td>
