@@ -72,6 +72,13 @@ function Createform() {
     }, [])
 
 
+    useEffect(() => {
+        if (openModalChat == false) {
+            loadPage();
+        }
+    }, [openModalChat])
+
+
     function loadPage() {
         getDataSrvHD.getECRListLoad(selectSection, selectStatus).then((res) => {
             try {
@@ -458,7 +465,7 @@ function Createform() {
                                         let namePending = item[`${items}${iApp}namepending`];
                                         let holdDay = item[`${items}${iApp}HoldDate`];
 
-                                        console.log(status)
+                                        //console.log(status)
                                         if (pendingDay > 0) {
                                             pendingDay = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
                                         }
