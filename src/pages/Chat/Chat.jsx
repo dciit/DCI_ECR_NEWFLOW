@@ -133,8 +133,8 @@ function Chat(props) {
                                     <thead>
                                         <tr>
                                             <th>Status</th>
-                                            <th>Request From Section</th>
-                                            <th>Request To Section</th>
+                                            <th>From</th>
+                                            <th>To</th>
                                             <th>Remark</th>
                                             <th>Remark By</th>
                                             <th>Date Time</th>

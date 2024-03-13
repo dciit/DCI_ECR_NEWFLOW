@@ -1,15 +1,3 @@
-/* #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-} */
-
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
-
-
 html,
 #root,
 body,
@@ -18,23 +6,6 @@ body,
 }
 
 
-
-
 .modal.show {
   z-index: 99999 !important;
 }
-
-/* .tableCreateform thead th[rowspan='3'] {
-  background: greenyellow !important;
-  width: 60px !important;
-}
-
-.tableCreateform th[colspan="12"] {
-  background: rgb(52, 144, 107) !important;
-  width: 720px;
-}
-
-.tableCreateform,
-.stylePagee {
-  width: 100%;
-} */

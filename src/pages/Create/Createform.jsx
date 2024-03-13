@@ -83,7 +83,7 @@ function Createform() {
         getDataSrvHD.getECRListLoad(selectSection, selectStatus).then((res) => {
             try {
                 setGetdata(res.data)
-                // console.log(res.data)
+                console.log(res.data)
             }
             catch (error) {
                 console.log(error);
@@ -370,6 +370,7 @@ function Createform() {
                         <tr>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>TARGET</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>STATUS</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>TO SECTION</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>CHECK DETAIL</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DCS NO</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DRAWING</th>
@@ -611,7 +612,7 @@ function Createform() {
                                     lcount = "";
                                 }
 
-
+                                let HoldTotal = item.hOLDDATETOTAL;
 
 
 
@@ -621,6 +622,10 @@ function Createform() {
                                     <td>
                                         <p style={{ padding: '8px', marginBottom: '-1px' }}>{(status != '' ? status : 'FINISH')}</p>
                                         <p className='pulse' style={{ color: '#f1720de6' }}>{(item.counthold > 0 ? 'HOLD' : '')}</p>
+                                    </td>
+                                    <td>
+                                        <p style={{ padding: '8px', marginBottom: '-1px' }}>{item.hOLDTOSECTION}</p>
+                                        <p style={{ fontSize: '12px' }}>{(HoldTotal != 0 ? "(" + HoldTotal + " " + "Day" + ")" : "")}</p>
                                     </td>
                                     <td>
                                         <Link underline="hover">
