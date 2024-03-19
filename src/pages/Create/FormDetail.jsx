@@ -129,6 +129,8 @@ function FormDetail(props) {
     const [methodNew, setMethodNew] = useState('');
     const [detail, setDetail] = useState('');
     const [duedate, setduedate] = useState(moment().format('YYYY-MM-DD'));
+    const [duedatePU, setduedatePU] = useState(moment().format('YYYY-MM-DD'));
+    const [duedateDD, setduedateDD] = useState(moment().format('YYYY-MM-DD'));
     const [remarkPU, setRemarkPU] = useState('');
     const [remarkCancel, setRemarkCancel] = useState('');
     const [receive, setReceive] = useState('');
@@ -1470,6 +1472,25 @@ function FormDetail(props) {
                                                     setRemarkPU([...dataModaldt]);
                                                 }} />
                                         </Col>
+                                        {/* <Col xs={12} md={4}>
+                                            <Form.Label>Due Date (Target) : </Form.Label> <br></br>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <DatePicker
+                                                    value={dayjs(dataModaldt[0]?.duedate == "" ? moment() : moment(dataModaldt[0]?.duedate).format('YYYY-MM-DD'))}
+                                                    slotProps={{
+                                                        textField: {
+                                                            format: 'YYYY-MM-DD',
+                                                        },
+                                                    }}
+                                                    onChange={(val) => {
+                                                        dataModaldt[0].duedate = val.format('YYYY-MM-DD');
+                                                        setDataModaldt([...dataModaldt])
+                                                    }}
+
+                                                    disabled={position == "ISSUED" ? false : true}
+                                                />
+                                            </LocalizationProvider>
+                                        </Col> */}
                                     </Row>
 
                                     <hr></hr>
@@ -1630,6 +1651,25 @@ function FormDetail(props) {
                                                     setDD_Remark2([...dataModaldt]);
                                                 }} />
                                         </Col>
+                                        {/* <Col xs={12} md={4}>
+                                            <Form.Label>Due Date (Target) : </Form.Label> <br></br>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <DatePicker
+                                                    value={dayjs(dataModaldt[0]?.duedate == "" ? moment() : moment(dataModaldt[0]?.duedate).format('YYYY-MM-DD'))}
+                                                    slotProps={{
+                                                        textField: {
+                                                            format: 'YYYY-MM-DD',
+                                                        },
+                                                    }}
+                                                    onChange={(val) => {
+                                                        dataModaldt[0].duedate = val.format('YYYY-MM-DD');
+                                                        setDataModaldt([...dataModaldt])
+                                                    }}
+
+                                                    disabled={position == "ISSUED" ? false : true}
+                                                />
+                                            </LocalizationProvider>
+                                        </Col> */}
                                     </Row>
 
                                     <hr></hr>

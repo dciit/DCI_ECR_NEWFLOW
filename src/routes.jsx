@@ -14,9 +14,23 @@ import PrintComponent from "./pages/Print/PrintComponent";
 let logintrue = false
 logintrue = localStorage.getItem('logintrue', false)
 import ModelAttachFile from "./pages/FileAttached/ModelAttachFile"
-
+import { useDispatch, useSelector } from "react-redux";
+import { persistor } from "../src/redux/store";
+import jsCookie from 'js-cookie';
 const Routess = () => {
-    const BASE_PATH = 'ECR'
+    const BASE_PATH = 'ECR';
+    // let REDUX_VER = useSelector(state => state.reducer.ver);
+    // console.log(REDUX_VER)
+    // let ENV_VER = import.meta.env.VITE_VERSION;
+    // const dispatch = useDispatch();
+    // if (REDUX_VER != ENV_VER) {
+    //     console.log(REDUX_VER, ENV_VER)
+    //     persistor.purge();
+    //     dispatch({ type: 'RESET', payload: ENV_VER });
+    //     jsCookie.remove('name');
+    //     location.reload();
+    // }
+
     return (
         <BrowserRouter>
             <Routes>
@@ -31,7 +45,7 @@ const Routess = () => {
                     <Route path={BASE_PATH + '/createform'} element={<Createform />} />
                     <Route path={BASE_PATH + '/home'} element={<Home />} />
                     <Route path={BASE_PATH + '/AddPermissions'} element={<AddPermissions />} />
-                    <Route path={BASE_PATH + '/Print/:ecrno'} element={<Print />} />
+                    <Route path={BASE_PATH + '/PrintPage/:ecrno'} element={<PrintComponent />} />
                     <Route path={BASE_PATH + '/Chat/:ecrno'} element={<Chat />} />
                     <Route path={BASE_PATH + '/ModalDetail'} element={<Detail />} />
                     <Route path={BASE_PATH + '/a'} element={<ModelAttachFile />} />

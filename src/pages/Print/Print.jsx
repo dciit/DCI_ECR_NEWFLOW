@@ -237,9 +237,10 @@ function Print() {
                     <div class="row" style={{ marginTop: '10px' }}>
                         <div class="col-md-10" style={{ fontSize: '14px' }}>
                             <div style={{ width: '100%', padding: '10px', border: '1px solid black', margin: '0' }}>
-                                <p style={{ marginTop: '-7px' }}>วัตถุประสงค์, วิธีการ, ข้อมูลการส่งมอบ  (Purpose, Method & Delivery Schedule) :</p>
+                                <p style={{ marginTop: '-7px' }}>วัตถุประสงค์5555, วิธีการ, ข้อมูลการส่งมอบ  (Purpose, Method & Delivery Schedule) :</p>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ins>{dataModaldt[0]?.method_Remark}</ins>
                                 <br></br><br></br><br></br>
+                                <p> Purpose :</p>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Due Date(Target) : <ins>{dataModaldt[0]?.dueDate_Target}</ins>
                             </div>
                         </div>

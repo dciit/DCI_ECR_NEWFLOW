@@ -95,7 +95,7 @@ function FormCreate(props) {
     const [employeeArray, setEmployeeArray] = useState([]);
     const [strposition, setPosition] = useState('');
     const [step, setStep] = useState('CHECK');
-    const stepArrayCre = ['CHECK', 'APPROVED'];
+    const stepArrayCre = ['CHECK'];
     const [tableNotify, setTableNotify] = useState([]);
 
 
@@ -153,7 +153,7 @@ function FormCreate(props) {
     const [methodNew, setMethodNew] = useState('');
     const [detail, setDetail] = useState('');
     const [requestPU, setRequestPU] = useState('');
-    const [duedate, setduedate] = useState(moment().format('YYYY-MM-DD'));
+    const [duedate, setduedate] = useState(moment().add(1, 'months').format('YYYY-MM-DD'));
     const [itemOther, setItemOther] = useState('');
     const [notification, setNotification] = useState('');
     const [drNo, setDrNo] = useState('');
@@ -731,8 +731,8 @@ function FormCreate(props) {
                                             <Form.Label>DRAWING NO OLD : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                             <Form.Control as="textarea" rows={3} onChange={(event) => setMethodOld(event.target.value)} />
                                         </Col>
-                                        <Col xs={12} md={6}>
-                                            <Form.Label>CLASS : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
+                                        <Col xs={12} md={3}>
+                                            <Form.Label>CLASS : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label><br></br>
                                             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                                                 <InputLabel id="demo-select-small-label">Class</InputLabel>
                                                 <Select
@@ -749,6 +749,21 @@ function FormCreate(props) {
                                                 </Select>
                                             </FormControl>
                                         </Col>
+
+                                        <Col xs={12} md={3}>
+                                            <Form.Label>Due Date (Target) : </Form.Label> <br></br>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <DatePicker
+                                                    value={dayjs(duedate)}
+                                                    slotProps={{
+                                                        textField: {
+                                                            format: 'YYYY-MM-DD',
+                                                        },
+                                                    }}
+                                                    onChange={(newValue) => setduedate(dayjs(newValue).format('YYYY-MM-DD'))}
+                                                />
+                                            </LocalizationProvider>
+                                        </Col>
                                     </Row>
 
 
@@ -757,22 +772,7 @@ function FormCreate(props) {
                                             <Form.Label>DRAWING NO NEW : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                             <Form.Control as="textarea" rows={3} onChange={(event) => setMethodNew(event.target.value)} />
                                         </Col>
-                                        {
-                                            showDueDate && <Col xs={12} md={6}>
-                                                <Form.Label>Due Date (Target) : </Form.Label> <br></br>
-                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                    <DatePicker
-                                                        value={dayjs(duedate)}
-                                                        slotProps={{
-                                                            textField: {
-                                                                format: 'YYYY-MM-DD',
-                                                            },
-                                                        }}
-                                                        onChange={(newValue) => setduedate(dayjs(newValue).format('YYYY-MM-DD'))}
-                                                    />
-                                                </LocalizationProvider>
-                                            </Col>
-                                        }
+
                                     </Row>
 
 

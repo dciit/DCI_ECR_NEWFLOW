@@ -109,7 +109,7 @@ function Chat(props) {
                     <Dialog
                         open={show}
                         fullWidth
-                        maxWidth="md"
+                        maxWidth="lg"
                         aria-labelledby="scroll-dialog-title"
                         aria-describedby="scroll-dialog-description"
                     >
@@ -133,12 +133,13 @@ function Chat(props) {
                                     <thead>
                                         <tr>
                                             <th>Status</th>
-                                            <th>From</th>
-                                            <th>To</th>
-                                            <th>Remark</th>
-                                            <th>Remark By</th>
-                                            <th>Date Time</th>
-                                            <th>#</th>
+                                            <th>Requested Section</th>
+                                            <th>Response Section</th>
+                                            <th>Responser</th>
+                                            <th style={{ width: '80%' }}>Reason</th>
+                                            <th>Requested By</th>
+                                            <th>Requested Date</th>
+                                            <th>Confirm</th>
                                         </tr>
                                     </thead>
                                     <tbody> {
@@ -147,9 +148,10 @@ function Chat(props) {
                                                 <td align="center" style={{ textAlign: 'center' }}>{item.type}</td>
                                                 <td align="center" style={{ textAlign: 'center' }}>{item.section}</td>
                                                 <td align="center" style={{ textAlign: 'center' }}>{item.tosection}</td>
+                                                <td align="center" style={{ textAlign: 'center', fontSize: '13px' }}>{item.responser}</td>
                                                 <td align="center" style={{ color: 'red' }}>{item.remark}</td>
-                                                <td align="center" style={{ textAlign: 'right' }}>{item.remarkby}</td>
-                                                <td align="center" style={{ textAlign: 'right', width: '21%' }}>{item.remarkdate}</td>
+                                                <td align="center" style={{ textAlign: 'right', fontSize: '13px' }}>{item.remarkby}</td>
+                                                <td align="center" style={{ textAlign: 'right', width: '21%', fontSize: '14px' }}>{item.remarkdate}</td>
                                                 <td>
                                                     {
                                                         (item.type == "HOLD" && item.active == "1" ? <Button variant="success" onClick={() => postConfirmChat(item.ecrno, item.type, item.section, item.tosection, item.code)}>Confirm</Button> : "")

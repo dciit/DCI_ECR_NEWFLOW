@@ -8,6 +8,7 @@ import getREPORT from '../../service/getReport.js'
 import { useParams } from 'react-router-dom';
 import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
 import { PDFViewer } from '@react-pdf/renderer';
+import { Label } from 'semantic-ui-react';
 // const styles = StyleSheet.create({
 //     page: {
 //         flexDirection: 'row',
@@ -92,9 +93,9 @@ function PrintComponent() {
                         <br></br><br></br>
                         <div class="row">
                             <div class="col-md-4"><p style={{ marginTop: '-1pc', fontSize: '10px' }}>Safety First (Zero Accident) 5S (Seiri,Seiton,Seiso,Seiketsu,Shitsuke)</p></div>
-                            <div class="col-md-6"><p style={{ fontSize: '18px' }}>ENGINEERING CHANGE REQUEST (1/2)</p></div>
-                            <div class="col-md-2"><p style={{ fontSize: '13px' }}>ECR NO. <ins>{dataModaldt[0]?.ecR_NO}</ins></p></div>
-                            <p id="title" className='title' style={{ fontSize: '16px' }}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TITLE : <ins>{dataModaldt[0]?.title}</ins></p>
+                            <div class="col-md-6"><p style={{ fontSize: '17px' }}>ENGINEERING CHANGE REQUEST (1/2)</p></div>
+                            <div class="col-md-2"><p style={{ fontSize: '12px' }}>ECR NO. <ins>{dataModaldt[0]?.ecR_NO}</ins></p></div>
+                            <p id="title" className='title' style={{ fontSize: '15px', marginTop: '-15px' }}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TITLE : <ins>{dataModaldt[0]?.title}</ins></p>
                         </div>
                         <p className='title'>1. CHANGE OUTLINE</p>
 
@@ -220,9 +221,12 @@ function PrintComponent() {
                         <div class="row" style={{ marginTop: '10px' }}>
                             <div class="col-md-10" style={{ fontSize: '14px' }}>
                                 <div style={{ width: '100%', padding: '10px', border: '1px solid black', margin: '0' }}>
-                                    <p style={{ marginTop: '-7px' }}>วัตถุประสงค์, วิธีการ, ข้อมูลการส่งมอบ  (Purpose, Method & Delivery Schedule) :</p>
+                                    <label style={{ marginTop: '-7px', fontWeight: '400' }}>วัตถุประสงค์, วิธีการ, ข้อมูลการส่งมอบ  (Purpose, Method & Delivery Schedule) :</label><br></br>
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ins>{dataModaldt[0]?.method_Remark}</ins>
-                                    <br></br><br></br><br></br>
+                                    <label style={{ fontWeight: '400' }}><ins>Purpose / Project</ins> : <span>{dataModaldt[0]?.purpose}</span></label><br></br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style={{ fontWeight: '400' }}><ins>Drawing No old</ins> : <span>{dataModaldt[0]?.method_Old}</span></label><br></br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style={{ fontWeight: '400' }}><ins>Drawing No new</ins> : <span>{dataModaldt[0]?.method_New}</span></label><br></br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style={{ fontWeight: '400' }}><ins>Detail / Change Point</ins> : <span>{dataModaldt[0]?.detail}</span></label><br></br>
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Due Date(Target) : <ins>{dataModaldt[0]?.dueDate_Target}</ins>
                                 </div>
                             </div>

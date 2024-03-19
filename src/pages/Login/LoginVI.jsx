@@ -30,8 +30,22 @@ function LoginVI() {
                     jsCookie.set("code", res.data[0].EmpCode, { expires: 7 })
                     jsCookie.set("name", res.data[0].ShortName, { expires: 7 })
                     jsCookie.set("section", res.data[0].DEPT_Short, { expires: 7 })
-                    navigate("/ECR/createform");
-                    location.reload();
+
+                    getDataSrvPermiss.getPermission(username).then((res) => {
+                        try {
+                            // ----- SET REDUX ----- //
+                            dispatch({ type: 'SET_PERMISSION', payload: res.data })
+                            // ----- SET REDUX ----- //
+
+                            setData(res.data);
+                            navigate("/ECR/createform");
+                            location.reload();
+                        }
+                        catch (error) {
+                            console.log(error); // You might send an exception to your error tracker like AppSignal
+                            return error;
+                        }
+                    });
                 }
                 else {
                     setfailLogin(true) // ถ้า Login ผิด ให้เป็น true

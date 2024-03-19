@@ -83,7 +83,6 @@ function Createform() {
         getDataSrvHD.getECRListLoad(selectSection, selectStatus).then((res) => {
             try {
                 setGetdata(res.data)
-                console.log(res.data)
             }
             catch (error) {
                 console.log(error);
@@ -176,7 +175,6 @@ function Createform() {
         getDataSrvHD.postECRList({ section: selectSection, ecrno: ECRNo, title: Title, model: Model, partName: PartName, drawingNo: DrawingNo, brno: BRNo, status: selectStatus, strclass: strClass }).then((res) => {
             try {
                 setGetdata(res.data)
-                //console.log(res.data)
             }
             catch (error) {
                 console.log(error);
@@ -370,7 +368,7 @@ function Createform() {
                         <tr>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>TARGET</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>STATUS</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>TO SECTION</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>RESPONSE SECTION</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>CHECK DETAIL</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DCS NO</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DRAWING</th>
@@ -466,7 +464,7 @@ function Createform() {
                                         let namePending = item[`${items}${iApp}namepending`];
                                         let holdDay = item[`${items}${iApp}HoldDate`];
 
-                                        //console.log(status)
+
                                         if (pendingDay > 0) {
                                             pendingDay = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
                                         }

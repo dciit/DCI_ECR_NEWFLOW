@@ -22,7 +22,6 @@
     }
 
 
-
     .styleForDD {
         margin-top: -6pc;
     }
@@ -37,6 +36,7 @@
     #SignDIL2,
     #SignQA {
         position: relative;
+        width: 21.5pc;
     }
 
     #SignRequest::after {
@@ -44,6 +44,7 @@
         position: absolute;
         bottom: -350px;
         left: 75px;
+        width: 21.5pc;
     }
 
     #SignPU::after,
@@ -54,6 +55,7 @@
         position: absolute;
         bottom: -36px;
         left: 75px;
+        width: 21.5pc;
     }
 
     #SignDD::after,
@@ -63,6 +65,7 @@
         position: absolute;
         bottom: -60px;
         left: 75px;
+        width: 21.5pc;
     }
 
 
@@ -71,6 +74,7 @@
         position: absolute;
         bottom: -60px;
         left: 75px;
+        width: 21.5pc;
     }
 }
 

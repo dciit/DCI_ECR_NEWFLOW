@@ -12,6 +12,7 @@ const initialState = {
     objectselected: null,
     permission: [],
     permissionActive: [],
+    ver: '0'
 }
 
 const IndexReducer = (state = initialState, action) => {
@@ -25,6 +26,11 @@ const IndexReducer = (state = initialState, action) => {
             return {
                 ...state,
                 permissionActive: action.payload
+            }
+        case 'RESET':
+            initialState.ver = action.payload;
+            return {
+                ...initialState
             }
         // case 'LOGIN':
         //     return {
