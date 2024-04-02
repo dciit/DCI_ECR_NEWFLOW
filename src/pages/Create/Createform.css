@@ -123,8 +123,6 @@ table.tableCreateform {
     width: 50px;
 }
 
-
-
 .content {
     color: white;
     background-color: red;
@@ -219,4 +217,17 @@ table.tableCreateform {
     to {
         transform: scale(1.2);
     }
+}
+
+
+.tscroll {
+    overflow-x: scroll;
+    margin-bottom: 10px;
+}
+
+.tscroll table tr:nth-child(2) th:first-child,
+.tscroll table td:first-child {
+    position: sticky;
+    left: 0;
+    background-color: #ddd;
 }

@@ -136,7 +136,7 @@ function FormCreate(props) {
     const [openAttrFile, setOpenAttrFile] = useState(false);
     const [showDueDate, setShowDueDate] = useState(false)
     const [ecrnoSelected, setEcrnoSelected] = useState('');
-    const [title, setTitle] = useState('');
+    const [title, setTitle] = useState('Title');
     const [ddlSection, setddlSection] = React.useState('Design');
     const [isVisible, setIsVisible] = useState(false);
     const [cbPU, setcbPU] = useState([]);
@@ -282,10 +282,9 @@ function FormCreate(props) {
         var modelot = modelOther != "" ? modelOther : "-";
         var lineOt = lineOther != "" ? lineOther : "-";
 
-        // if (title != "" && cbitem != "" && selectItem(cbMODEL) != "" && selectItem(cbLINE) != "" && partNo != "" && partName != "" && remark != "" && purpose != "" && methodOld != "" && methodNew != "" && detail != "" && requestPU != "" && (filesDrawing.length | 0) > 0 && (filesBR.length | 0) > 0) {
+
         if (title != "" && cbitem != "" && selectItem(cbMODEL) != "" && selectItem(cbLINE) != "" && partNo != "" && partName != "" && remark != "" && purpose != "" && methodOld != "" && methodNew != "" && detail != "" && requestPU != "") {
             setbtnAddFile(true);
-            // console.log(filesDrawing, filesBR)
             getDataSrv.postInputData({
                 Ecrno: nbr[0]?.runningNumber, TitleNane: title, Section: grpSection, Item: cbitem, ItemOther: itOther, Notificaion: noti, DRNo: drno, Model: selectItem(cbMODEL), ModelOther: modelot, Line: selectItem(cbLINE), LineOther: lineOt, EmpCode: empCode, PartNo: partNo, PartName: partName, Remark: remark, DueDate: duedate, Method: methodRemark, SecForDD: secForDD, purpose: purpose, methodOld: methodOld, methodNew: methodNew, detail: detail, requestPU: requestPU, strclass: strclass
             }).then((res) => {
@@ -328,7 +327,7 @@ function FormCreate(props) {
                 icon: "error",
                 title: "กรุณาเลือกผู้ Check เอกสาร ECR ใน Section ของคุณ",
                 showConfirmButton: false,
-                timer: 3500
+                timer: 2000
             });
         }
     };
@@ -444,7 +443,7 @@ function FormCreate(props) {
                     aria-labelledby="scroll-dialog-title"
                     aria-describedby="scroll-dialog-description"
                 >
-                    {/* <IconButton aria-label="close" onClick={() => close(false)}
+                    <IconButton aria-label="close" onClick={() => close(false)}
                         sx={{
                             position: 'absolute',
                             right: 8,
@@ -453,7 +452,7 @@ function FormCreate(props) {
                         }}
                     >
                         <CloseIcon />
-                    </IconButton> */}
+                    </IconButton>
                     <DialogContent dividers>
                         <Container>
                             <div class="row">

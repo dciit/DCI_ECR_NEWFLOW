@@ -42,6 +42,7 @@ function Createform() {
     const permission = useSelector((state) => state.reducer.permission);
     const permissionActive = useSelector((state) => state.reducer.permissionActive);
     const [selectStatus, setselectStatus] = useState("0");
+    const [selectDuedate, setSelectDuedate] = useState("2");
     const [strClass, setStrClass] = useState('ALL');
     const [ECRNo, setECRNO] = useState('');
     const [Title, setTitle] = useState('');
@@ -51,8 +52,7 @@ function Createform() {
     const [BRNo, setBRNO] = useState('');
 
 
-
-
+    console.log(section)
 
     const PrintECR = (ecrno) => {
         // navigate(`/ECR/PrintPage/${ecrno}`,
@@ -159,6 +159,10 @@ function Createform() {
         setselectStatus(event.target.value);
     };
 
+    const handleChangeDuedate = (event) => {
+        setSelectDuedate(event.target.value);
+    };
+
 
     const handleChangeClass = (event) => {
         setStrClass(event.target.value);
@@ -172,7 +176,7 @@ function Createform() {
     // ส่ง DocNo กับ Status ไป API
     const [DocNo, setDocNo] = useState(('%'));
     const getSearch = (event) => {
-        getDataSrvHD.postECRList({ section: selectSection, ecrno: ECRNo, title: Title, model: Model, partName: PartName, drawingNo: DrawingNo, brno: BRNo, status: selectStatus, strclass: strClass }).then((res) => {
+        getDataSrvHD.postECRList({ section: selectSection, ecrno: ECRNo, title: Title, model: Model, partName: PartName, drawingNo: DrawingNo, brno: BRNo, status: selectStatus, strclass: strClass, statusDuedate: selectDuedate }).then((res) => {
             try {
                 setGetdata(res.data)
             }
@@ -244,6 +248,25 @@ function Createform() {
                                     onChange={handleChangeStatus}>
                                     <MenuItem value='0'>On Process</MenuItem>
                                     <MenuItem value='1'>Finish</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </div>
+
+                        <div class="col-md-auto">
+                            <label for="colFormLabelSm" >DueDate :</label>
+                        </div>
+                        <div class="col-md-auto">
+                            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                                <InputLabel id="demo-select-small-label">DueDate</InputLabel>
+                                <Select
+                                    labelId="demo-select-small-label"
+                                    id="demo-select-small"
+                                    value={selectDuedate}
+                                    label="DueDate"
+                                    onChange={handleChangeDuedate}>
+                                    <MenuItem value='0'>OVER</MenuItem>
+                                    <MenuItem value='1'>REMAIN</MenuItem>
+                                    <MenuItem value='2'>ALL</MenuItem>
                                 </Select>
                             </FormControl>
                         </div>
@@ -358,12 +381,14 @@ function Createform() {
                 </div>
             </div>
             <br></br>
-            <div style={{ overflowX: 'auto' }}>
+
+
+            <div class="tscroll">
                 <table className='tableCreateform'>
                     <thead>
                         <tr>
-                            <th colSpan={12} style={{ fontSize: '25px' }}>Detail</th>
-                            <th colSpan={36} style={{ fontSize: '25px' }}>Actual Process</th>
+                            <th colSpan={13} style={{ fontSize: '25px' }}>Detail</th>
+                            <th colSpan={37} style={{ fontSize: '25px' }}>Actual Process</th>
                         </tr>
                         <tr>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>TARGET</th>
@@ -576,7 +601,6 @@ function Createform() {
 
 
                                 let targetDate = item.targetDate;
-                                let AlertDuedate = item.targetDate;
 
                                 let colorTargetDate = 'ghostwhite'
                                 if (targetDate >= 0 && targetDate <= 14) {
@@ -590,15 +614,17 @@ function Createform() {
                                 }
 
 
+                                let AlertDuedate = item.targetDate;
                                 let datealertDuedate = "";
+                                console.log(AlertDuedate)
                                 if (AlertDuedate >= 1) {
-                                    datealertDuedate = `OVER` + " " + AlertDuedate + " วัน";
+                                    datealertDuedate = <p className='pulse' style={{ color: 'red', fontWeight: '500', fontSize: '16px' }}>OVER {AlertDuedate} วัน</p>;
                                 }
                                 else if (AlertDuedate == 0) {
-                                    datealertDuedate = `DUEDATE` + " " + AlertDuedate + " วัน";
+                                    datealertDuedate = <p style={{ color: 'yellow' }}>DUEDATE {AlertDuedate} วัน</p>;
                                 }
                                 else if (AlertDuedate < -0) {
-                                    datealertDuedate = `REMAIN` + " " + AlertDuedate + " วัน";
+                                    datealertDuedate = <p>REMAIN {AlertDuedate * -1} วัน</p>;
                                 }
 
 
@@ -616,7 +642,7 @@ function Createform() {
 
                                 return <tr style={{ backgroundColor: (item.counthold > 0 ? 'yellow' : '') }}>
                                     {/* <td style={{ fontSize: '16px', padding: '8px', backgroundColor: (targetDate ? colorTargetDate : 'red') }}><nobr>{item.dueDate}<br></br><p style={{ fontSize: '14px', color: 'rgb(94 66 201)', marginBottom: '1px' }}>{datealertDuedate}</p></nobr></td> */}
-                                    <td style={{ fontSize: '16px', padding: '8px' }}><nobr>{item.dueDate}<br></br><p style={{ fontSize: '14px', color: 'rgb(94 66 201)', marginBottom: '1px' }}>{datealertDuedate}</p></nobr></td>
+                                    <td className='headcol' style={{ fontSize: '16px', padding: '8px' }}><nobr>{item.dueDate}<br></br><p style={{ fontSize: '14px', color: 'rgb(94 66 201)', marginBottom: '1px' }}>{datealertDuedate}</p></nobr></td>
                                     <td>
                                         <p style={{ padding: '8px', marginBottom: '-1px' }}>{(status != '' ? status : 'FINISH')}</p>
                                         <p className='pulse' style={{ color: '#f1720de6' }}>{(item.counthold > 0 ? 'HOLD' : '')}</p>
