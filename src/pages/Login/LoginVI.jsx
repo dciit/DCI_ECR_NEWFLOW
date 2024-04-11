@@ -63,7 +63,6 @@ function LoginVI() {
         //             jsCookie.set("code", res.data[0].code, { expires: 7 })
         //             jsCookie.set("name", res.data[0].fullName, { expires: 7 })
 
-
         //             getDataSrvPermiss.getPermission(username).then((res) => {
         //                 try {
         //                     // ----- SET REDUX ----- //
@@ -115,8 +114,6 @@ function LoginVI() {
                         <div className="d-flex flex-row align-items-center justify-content-center">
                             <p>Engineering Change Request (ECR)</p>
                         </div>
-
-
 
 
                         <div className="divider d-flex align-items-center my-4">

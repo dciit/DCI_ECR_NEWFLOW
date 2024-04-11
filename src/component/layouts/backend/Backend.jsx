@@ -4,7 +4,6 @@ import Sidebars from '../../sheard/sidebar/Sidebars'
 import Footer from '../../sheard/Footer/Footers'
 import { Outlet } from 'react-router-dom'
 import './Backend.css'
-import Login from '../../../pages/Login/Login'
 import jsCookie from 'js-cookie';
 import LoginLayout from '../login/LoginLayout'
 

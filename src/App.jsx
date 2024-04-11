@@ -6,7 +6,6 @@ import Backend from './component/layouts/backend/Backend';
 // import { Outlet, Route } from 'react-router-dom';
 import Routess from './routes';
 import { BrowserRouter as Router } from "react-router-dom";
-import Login from './pages/Login/Login';
 let logintrue = false
 logintrue = localStorage.getItem('logintrue', false)
 

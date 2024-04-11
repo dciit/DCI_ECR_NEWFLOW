@@ -645,7 +645,7 @@ function FormDetail(props) {
 
     //**************************** FUNCTION ISSUED************ */
     const getIssued = (ecrno, shortSec = '') => {
-        if (tableNotify[0][`${shortSec}_checkedCode`] != null && shortSec != '') {
+        if (tableNotify[0][`${shortSec}_checkedCode`] != 'U' && shortSec != '') {
 
             data[0] = { ...data[0], group: section }
             data[0] = { ...data[0], empcode: empCode }
@@ -689,7 +689,7 @@ function FormDetail(props) {
 
     //**************************** FUNCTION CHECK************ */
     const getCheck = (ecrno, ecrCreateBySection, ecrCreateStatus, shortSec = '') => {
-        if (tableNotify[0][`${shortSec}_approvedCode`] != null && shortSec != '') {
+        if (tableNotify[0][`${shortSec}_approvedCode`] != 'U' && shortSec != '') {
 
             let createBySection = (ecrCreateBySection == 'Design') ? 'DD' : 'PU';
             let _section = (createBySection == section) ? (ecrCreateStatus == 'U' || ecrCreateStatus == 'R') ? 'CREATE' : section : section;
