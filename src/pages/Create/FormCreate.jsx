@@ -108,6 +108,7 @@ function FormCreate(props) {
     }, [show]);
 
 
+
     //********************* Collapsible ************************ */
     const [expanded, setExpanded] = React.useState('panel1');
     const handleChangeCollapse = (panel) => (event, newExpanded) => {
@@ -285,6 +286,7 @@ function FormCreate(props) {
 
         if (title != "" && cbitem != "" && selectItem(cbMODEL) != "" && selectItem(cbLINE) != "" && partNo != "" && partName != "" && remark != "" && purpose != "" && methodOld != "" && methodNew != "" && detail != "" && requestPU != "") {
             setbtnAddFile(true);
+            console.log(strclass, duedate)
             getDataSrv.postInputData({
                 Ecrno: nbr[0]?.runningNumber, TitleNane: title, Section: grpSection, Item: cbitem, ItemOther: itOther, Notificaion: noti, DRNo: drno, Model: selectItem(cbMODEL), ModelOther: modelot, Line: selectItem(cbLINE), LineOther: lineOt, EmpCode: empCode, PartNo: partNo, PartName: partName, Remark: remark, DueDate: duedate, Method: methodRemark, SecForDD: secForDD, purpose: purpose, methodOld: methodOld, methodNew: methodNew, detail: detail, requestPU: requestPU, strclass: strclass
             }).then((res) => {
@@ -410,7 +412,6 @@ function FormCreate(props) {
 
     const handleChangeClass = (event) => {
         setClass(event.target.value);
-        console.log(event.target.value)
         if (event.target.value == "CLASS C") {
             setShowDueDate(true)
         }
@@ -750,18 +751,22 @@ function FormCreate(props) {
                                         </Col>
 
                                         <Col xs={12} md={3}>
-                                            <Form.Label>Due Date (Target) : </Form.Label> <br></br>
-                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                <DatePicker
-                                                    value={dayjs(duedate)}
-                                                    slotProps={{
-                                                        textField: {
-                                                            format: 'YYYY-MM-DD',
-                                                        },
-                                                    }}
-                                                    onChange={(newValue) => setduedate(dayjs(newValue).format('YYYY-MM-DD'))}
-                                                />
-                                            </LocalizationProvider>
+                                            {
+                                                strclass == "CLASS D" ? "" : <>
+                                                    <Form.Label>Due Date (Target) : </Form.Label> <br></br>
+                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                        <DatePicker
+                                                            value={dayjs(duedate)}
+                                                            slotProps={{
+                                                                textField: {
+                                                                    format: 'YYYY-MM-DD',
+                                                                },
+                                                            }}
+                                                            onChange={(newValue) => setduedate(dayjs(newValue).format('YYYY-MM-DD'))}
+                                                        />
+                                                    </LocalizationProvider>
+                                                </>
+                                            }
                                         </Col>
                                     </Row>
 
@@ -791,26 +796,6 @@ function FormCreate(props) {
                                         </Col>
                                         <Col xs={12} md={6}> </Col>
                                     </Row>
-
-
-
-                                    {/* <Row className='styleRowText'>
-                                        <Col xs={12} md={6}>
-                                            <Form.Label>ADD FILE DRAWING  : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
-                                            <input type="file" name="file" accept='application/pdf' onChange={addFilesDrawing} />
-                                            {
-                                                filesDrawing.length | 0
-                                            }
-                                        </Col>
-                                        <Col xs={12} md={6}>
-                                            <Form.Label>ADD FILE BR : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
-                                            <input type="file" name="file" accept='application/pdf' onChange={addFilesBR} />
-                                            {
-                                                filesBR.length | 0
-                                            }
-                                        </Col>
-                                    </Row> */}
-
 
 
                                     <br></br>
@@ -940,7 +925,6 @@ function FormCreate(props) {
 
             <ModelAttachFile
                 show={openAttrFile}
-                // onHide={setOpenAttrFile}
                 close={setOpenAttrFile}
                 item={ecrnoSelected}
                 section={section}

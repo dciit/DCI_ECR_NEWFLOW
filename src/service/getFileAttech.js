@@ -15,7 +15,6 @@ const postFile = (param) => {
 }
 
 const postPathFile = (param) => {
-    console.log(param)
     return http.SaveFile.post(`postPathFile`, param);
 }
 

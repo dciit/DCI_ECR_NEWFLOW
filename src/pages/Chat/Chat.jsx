@@ -69,7 +69,6 @@ function Chat(props) {
         getChat.getChat(item.ecrno).then((res) => {
             try {
                 setShowChat(res.data);
-                console.log(res.data)
             }
             catch (error) {
                 console.log(error);

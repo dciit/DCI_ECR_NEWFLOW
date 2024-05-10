@@ -52,7 +52,6 @@ function Createform() {
     const [BRNo, setBRNO] = useState('');
 
 
-    console.log(section)
 
     const PrintECR = (ecrno) => {
         // navigate(`/ECR/PrintPage/${ecrno}`,
@@ -616,7 +615,6 @@ function Createform() {
 
                                 let AlertDuedate = item.targetDate;
                                 let datealertDuedate = "";
-                                console.log(AlertDuedate)
                                 if (AlertDuedate >= 1) {
                                     datealertDuedate = <p className='pulse' style={{ color: 'red', fontWeight: '500', fontSize: '16px' }}>OVER {AlertDuedate} วัน</p>;
                                 }

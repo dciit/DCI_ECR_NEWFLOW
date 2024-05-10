@@ -589,7 +589,7 @@ function FormDetail(props) {
 
     //**************************** FUNCTION RECEIVE************ */
     const getReceive = (ecrno, shortSec = '') => { // shortSec = pu,dd,en ...
-        if (tableNotify[0][`${shortSec}_issuedCode`] != 'U' && shortSec != '') {
+        if (tableNotify[0][`${shortSec}_issuedCode`] != null && shortSec != '') {
 
             let sectionReceive = "";
             if (section == 'PU') {
@@ -645,7 +645,7 @@ function FormDetail(props) {
 
     //**************************** FUNCTION ISSUED************ */
     const getIssued = (ecrno, shortSec = '') => {
-        if (tableNotify[0][`${shortSec}_checkedCode`] != 'U' && shortSec != '') {
+        if (tableNotify[0][`${shortSec}_checkedCode`] != null && shortSec != '') {
 
             data[0] = { ...data[0], group: section }
             data[0] = { ...data[0], empcode: empCode }
@@ -658,6 +658,7 @@ function FormDetail(props) {
 
             }
 
+            console.log(dataModaldt[0])
             getDataSrvDT.postIssued(dataModaldt[0]).then((res) => {
                 try {
                     refresh();
@@ -689,7 +690,7 @@ function FormDetail(props) {
 
     //**************************** FUNCTION CHECK************ */
     const getCheck = (ecrno, ecrCreateBySection, ecrCreateStatus, shortSec = '') => {
-        if (tableNotify[0][`${shortSec}_approvedCode`] != 'U' && shortSec != '') {
+        if (tableNotify[0][`${shortSec}_approvedCode`] != null && shortSec != '') {
 
             let createBySection = (ecrCreateBySection == 'Design') ? 'DD' : 'PU';
             let _section = (createBySection == section) ? (ecrCreateStatus == 'U' || ecrCreateStatus == 'R') ? 'CREATE' : section : section;
@@ -874,7 +875,6 @@ function FormDetail(props) {
                     getDataSrvPermiss.getNotifyTo(ecR_NO).then((res) => {
                         try {
                             setTableNotify(res.data);
-                            console.log(res.data)
                             Swal.fire({
                                 icon: "success",
                                 title: "เพิ่มผู้ดำเนินการเรียบร้อย",
@@ -997,6 +997,10 @@ function FormDetail(props) {
                             </div>
                         </div>
                         <hr></hr>
+
+                        {/* {
+                            JSON.stringify(dataModaldt)
+                        } */}
 
                         <Row className='styleChangeItem'>
                             <div class="col-sm-7" style={{ display: 'flex' }}>
@@ -1451,6 +1455,7 @@ function FormDetail(props) {
                                 <Typography>ส่วนที่ 2 PU</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
+                                <h6>2). QUALITY CHECK CONTENT (DCI) and Other</h6>
                                 <Typography>
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={3}></Col>
@@ -1461,36 +1466,41 @@ function FormDetail(props) {
                                         <Col xs={12} md={3}></Col>
                                     </Row>
 
-                                    <br></br><br></br>
-                                    <h6>2). QUALITY CHECK CONTENT (DCI) and Other</h6>
+                                    <br></br>
                                     <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
-                                            <Form.Label>2.1 &nbsp;&nbsp; PU Section : Effect Part stock control & Supplier (เฉพาะในกรณี 2 เท่านั้น)</Form.Label>
+                                        <Col xs={12} md={8}>
+                                            <Form.Label>2.1 &nbsp;&nbsp; <span style={{ color: 'red', fontSize: '18px' }}>*</span>PU Section : Effect Part stock control & Supplier (เฉพาะในกรณี 2 เท่านั้น)</Form.Label>
                                             <Form.Control as="textarea" style={{ backgroundColor: (position == "ISSUED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} disabled={(position == "ISSUED" ? false : true)} rows={10} value={dataModaldt[0]?.pU_Remark}
                                                 onChange={(e) => {
                                                     dataModaldt[0].pU_Remark = e.target.value;
                                                     setRemarkPU([...dataModaldt]);
                                                 }} />
                                         </Col>
-                                        {/* <Col xs={12} md={4}>
-                                            <Form.Label>Due Date (Target) : </Form.Label> <br></br>
-                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                <DatePicker
-                                                    value={dayjs(dataModaldt[0]?.duedate == "" ? moment() : moment(dataModaldt[0]?.duedate).format('YYYY-MM-DD'))}
-                                                    slotProps={{
-                                                        textField: {
-                                                            format: 'YYYY-MM-DD',
-                                                        },
-                                                    }}
-                                                    onChange={(val) => {
-                                                        dataModaldt[0].duedate = val.format('YYYY-MM-DD');
-                                                        setDataModaldt([...dataModaldt])
-                                                    }}
+                                        <Col xs={12} md={4}>
+                                            {
+                                                dataModaldt[0]?.strclass == "CLASS D" ? <>
+                                                    <Form.Label><span style={{ color: 'red', fontSize: '18px' }}>*</span>Due Date (Target) :</Form.Label> <br></br>
+                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                        <DatePicker
+                                                            value={dayjs(dataModaldt[0]?.duedate == "" ? moment() : moment(dataModaldt[0]?.duedate).format('YYYY-MM-DD'))}
+                                                            slotProps={{
+                                                                textField: {
+                                                                    format: 'YYYY-MM-DD',
+                                                                },
+                                                            }}
+                                                            onChange={(val) => {
+                                                                dataModaldt[0].duedate = val.format('YYYY-MM-DD');
+                                                                setDataModaldt([...dataModaldt])
+                                                            }}
 
-                                                    disabled={position == "ISSUED" ? false : true}
-                                                />
-                                            </LocalizationProvider>
-                                        </Col> */}
+                                                            disabled={position == "ISSUED" ? false : true}
+                                                        />
+                                                    </LocalizationProvider>
+                                                </>
+                                                    :
+                                                    ""
+                                            }
+                                        </Col>
                                     </Row>
 
                                     <hr></hr>
@@ -1552,7 +1562,7 @@ function FormDetail(props) {
                                         <Col xs={12} md={2}>
                                             {
                                                 permission.filter((item) => {
-                                                    return permission[0]?.grpRoleSect == "PU" && dataModaldt[0]?.pU_CheckBit != "F"
+                                                    return permission[0]?.grpRoleSect == "PU" && dataModaldt[0]?.pU_ApprovedBit != "F" && permission[0]?.grpRole != 'APPROVED'
                                                 }).length ? <>
                                                     <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "PU")}>
                                                         + เพิ่มผู้ดำเนินการ
@@ -1574,8 +1584,13 @@ function FormDetail(props) {
                                                 <td style={{ border: '1px solid black', color: tableNotify[0]?.pu_approvedBit == "F" ? 'black' : 'gainsboro' }}>
                                                     <center>{tableNotify[0]?.pu_approved}<br></br> {tableNotify[0]?.pu_approvedBit == 'F' ? tableNotify[0]?.pu_approvedDate : ''}</center>
                                                     {
-                                                        tableNotify[0]?.pu_approved != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'CHECK') && dataModaldt[0]?.pU_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_approvedCode, tableNotify[0]?.pu_approved_step)}>
+                                                        // tableNotify[0]?.pu_approved != null ?
+                                                        //     (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED' || permission[0]?.grpRole == 'CHECK') && dataModaldt[0]?.pU_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_approvedCode, tableNotify[0]?.pu_approved_step)}>
+                                                        //         ลบ
+                                                        //     </Button>
+                                                        //     : ''
+                                                        tableNotify[0]?.pu_approvedBit != 'F' && tableNotify[0]?.pu_approved != null && permission[0]?.grpRole != 'APPROVED' ?
+                                                            <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_approvedCode, tableNotify[0]?.pu_approved_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1584,8 +1599,14 @@ function FormDetail(props) {
                                                 <td style={{ border: '1px solid black', color: tableNotify[0]?.pu_checkedBit == "F" ? 'black' : 'gainsboro' }}>
                                                     <center>{tableNotify[0]?.pu_checked}<br></br>{tableNotify[0]?.pu_checkedBit == 'F' ? tableNotify[0]?.pu_checkedDate : ''}</center>
                                                     {
-                                                        tableNotify[0]?.pu_checked != null ?
-                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_checkedCode, tableNotify[0]?.pu_checked_step)}>
+                                                        // tableNotify[0]?.pu_approvedBit != 'F' ?
+                                                        //     (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_checkedCode, tableNotify[0]?.pu_checked_step)}>
+                                                        //         ลบ
+                                                        //     </Button>
+                                                        //     : ''
+
+                                                        tableNotify[0]?.pu_checkedBit != 'F' && tableNotify[0]?.pu_checked != null ?
+                                                            <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_checkedCode, tableNotify[0]?.pu_checked_step)}>
                                                                 ลบ
                                                             </Button>
                                                             : ''
@@ -1651,25 +1672,6 @@ function FormDetail(props) {
                                                     setDD_Remark2([...dataModaldt]);
                                                 }} />
                                         </Col>
-                                        {/* <Col xs={12} md={4}>
-                                            <Form.Label>Due Date (Target) : </Form.Label> <br></br>
-                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                <DatePicker
-                                                    value={dayjs(dataModaldt[0]?.duedate == "" ? moment() : moment(dataModaldt[0]?.duedate).format('YYYY-MM-DD'))}
-                                                    slotProps={{
-                                                        textField: {
-                                                            format: 'YYYY-MM-DD',
-                                                        },
-                                                    }}
-                                                    onChange={(val) => {
-                                                        dataModaldt[0].duedate = val.format('YYYY-MM-DD');
-                                                        setDataModaldt([...dataModaldt])
-                                                    }}
-
-                                                    disabled={position == "ISSUED" ? false : true}
-                                                />
-                                            </LocalizationProvider>
-                                        </Col> */}
                                     </Row>
 
                                     <hr></hr>
@@ -2797,7 +2799,7 @@ function FormDetail(props) {
                                 permission.filter((item) => {
                                     return (item.menuCode == "BTN0012" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_IssuedCode)
                                 }).length ? (
-                                    (dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F")
+                                    (dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F" && dataModaldt[0]?.pU_IssuedBit != "F")
                                 )
                                 && <>
                                     <Button autoFocus variant="success" onClick={() => getIssued(dataModaldt[0].ecR_NO, 'pu')}>
