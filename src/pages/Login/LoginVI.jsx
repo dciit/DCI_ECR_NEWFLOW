@@ -104,11 +104,11 @@ function LoginVI() {
                 <div class="absolute-input">
                     <form onSubmit={login}>
                         <div className="d-flex flex-row align-items-center justify-content-center">
-                            <img src={DAIKIN_logo} style={{ height: '85px' }} />
+                            <img src={DAIKIN_logo} style={{ height: '65px' }} />
                         </div>
 
                         <div className="d-flex flex-row align-items-center justify-content-center">
-                            <p className='Title' style={{ fontSize: '50px' }}>ECR Online </p>
+                            <p className='Title' style={{ fontSize: '35px' }}>ECR Online </p>
                         </div>
 
                         <div className="d-flex flex-row align-items-center justify-content-center">
@@ -123,7 +123,7 @@ function LoginVI() {
                         <MDBInput wrapperClass='mb-2' id='username' type='text' size="lg"
                             value={username}
                             autoComplete="username"
-                            className="form-control mt-1"
+                            // className="form-control mt-1"
                             onChange={(event) => setUsername(event.target.value)}
                             required />
 
@@ -132,7 +132,7 @@ function LoginVI() {
                         <MDBInput wrapperClass='mb-2' id='password' type='password' size="lg"
                             value={password}
                             autoComplete="password"
-                            className="form-control mt-1"
+                            // className="form-control mt-1"
                             onChange={(event) => setPassword(event.target.value)}
                             required />
 

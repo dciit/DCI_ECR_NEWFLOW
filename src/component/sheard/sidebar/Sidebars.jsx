@@ -64,6 +64,14 @@ function Sidebars() {
                                 </> : ""
                             }
 
+
+
+                            <li >
+                                <a className='nav-link pk-2' href='/ECR/Contact' id='colorText' onClick={() => handleActive(item)} style={{ backgroundColor: '#676768' }}>
+                                    <i class="bi bi-telephone"></i><span className='styleicon'>Contact</span>
+                                </a>
+                            </li>
+
                             <li>
                                 <label className='nav-link pk-2 ' style={{ backgroundColor: "#343a40", fontSize: '16px' }}>
                                     <i style={{ color: 'lightyellow' }} className='bi-stack' /><span className='styleicon'><label style={{ color: 'white' }}>Menu</label></span>

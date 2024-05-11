@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { BrowserRouter } from "react-router-dom";
 import LoginLayout from "./component/layouts/login/LoginLayout";
-import Home from "./pages/Home/Home";
+import Contact from "./pages/Home/Contact";
 import Backend from "./component/layouts/backend/Backend";
 import Createform from "./pages/Create/Createform";
 import Print from "./pages/Print/Print";
@@ -42,7 +42,7 @@ const Routess = () => {
                 <Route path={BASE_PATH + '/LoginVI'} element={<LoginVI />} />
                 <Route element={<Backend />}>
                     <Route path={BASE_PATH + '/createform'} element={<Createform />} />
-                    <Route path={BASE_PATH + '/home'} element={<Home />} />
+                    <Route path={BASE_PATH + '/Contact'} element={<Contact />} />
                     <Route path={BASE_PATH + '/AddPermissions'} element={<AddPermissions />} />
                     <Route path={BASE_PATH + '/PrintPage/:ecrno'} element={<PrintComponent />} />
                     <Route path={BASE_PATH + '/Chat/:ecrno'} element={<Chat />} />
