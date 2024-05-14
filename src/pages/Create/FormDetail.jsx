@@ -163,6 +163,8 @@ function FormDetail(props) {
     const [employeeArrayQC, setEmployeeArrayQC] = useState([]);
     const [employee, setemployee] = useState('');
     const [step, setStep] = useState('ISSUED');
+    // const [step2, setStep2] = useState('CHECK');
+    // const [step3, setStep3] = useState('APPROVED');
     const [showDtSec, setshowDtSec] = useState(false);
     const [tableNotify, setTableNotify] = useState([]);
     const [notify, setNotify] = useState('PU');
@@ -845,8 +847,11 @@ function FormDetail(props) {
 
 
     const stepArray = ['ISSUED', 'CHECK', 'APPROVED'];
-
     const stepArrayCre = ['CHECK', 'APPROVED'];
+
+    const stepArray1 = ['ISSUED'];
+    const stepArray2 = ['CHECK'];
+    const stepArray3 = ['APPROVED'];
 
     const handleChangeEmployee = (event) => {
         setemployee(event.target.value);
@@ -999,9 +1004,13 @@ function FormDetail(props) {
                         </div>
                         <hr></hr>
 
-                        {
+                        {/* {
+                            JSON.stringify(tableNotify)
+                        } */}
+
+                        {/* {
                             JSON.stringify(dataModaldt)
-                        }
+                        } */}
 
                         <Row className='styleChangeItem'>
                             <div class="col-sm-7" style={{ display: 'flex' }}>
@@ -1289,23 +1298,25 @@ function FormDetail(props) {
                                                 }} />
                                         </Col>
                                         <Col xs={12} md={6}>
-                                            <Form.Label>Due Date (Target) : &nbsp;&nbsp;</Form.Label>
-                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                <DatePicker
-                                                    // 2023-10-31
-                                                    value={dayjs(dataModaldt[0]?.duedate)}
-                                                    slotProps={{
-                                                        textField: {
-                                                            format: 'YYYY-MM-DD',
-                                                        },
-                                                    }}
-                                                    onChange={(val) => {
-                                                        dataModaldt[0].duedate = val.format('YYYY-MM-DD');
-                                                        setDataModaldt([...dataModaldt])
-                                                    }}
-                                                    disabled={(position == "ISSUED" || position == "RECEIVED" || position == "ADMIN") ? false : true}
-                                                />
-                                            </LocalizationProvider>
+                                            {
+                                                dataModaldt[0]?.strclass == "CLASS D" ? "" : <>
+                                                    <Form.Label><span style={{ color: 'red', fontSize: '18px' }}>*</span>Due Date (Target) :</Form.Label> <br></br>
+                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                        <DatePicker
+                                                            value={dayjs(dataModaldt[0]?.duedate == "" ? moment() : moment(dataModaldt[0]?.duedate).format('YYYY-MM-DD'))}
+                                                            slotProps={{
+                                                                textField: {
+                                                                    format: 'YYYY-MM-DD',
+                                                                },
+                                                            }}
+                                                            onChange={(val) => {
+                                                                dataModaldt[0].duedate = val.format('YYYY-MM-DD');
+                                                                setDataModaldt([...dataModaldt])
+                                                            }}
+                                                        />
+                                                    </LocalizationProvider>
+                                                </>
+                                            }
                                         </Col>
                                     </Row>
 
@@ -1339,62 +1350,120 @@ function FormDetail(props) {
                                         <Col xs={12} md={6}> </Col>
                                     </Row>
 
-                                    {/* {
-                                        JSON.stringify(dataModaldt)
-                                    } */}
+
 
                                     <br></br>
-                                    <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                        <Col xs={12} md={4}>
-                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={employee}
-                                                    label="EmpCode"
-                                                    onChange={handleChangeEmployee}>
-                                                    {
-                                                        employeeArrayCRE.map((item, index) =>
-                                                            <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                        )
-                                                    }
-                                                </Select>
-                                            </FormControl>
-                                        </Col>
-                                        <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                            <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                            <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                        </Col>
-                                        <Col xs={12} md={3}>
-                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={step}
-                                                    label="Status"
-                                                    onChange={handleChangeStep}>
-                                                    {
-                                                        stepArrayCre.map((item, index) =>
-                                                            <MenuItem value={item}>{item}</MenuItem>
-                                                        )
-                                                    }
-                                                </Select>
-                                            </FormControl>
-                                        </Col>
-                                        <Col xs={12} md={2}>
-                                            {
-                                                permission.filter((item) => {
-                                                    return (dataModaldt[0]?.grpRole != "APPROVED" && dataModaldt[0]?.create_ApprovedBit != "F")
-                                                }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "CREATE")} disabled={(position == 'APPROVED') ? true : false}>
-                                                        + เพิ่มผู้ดำเนินการ
-                                                    </Button>
-                                                </> : ""
-                                            }
-                                        </Col>
-                                    </Row>
+                                    {
+                                        dataModaldt[0]?.create_CheckBit == "U" ?
+                                            <>
+                                                <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                    <Col xs={12} md={4}>
+                                                        <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                            <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                value={employee}
+                                                                label="EmpCode"
+                                                                onChange={handleChangeEmployee}>
+                                                                {
+                                                                    employeeArrayCRE.map((item, index) =>
+                                                                        <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                    )
+                                                                }
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Col>
+                                                    <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                        <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                        <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                    </Col>
+                                                    <Col xs={12} md={3}>
+                                                        <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                            <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                value={step}
+                                                                label="Status"
+                                                                onChange={handleChangeStep}>
+                                                                {
+                                                                    stepArray3.map((item, index) =>
+                                                                        <MenuItem value={item}>{item}</MenuItem>
+                                                                    )
+                                                                }
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Col>
+                                                    <Col xs={12} md={2}>
+                                                        {
+                                                            permission.filter((item) => {
+                                                                return (dataModaldt[0]?.grpRole != "APPROVED" && dataModaldt[0]?.create_ApprovedBit != "F")
+                                                            }).length ? <>
+                                                                <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "CREATE")} disabled={(position == 'APPROVED') ? true : false}>
+                                                                    + เพิ่มผู้ดำเนินการ
+                                                                </Button>
+                                                            </> : ""
+                                                        }
+                                                    </Col>
+                                                </Row>
+                                            </>
+                                            :
+                                            <>
+                                                <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                    <Col xs={12} md={4}>
+                                                        <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                            <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                value={employee}
+                                                                label="EmpCode"
+                                                                onChange={handleChangeEmployee}>
+                                                                {
+                                                                    employeeArrayCRE.map((item, index) =>
+                                                                        <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                    )
+                                                                }
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Col>
+                                                    <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                        <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                        <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                    </Col>
+                                                    <Col xs={12} md={3}>
+                                                        <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                            <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                value={step}
+                                                                label="Status"
+                                                                onChange={handleChangeStep}>
+                                                                {
+                                                                    stepArray2.map((item, index) =>
+                                                                        <MenuItem value={item}>{item}</MenuItem>
+                                                                    )
+                                                                }
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Col>
+                                                    <Col xs={12} md={2}>
+                                                        {
+                                                            permission.filter((item) => {
+                                                                return (dataModaldt[0]?.grpRole != "APPROVED" && dataModaldt[0]?.create_ApprovedBit != "F")
+                                                            }).length ? <>
+                                                                <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "CREATE")} disabled={(position == 'APPROVED') ? true : false}>
+                                                                    + เพิ่มผู้ดำเนินการ
+                                                                </Button>
+                                                            </> : ""
+                                                        }
+                                                    </Col>
+                                                </Row>
+                                            </>
+                                    }
+
 
                                     <br></br>
                                     <Row style={{ display: 'flex', justifyContent: 'center' }}>
@@ -1520,58 +1589,175 @@ function FormDetail(props) {
                                     </Row>
 
                                     <br></br>
+                                    {
+                                        dataModaldt[0]?.pU_ReceiveBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayPU.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray1.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={2}>
+                                                    {
+                                                        permission.filter((item) => {
+                                                            return ((permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.create_ApprovedBit == "F") || (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.create_ApprovedBit != "F"))
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "PU")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
+                                                    }
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
 
-                                    <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                        <Col xs={12} md={4}>
-                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={employee}
-                                                    label="EmpCode"
-                                                    onChange={handleChangeEmployee}>
+                                    {
+                                        dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_IssuedBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayPU.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray2.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={2}>
                                                     {
-                                                        employeeArrayPU.map((item, index) =>
-                                                            <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                        )
+                                                        permission.filter((item) => {
+                                                            return ((permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.create_ApprovedBit == "F") || (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.create_ApprovedBit != "F"))
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "PU")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
                                                     }
-                                                </Select>
-                                            </FormControl>
-                                        </Col>
-                                        <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                            <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                            <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                        </Col>
-                                        <Col xs={12} md={3}>
-                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={step}
-                                                    label="Status"
-                                                    onChange={handleChangeStep}>
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
+
+                                    {
+                                        dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_CheckBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayPU.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray3.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={2}>
                                                     {
-                                                        stepArray.map((item, index) =>
-                                                            <MenuItem value={item}>{item}</MenuItem>
-                                                        )
+                                                        permission.filter((item) => {
+                                                            return ((permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.create_ApprovedBit == "F") || (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.create_ApprovedBit != "F"))
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "PU")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
                                                     }
-                                                </Select>
-                                            </FormControl>
-                                        </Col>
-                                        <Col xs={12} md={2}>
-                                            {
-                                                permission.filter((item) => {
-                                                    return ((permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.create_ApprovedBit == "F") || (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.create_ApprovedBit != "F"))
-                                                }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "PU")}>
-                                                        + เพิ่มผู้ดำเนินการ
-                                                    </Button>
-                                                </> : ""
-                                            }
-                                        </Col>
-                                    </Row>
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
 
                                     <br></br>
                                     <Row style={{ display: 'flex', justifyContent: 'center' }}>
@@ -1689,57 +1875,175 @@ function FormDetail(props) {
 
                                     <br></br>
 
-                                    <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                        <Col xs={12} md={4}>
-                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={employee}
-                                                    label="EmpCode"
-                                                    onChange={handleChangeEmployee}>
+                                    {
+                                        dataModaldt[0]?.dD_ReceiveBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayDD.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray1.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={2}>
                                                     {
-                                                        employeeArrayDD.map((item, index) =>
-                                                            <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                        )
+                                                        permission.filter((item) => {
+                                                            return permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.dD_ApprovedBit != "F" && dataModaldt[0]?.pU_ApprovedBit == "F"
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "DD")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
                                                     }
-                                                </Select>
-                                            </FormControl>
-                                        </Col>
-                                        <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                            <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                            <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                        </Col>
-                                        <Col xs={12} md={3}>
-                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={step}
-                                                    label="Status"
-                                                    onChange={handleChangeStep}>
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
+                                    {
+                                        dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0].dD_IssuedBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayDD.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray2.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={2}>
                                                     {
-                                                        stepArray.map((item, index) =>
-                                                            <MenuItem value={item}>{item}</MenuItem>
-                                                        )
+                                                        permission.filter((item) => {
+                                                            return permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.dD_ApprovedBit != "F" && dataModaldt[0]?.pU_ApprovedBit == "F"
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "DD")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
                                                     }
-                                                </Select>
-                                            </FormControl>
-                                        </Col>
-                                        <Col xs={12} md={2}>
-                                            {
-                                                permission.filter((item) => {
-                                                    return permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.dD_ApprovedBit != "F" && dataModaldt[0]?.pU_ApprovedBit == "F"
-                                                }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "DD")}>
-                                                        + เพิ่มผู้ดำเนินการ
-                                                    </Button>
-                                                </> : ""
-                                            }
-                                        </Col>
-                                    </Row>
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
+
+                                    {
+                                        dataModaldt[0]?.dD_IssuedBit == "F" && dataModaldt[0].dD_CheckBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayDD.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray3.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={2}>
+                                                    {
+                                                        permission.filter((item) => {
+                                                            return permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.dD_ApprovedBit != "F" && dataModaldt[0]?.pU_ApprovedBit == "F"
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "DD")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
+                                                    }
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
 
                                     <br></br>
                                     <Row style={{ display: 'flex', justifyContent: 'center' }}>
@@ -1819,57 +2123,174 @@ function FormDetail(props) {
                                     </Row>
 
                                     <br></br>
-                                    <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                        <Col xs={12} md={4}>
-                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={employee}
-                                                    label="EmpCode"
-                                                    onChange={handleChangeEmployee}>
+                                    {
+                                        dataModaldt[0]?.eN_ReceiveBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayEN.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray1.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={2}>
                                                     {
-                                                        employeeArrayEN.map((item, index) =>
-                                                            <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                        )
+                                                        permission.filter((item) => {
+                                                            return permission[0]?.grpRoleSect == "EN" && dataModaldt[0]?.eN_ApprovedBit != "F" && permission[0]?.grpRole != 'APPROVED'
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "EN")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
                                                     }
-                                                </Select>
-                                            </FormControl>
-                                        </Col>
-                                        <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                            <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                            <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                        </Col>
-                                        <Col xs={12} md={3}>
-                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={step}
-                                                    label="Status"
-                                                    onChange={handleChangeStep}>
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
+                                    {
+                                        dataModaldt[0]?.eN_ReceiveBit == "F" && dataModaldt[0]?.eN_IssuedBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayEN.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray2.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={2}>
                                                     {
-                                                        stepArray.map((item, index) =>
-                                                            <MenuItem value={item}>{item}</MenuItem>
-                                                        )
+                                                        permission.filter((item) => {
+                                                            return permission[0]?.grpRoleSect == "EN" && dataModaldt[0]?.eN_ApprovedBit != "F" && permission[0]?.grpRole != 'APPROVED'
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "EN")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
                                                     }
-                                                </Select>
-                                            </FormControl>
-                                        </Col>
-                                        <Col xs={12} md={2}>
-                                            {
-                                                permission.filter((item) => {
-                                                    return permission[0]?.grpRoleSect == "EN" && dataModaldt[0]?.eN_ApprovedBit != "F" && permission[0]?.grpRole != 'APPROVED'
-                                                }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "EN")}>
-                                                        + เพิ่มผู้ดำเนินการ
-                                                    </Button>
-                                                </> : ""
-                                            }
-                                        </Col>
-                                    </Row>
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
+                                    {
+                                        dataModaldt[0]?.eN_IssuedBit == "F" && dataModaldt[0]?.eN_CheckBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayEN.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray3.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={2}>
+                                                    {
+                                                        permission.filter((item) => {
+                                                            return permission[0]?.grpRoleSect == "EN" && dataModaldt[0]?.eN_ApprovedBit != "F" && permission[0]?.grpRole != 'APPROVED'
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "EN")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
+                                                    }
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
 
                                     <br></br>
                                     <Row style={{ display: 'flex', justifyContent: 'center' }}>
@@ -1948,57 +2369,177 @@ function FormDetail(props) {
                                     </Row>
 
                                     <br></br>
-                                    <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                        <Col xs={12} md={4}>
-                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={employee}
-                                                    label="EmpCode"
-                                                    onChange={handleChangeEmployee}>
+
+                                    {
+                                        dataModaldt[0]?.sqC_ReceiveBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayQC.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray1.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={2}>
                                                     {
-                                                        employeeArrayQC.map((item, index) =>
-                                                            <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                        )
+                                                        permission.filter((item) => {
+                                                            return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.sqC_CheckBit != "F"
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "SQC")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
                                                     }
-                                                </Select>
-                                            </FormControl>
-                                        </Col>
-                                        <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                            <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                            <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                        </Col>
-                                        <Col xs={12} md={3}>
-                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={step}
-                                                    label="Status"
-                                                    onChange={handleChangeStep}>
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
+
+                                    {
+                                        dataModaldt[0]?.sqC_ReceiveBit == "F" && dataModaldt[0]?.sqC_IssuedBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayQC.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray2.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={2}>
                                                     {
-                                                        stepArray.map((item, index) =>
-                                                            <MenuItem value={item}>{item}</MenuItem>
-                                                        )
+                                                        permission.filter((item) => {
+                                                            return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.sqC_CheckBit != "F"
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "SQC")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
                                                     }
-                                                </Select>
-                                            </FormControl>
-                                        </Col>
-                                        <Col xs={12} md={2}>
-                                            {
-                                                permission.filter((item) => {
-                                                    return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.sqC_CheckBit != "F"
-                                                }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "SQC")}>
-                                                        + เพิ่มผู้ดำเนินการ
-                                                    </Button>
-                                                </> : ""
-                                            }
-                                        </Col>
-                                    </Row>
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
+
+                                    {
+                                        dataModaldt[0]?.sqC_IssuedBit == "F" && dataModaldt[0]?.sqC_CheckBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayQC.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray3.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={2}>
+                                                    {
+                                                        permission.filter((item) => {
+                                                            return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.sqC_CheckBit != "F"
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "SQC")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
+                                                    }
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
 
                                     <br></br>
                                     <Row style={{ display: 'flex', justifyContent: 'center' }}>
@@ -2127,57 +2668,177 @@ function FormDetail(props) {
                                     </Row>
 
                                     <br></br>
-                                    <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                        <Col xs={12} md={4}>
-                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={employee}
-                                                    label="EmpCode"
-                                                    onChange={handleChangeEmployee}>
+
+                                    {
+                                        dataModaldt[0]?.qC_ReceiveBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayQC.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={position == 'APPROVED' ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray1.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={2}>
                                                     {
-                                                        employeeArrayQC.map((item, index) =>
-                                                            <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                        )
+                                                        permission.filter((item) => {
+                                                            return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qC_CheckBit != "F"
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QC")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
                                                     }
-                                                </Select>
-                                            </FormControl>
-                                        </Col>
-                                        <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                            <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                            <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                        </Col>
-                                        <Col xs={12} md={3}>
-                                            <FormControl fullWidth disabled={position == 'APPROVED' ? true : false}>
-                                                <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={step}
-                                                    label="Status"
-                                                    onChange={handleChangeStep}>
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
+
+                                    {
+                                        dataModaldt[0]?.qC_ReceiveBit == "F" && dataModaldt[0]?.qC_IssuedBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayQC.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={position == 'APPROVED' ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray2.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={2}>
                                                     {
-                                                        stepArray.map((item, index) =>
-                                                            <MenuItem value={item}>{item}</MenuItem>
-                                                        )
+                                                        permission.filter((item) => {
+                                                            return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qC_CheckBit != "F"
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QC")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
                                                     }
-                                                </Select>
-                                            </FormControl>
-                                        </Col>
-                                        <Col xs={12} md={2}>
-                                            {
-                                                permission.filter((item) => {
-                                                    return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qC_CheckBit != "F"
-                                                }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QC")}>
-                                                        + เพิ่มผู้ดำเนินการ
-                                                    </Button>
-                                                </> : ""
-                                            }
-                                        </Col>
-                                    </Row>
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
+
+                                    {
+                                        dataModaldt[0]?.qC_IssuedBit == "F" && dataModaldt[0]?.qC_CheckBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayQC.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={position == 'APPROVED' ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray3.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={2}>
+                                                    {
+                                                        permission.filter((item) => {
+                                                            return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qC_CheckBit != "F"
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QC")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
+                                                    }
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
 
 
                                     <br></br>
@@ -2473,58 +3134,237 @@ function FormDetail(props) {
                                     </Row>
 
                                     <br></br>
-                                    <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                        <Col xs={12} md={4}>
-                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={employee}
-                                                    label="EmpCode"
-                                                    onChange={handleChangeEmployee}>
-                                                    {
-                                                        employeeArrayQC.map((item, index) =>
-                                                            <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                        )
-                                                    }
-                                                </Select>
-                                            </FormControl>
-                                        </Col>
-                                        <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                            <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                            <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                        </Col>
-                                        <Col xs={12} md={3}>
-                                            <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={step}
-                                                    label="Status"
-                                                    onChange={handleChangeStep}>
-                                                    {
-                                                        stepArray.map((item, index) =>
-                                                            <MenuItem value={item}>{item}</MenuItem>
-                                                        )
-                                                    }
-                                                </Select>
-                                            </FormControl>
-                                        </Col>
 
-                                        <Col xs={12} md={2}>
-                                            {
-                                                permission.filter((item) => {
-                                                    return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qA_CheckBit != "F"
-                                                }).length ? <>
-                                                    <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QA")}>
-                                                        + เพิ่มผู้ดำเนินการ
-                                                    </Button>
-                                                </> : ""
-                                            }
-                                        </Col>
-                                    </Row>
+                                    {
+                                        dataModaldt[0]?.qA_ReceiveBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayQC.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray1.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+
+                                                <Col xs={12} md={2}>
+                                                    {
+                                                        permission.filter((item) => {
+                                                            return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qA_CheckBit != "F"
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QA")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
+                                                    }
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
+
+                                    {
+                                        dataModaldt[0]?.qA_ReceiveBit == "F" && dataModaldt[0]?.qA_IssuedBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayQC.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray2.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+
+                                                <Col xs={12} md={2}>
+                                                    {
+                                                        permission.filter((item) => {
+                                                            return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qA_CheckBit != "F"
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QA")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
+                                                    }
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
+
+                                    {
+                                        dataModaldt[0]?.qA_IssuedBit == "F" && dataModaldt[0]?.qA_CheckBit == "U" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayQC.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray3.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+
+                                                <Col xs={12} md={2}>
+                                                    {
+                                                        permission.filter((item) => {
+                                                            return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qA_CheckBit != "F"
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QA")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
+                                                    }
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
+                                    {
+                                        dataModaldt[0]?.qA_ReceiveBit == "F" && dataModaldt[0]?.qA_IssuedBit == "F" && <>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArrayQC.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArray2.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+
+                                                <Col xs={12} md={2}>
+                                                    {
+                                                        permission.filter((item) => {
+                                                            return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qA_CheckBit != "F"
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QA")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
+                                                    }
+                                                </Col>
+                                            </Row>
+                                        </>
+                                    }
+
 
                                     <br></br>
                                     <Row style={{ display: 'flex', justifyContent: 'center' }}>
@@ -2855,7 +3695,8 @@ function FormDetail(props) {
                                     return (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode) ||
                                         (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_ApprovedCode)
                                 }).length ? (
-                                    (dataModaldt[0]?.pU_ApprovedBit != "R" && dataModaldt[0]?.dD_ReceiveBit != "F")
+                                    (dataModaldt[0]?.pU_CheckBit == "F" && dataModaldt[0]?.dD_ReceiveBit != "F" && dataModaldt[0]?.pU_ApprovedBit != "R") ||
+                                    (dataModaldt[0]?.create_CheckBit == "F" && dataModaldt[0]?.pU_ReceiveBit != "F" && dataModaldt[0]?.create_ApprovedBit != "R")
                                 )
                                 &&
                                 <>
@@ -2871,7 +3712,8 @@ function FormDetail(props) {
                                     return (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode) ||
                                         (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_ApprovedCode)
                                 }).length ? (
-                                    (dataModaldt[0]?.pU_CheckBit == "F" && dataModaldt[0]?.dD_ReceiveBit != "F")
+                                    (dataModaldt[0]?.pU_CheckBit == "F" && dataModaldt[0]?.dD_ReceiveBit != "F" && dataModaldt[0]?.pU_ApprovedBit != "F") ||
+                                    (dataModaldt[0]?.create_CheckBit == "F" && dataModaldt[0]?.pU_ReceiveBit != "F" && dataModaldt[0]?.create_ApprovedBit != "F")
                                 )
                                 && <Button autoFocus variant="success" onClick={() => getApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
                                     <FontAwesomeIcon icon={faCheck} />  อนุมัติ (GM Approved) PU

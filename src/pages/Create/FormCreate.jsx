@@ -444,7 +444,7 @@ function FormCreate(props) {
                     aria-labelledby="scroll-dialog-title"
                     aria-describedby="scroll-dialog-description"
                 >
-                    <IconButton aria-label="close" onClick={() => close(false)}
+                    {/* <IconButton aria-label="close" onClick={() => close(false)}
                         sx={{
                             position: 'absolute',
                             right: 8,
@@ -453,7 +453,7 @@ function FormCreate(props) {
                         }}
                     >
                         <CloseIcon />
-                    </IconButton>
+                    </IconButton> */}
                     <DialogContent dividers>
                         <Container>
                             <div class="row">
@@ -489,6 +489,9 @@ function FormCreate(props) {
                             </Row>
                         </Container>
 
+                        {/* {
+                            JSON.stringify(tableNotify)
+                        } */}
 
 
                         <Accordion expanded={expanded === 'panel1'} >
