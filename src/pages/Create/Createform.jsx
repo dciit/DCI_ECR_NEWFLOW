@@ -21,15 +21,16 @@ import Print from '../../../public/asset/Image/Print2.png'
 import Chatt from '../../../public/asset/Image/Chat60.png'
 import { Link, useNavigate } from 'react-router-dom';
 import { useHref } from 'react-router';
-import { FcFinePrint, FcPrint, FcSms, FcDocument } from "react-icons/fc";
+import { FcFinePrint, FcPrint, FcSms, FcDocument, FcOk } from "react-icons/fc";
 import { LegendToggleOutlined } from '@mui/icons-material';
 import { faFile, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { DownloadTableExcel } from 'react-export-table-to-excel';
 
 
 function Createform() {
     const navigate = useNavigate();
-
+    const tableRef = useRef(null);
     //const section = localStorage.getItem("section");
     // const section = Cookies.get('section')
     const section = Cookies.get('section')
@@ -294,6 +295,7 @@ function Createform() {
                     </div>
 
 
+
                     <div class="row mb-3">
                         <div class="col-md-auto">
                             <label for="colFormLabelSm">ECR No :</label>
@@ -348,38 +350,35 @@ function Createform() {
 
 
                     <div class="row" >
-                        <div class="row justify-content-md-center">
-                            <div class="col col-lg-2">
-                            </div>
-                            <div class="col-md-auto">
-                                <button type="submit" class="btn btn-primary" onClick={getSearch}><FontAwesomeIcon icon={faMagnifyingGlass} /> Search</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                {
-                                    permission.filter((item) => {
-                                        return item.menuCode == "BTN0001" && item.rolE_VIEW == "True"
-                                    }).length ? <Button variant="success" onClick={handleShow}> <FontAwesomeIcon icon={faFile} /> สร้างเอกสาร ECR ใหม่</Button>
-                                        :
-                                        ""
-                                }
-                            </div>
-                            <div class="col col-lg-2">
-                            </div>
+                        {/* <div class="row justify-content-md-center"> */}
+                        {/* <div class="col col-lg-2">
+                        </div> */}
+                        <div class="col-md-auto">
+                            <button type="submit" class="btn btn-primary" onClick={getSearch}><FontAwesomeIcon icon={faMagnifyingGlass} /> Search</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            {
+                                permission.filter((item) => {
+                                    return item.menuCode == "BTN0001" && item.rolE_VIEW == "True"
+                                }).length ? <Button variant="success" onClick={handleShow}> <FontAwesomeIcon icon={faFile} /> สร้างเอกสาร ECR ใหม่</Button>
+                                    :
+                                    ""
+                            }
                         </div>
+                        <div class="col col-lg-4">
+                            <DownloadTableExcel
+                                filename="ECR Pending"
+                                sheet="Detail"
+                                currentTableRef={tableRef.current}
+                            >
+                                <button type="submit" class="btn btn-warning"> Export excel </button>
+                            </DownloadTableExcel>
+                        </div>
+                        {/* </div> */}
                     </div>
                 </div>
             </div>
             <br></br>
 
-            <div class="row">
-                <div class="col-md-8">
-                </div>
-                <div class="col-md-4">
-                    {/* <span><b>R</b> = Receive</span> &nbsp;&nbsp;&nbsp;
-                    <span><b>I</b> = Issued</span> &nbsp;&nbsp;&nbsp;
-                    <span><b>C</b> = Checked</span> &nbsp;&nbsp;&nbsp;
-                    <span><b>A</b> = Approved</span> */}
-                </div>
-            </div>
-            <br></br>
+
 
 
             <div class="tscroll">
@@ -397,7 +396,7 @@ function Createform() {
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DCS NO</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DRAWING</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>CLASS</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>ECR No</th>
+                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>ECR NO</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '400px', fontSize: '14px' }}>TITLE</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>SECTION</th>
                             <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>ATTACHED FILE</th>
@@ -414,9 +413,6 @@ function Createform() {
                         </tr>
 
                         <tr colSpan={20} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>
-                            {/* <th>Attached file</th>
-                            <th>Comment</th>
-                            <th>Print</th> */}
                             <th colSpan={4}>(DIL Design Section)</th>
                             <th colSpan={4}>(DIL Quality Control Section)</th>
                         </tr>
@@ -469,9 +465,11 @@ function Createform() {
                         </tr>
                     </thead>
                     <tbody>
+                        {/* {
+                            JSON.stringify(getdata)
+                        } */}
                         {
                             getdata?.map((item, index) => {  // ข้อมูลใหญ่
-                                //let oCols = ['cre', 'pu', 'dd', 'en', 'sqc', 'qc', 'dil', 'dil', 'qa'];
                                 let oCols = ['cre', 'pu', 'dd', 'en', 'sqc', 'qc', 'dil_dd', 'dil_qc', 'qa'];
                                 let oApps = ['received', 'issued', 'check', 'approved'];
                                 let oEcr = [];
@@ -563,7 +561,6 @@ function Createform() {
                                         }
 
 
-
                                         iECR.app.push({
                                             name: name,
                                             date: date,
@@ -618,8 +615,11 @@ function Createform() {
                                 if (AlertDuedate >= 1) {
                                     datealertDuedate = <p className='pulse' style={{ color: 'red', fontWeight: '500', fontSize: '16px' }}>OVER {AlertDuedate} วัน</p>;
                                 }
-                                else if (AlertDuedate == 0) {
+                                else if (AlertDuedate == 0 && item.strClass != "D") {
                                     datealertDuedate = <p style={{ color: 'yellow' }}>DUEDATE {AlertDuedate} วัน</p>;
+                                }
+                                else if (AlertDuedate == 0 && item.strClass == "D") {
+                                    datealertDuedate = <p style={{ color: 'yellow' }}>Waiting Due Date</p>;
                                 }
                                 else if (AlertDuedate < -0) {
                                     datealertDuedate = <p>REMAIN {AlertDuedate * -1} วัน</p>;
@@ -639,7 +639,6 @@ function Createform() {
 
 
                                 return <tr style={{ backgroundColor: (item.counthold > 0 ? 'yellow' : '') }}>
-                                    {/* <td style={{ fontSize: '16px', padding: '8px', backgroundColor: (targetDate ? colorTargetDate : 'red') }}><nobr>{item.dueDate}<br></br><p style={{ fontSize: '14px', color: 'rgb(94 66 201)', marginBottom: '1px' }}>{datealertDuedate}</p></nobr></td> */}
                                     <td className='headcol' style={{ fontSize: '16px', padding: '8px' }}><nobr>{item.dueDate}<br></br><p style={{ fontSize: '14px', color: 'rgb(94 66 201)', marginBottom: '1px' }}>{datealertDuedate}</p></nobr></td>
                                     <td>
                                         <p style={{ padding: '8px', marginBottom: '-1px' }}>{(status != '' ? status : 'FINISH')}</p>
@@ -653,6 +652,9 @@ function Createform() {
                                         <Link underline="hover">
                                             <center><FcFinePrint style={{ width: '35px', height: '45px' }} onClick={() => handleShowDetail(item.ecrno)} /></center>
                                         </Link>
+                                        {/* <Link underline="hover">
+                                            <center><FcOk style={{ width: '35px', height: '45px' }} onClick={() => handleShowDetail(item.ecrno)} /></center>
+                                        </Link> */}
                                     </td>
                                     <td style={{ fontSize: '14px', padding: '8px' }}>{item.notificationNo}</td>
                                     <td style={{ fontSize: '14px', padding: '8px' }}><nobr>{item.partNo}</nobr></td>
@@ -726,8 +728,65 @@ function Createform() {
                     </tbody >
                 </table>
             </div>
-        </div >
 
+
+            {/* {
+                JSON.stringify(getdata)
+            } */}
+
+            <div style={{ display: 'none' }}>
+                {/* <div> */}
+                <table className='tbExportExcel' ref={tableRef}>
+                    <tbody>
+                        <tr>
+                            <th>TARGET</th>
+                            <th>DCS NO</th>
+                            <th>DRAWING</th>
+                            <th>CLASS</th>
+                            <th>ECR NO</th>
+                            <th>TITLE</th>
+                            <th>SECTION CREATE</th>
+                            <th>PENDING DAY</th>
+                        </tr>
+                        {
+                            getdata?.map((iData, oData) => {
+                                let oCols = ['cre', 'pu', 'dd', 'en', 'sqc', 'qc', 'dil_dd', 'dil_qc', 'qa'];
+                                let oApps = ['received', 'issued', 'check', 'approved'];
+                                let pendingDayToExcel = '';
+                                oCols.map((items, idx) => { // Section
+                                    oApps.map((iApp, idxx) => { // Step
+                                        let status = iData[`${items}${iApp}bit`]; //bit
+                                        pendingDayToExcel = iData[`${items}${iApp}SumDate`]; //sumdate
+                                        // let namePending = iData[`${items}${iApp}namepending`];
+
+
+                                        if (pendingDayToExcel > 0) {
+                                            pendingDayToExcel = iData[`${items}${iApp}SumDate`]; //sumdate
+                                        }
+                                        else {
+                                            pendingDayToExcel = 0;
+                                        }
+                                        console.log(pendingDayToExcel, status)
+                                    });
+                                });
+                                return <tr>
+                                    <td>{iData.dueDate != "" ? iData.dueDate : "Waiting Due Date"}</td>
+                                    <td>{iData.notificationNo}</td>
+                                    <td>{iData.partNo}</td>
+                                    <td>{iData.strClass}</td>
+                                    <td>{iData.ecrno}</td>
+                                    <td>{iData.title}</td>
+                                    <td>{iData.section}</td>
+                                    <td></td>
+                                </tr>
+                            })
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div >
 
         <ModelAttachFile
             show={openAttrFile}
@@ -745,9 +804,10 @@ function Createform() {
 
 
         <FormModalDetail
-            show={openModalDetail}
-            close={setOpenModalDetail}
             ecrno={ecrnoSelected}
+            show={openModalDetail}
+
+            close={setOpenModalDetail}
             refresh={loadPage}
             statusCreateAppBit={statusCreateAppBit[0]?.createapproved}
         />

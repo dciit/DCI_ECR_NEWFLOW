@@ -128,15 +128,18 @@ function Chat(props) {
                         </IconButton>
                         <DialogContent dividers>
                             <Typography gutterBottom>
+                                {/* {
+                                    JSON.stringify(showChat)
+                                } */}
                                 <table className='customers'>
                                     <thead>
                                         <tr>
                                             <th>Status</th>
-                                            <th>Requested Section</th>
                                             <th>Response Section</th>
                                             <th>Responser</th>
                                             <th style={{ width: '80%' }}>Reason</th>
                                             <th>Requested By</th>
+                                            <th>Requested Section</th>
                                             <th>Requested Date</th>
                                             <th>Confirm</th>
                                         </tr>
@@ -145,11 +148,11 @@ function Chat(props) {
                                         showChat?.map((item, index) => {
                                             return <tr key={item.ecrno}>
                                                 <td align="center" style={{ textAlign: 'center' }}>{item.type}</td>
-                                                <td align="center" style={{ textAlign: 'center' }}>{item.section}</td>
                                                 <td align="center" style={{ textAlign: 'center' }}>{item.tosection}</td>
                                                 <td align="center" style={{ textAlign: 'center', fontSize: '13px' }}>{item.responser}</td>
                                                 <td align="center" style={{ color: 'red' }}>{item.remark}</td>
                                                 <td align="center" style={{ textAlign: 'right', fontSize: '13px' }}>{item.remarkby}</td>
+                                                <td align="center" style={{ textAlign: 'center' }}>{item.fromSECTION}</td>
                                                 <td align="center" style={{ textAlign: 'right', width: '21%', fontSize: '14px' }}>{item.remarkdate}</td>
                                                 <td>
                                                     {

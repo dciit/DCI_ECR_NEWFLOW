@@ -99,6 +99,9 @@ function PrintComponent() {
                         </div>
                         <p className='title'>1. CHANGE OUTLINE</p>
 
+                        {/* {
+                            JSON.stringify(dataModaldt)
+                        } */}
 
                         <div class="row">
                             <div class="col-md-10">
@@ -284,7 +287,8 @@ function PrintComponent() {
                                                         return <div key={item?.req_ITEMDESIGNCODE} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled />    <div style={{ display: 'none' }}> {item?.req_ITEMDESIGNCODE} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.req_ITEMDESIGNNAME}</div> <br></br></div>
                                                     })
                                                 }
-
+                                                <br></br>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ins>{dataModaldt[0]?.dD_Remark2}</ins>
                                             </div>
                                         </div>
                                         <div class="col-md-2" style={{ width: '100%', padding: '10px', border: '1px solid black', marginLeft: '-10px', fontSize: '12px' }} >

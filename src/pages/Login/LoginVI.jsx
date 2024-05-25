@@ -24,44 +24,12 @@ function LoginVI() {
 
     const login = (event) => {
         event.preventDefault();
-        // LoginService.Login(username, password).then((res) => {
-        //     try {
-        //         if (res.data[0].EmpCode != null) {
-        //             jsCookie.set("code", res.data[0].EmpCode, { expires: 7 })
-        //             jsCookie.set("name", res.data[0].ShortName, { expires: 7 })
-        //             jsCookie.set("section", res.data[0].DEPT_Short, { expires: 7 })
-
-        //             getDataSrvPermiss.getPermission(username).then((res) => {
-        //                 try {
-        //                     // ----- SET REDUX ----- //
-        //                     dispatch({ type: 'SET_PERMISSION', payload: res.data })
-        //                     // ----- SET REDUX ----- //
-
-        //                     setData(res.data);
-        //                     navigate("/ECR/createform");
-        //                     location.reload();
-        //                 }
-        //                 catch (error) {
-        //                     console.log(error); // You might send an exception to your error tracker like AppSignal
-        //                     return error;
-        //                 }
-        //             });
-        //         }
-        //         else {
-        //             setfailLogin(true) // ถ้า Login ผิด ให้เป็น true
-        //         }
-        //     }
-        //     catch (error) {
-        //         console.log(error); // You might send an exception to your error tracker like AppSignal
-        //         return error;
-        //     }
-        // });
-
-        getDataSrvPermiss.getTestLogin(username).then((res) => {
+        LoginService.Login(username, password).then((res) => {
             try {
-                if (res.data[0].code != null) {
-                    jsCookie.set("code", res.data[0].code, { expires: 7 })
-                    jsCookie.set("name", res.data[0].fullName, { expires: 7 })
+                if (res.data[0].EmpCode != null) {
+                    jsCookie.set("code", res.data[0].EmpCode, { expires: 7 })
+                    jsCookie.set("name", res.data[0].ShortName, { expires: 7 })
+                    jsCookie.set("section", res.data[0].DEPT_Short, { expires: 7 })
 
                     getDataSrvPermiss.getPermission(username).then((res) => {
                         try {
@@ -72,7 +40,6 @@ function LoginVI() {
                             setData(res.data);
                             navigate("/ECR/createform");
                             location.reload();
-                            console.log(res.data)
                         }
                         catch (error) {
                             console.log(error); // You might send an exception to your error tracker like AppSignal
@@ -89,6 +56,39 @@ function LoginVI() {
                 return error;
             }
         });
+
+        // getDataSrvPermiss.getTestLogin(username).then((res) => {
+        //     try {
+        //         if (res.data[0].code != null) {
+        //             jsCookie.set("code", res.data[0].code, { expires: 7 })
+        //             jsCookie.set("name", res.data[0].fullName, { expires: 7 })
+
+        //             getDataSrvPermiss.getPermission(username).then((res) => {
+        //                 try {
+        //                     // ----- SET REDUX ----- //
+        //                     dispatch({ type: 'SET_PERMISSION', payload: res.data })
+        //                     // ----- SET REDUX ----- //
+
+        //                     setData(res.data);
+        //                     navigate("/ECR/createform");
+        //                     location.reload();
+        //                     console.log(res.data)
+        //                 }
+        //                 catch (error) {
+        //                     console.log(error); // You might send an exception to your error tracker like AppSignal
+        //                     return error;
+        //                 }
+        //             });
+        //         }
+        //         else {
+        //             setfailLogin(true) // ถ้า Login ผิด ให้เป็น true
+        //         }
+        //     }
+        //     catch (error) {
+        //         console.log(error); // You might send an exception to your error tracker like AppSignal
+        //         return error;
+        //     }
+        // });
     };
 
 
@@ -128,13 +128,13 @@ function LoginVI() {
                             required />
 
 
-                        {/* <p><b>Password</b></p>
+                        <p><b>Password</b></p>
                         <MDBInput wrapperClass='mb-2' id='password' type='password' size="lg"
                             value={password}
                             autoComplete="password"
                             // className="form-control mt-1"
                             onChange={(event) => setPassword(event.target.value)}
-                            required /> */}
+                            required />
 
 
                         <div className='text-center text-md-start mt-4 pt-2'>

@@ -219,7 +219,7 @@ function Print() {
                                 <tr style={{ border: '1px solid black' }}>
                                     <td style={{ border: '1px solid black', fontSize: '13px' }}><center>PART NO. (DRAWING)</center></td>
                                     <td style={{ border: '1px solid black', fontSize: '13px' }}><center>PART NAME</center></td>
-                                    <td style={{ border: '1px solid black', fontSize: '13px' }}><center>REMART</center></td>
+                                    <td style={{ border: '1px solid black', fontSize: '13px' }}><center>REMARK</center></td>
                                 </tr>
                                 <tr style={{ border: '1px solid black' }}>
                                     <td style={{ border: '1px solid black', fontSize: '12px', width: '4pc' }}><center><b>{dataModaldt[0]?.part_No}</b></center></td>

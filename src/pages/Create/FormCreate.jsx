@@ -145,6 +145,8 @@ function FormCreate(props) {
     const [cbMODEL, setcbMODEL] = useState([]);
     const [cbLINE, setcbLINE] = useState([]);
     const [cbFORDDNEED, setcbFORDDNEED] = useState([]);
+    const [cbReqDocForPU, setcbReqDocForPU] = useState([]);
+    const [cbReqDocForDD, setcbReqDocForDD] = useState([]);
     const [partNo, setpartNo] = useState('');
     const [partName, setpartName] = useState('');
     const [remark, setremark] = useState('');
@@ -202,6 +204,14 @@ function FormCreate(props) {
             setcbFORDDNEED(res.data.filter(item => item.dictType == 'REQ_FOR'));
         })
 
+        getDataSrv.getDict().then((res) => {
+            setcbReqDocForPU(res.data.filter(item => item.dictType == 'REQ_DOC_FORPU'));
+        })
+
+        getDataSrv.getDict().then((res) => {
+            setcbReqDocForDD(res.data.filter(item => item.dictType == 'REQ_DOC_FORDD'));
+        })
+
         getDataSrvPermiss.getEmployeeForCreate().then((res) => {
             try {
                 setEmployeeArray(res.data);
@@ -256,6 +266,22 @@ function FormCreate(props) {
         items[indexCheck]['checked'] = checked;
         setcbFORDDNEED(items);
     }
+
+
+    function handleCheckBoxReqDocForPU(indexCheck, checked) {
+        var items = cbReqDocForPU;
+        items[indexCheck]['checked'] = checked;
+        setcbReqDocForPU(items);
+        console.log(items)
+    }
+
+
+    function handleCheckBoxReqDocForDD(indexCheck, checked) {
+        var items = cbReqDocForDD;
+        items[indexCheck]['checked'] = checked;
+        setcbReqDocForDD(items);
+        console.log(items)
+    }
     //***************************END FUNCTON CHECK CHECKBOX *************************** */
 
     //***************************FUNCTON INPUT DATA INSERT HEAD , DETAIL*************************** */
@@ -284,13 +310,25 @@ function FormCreate(props) {
         var lineOt = lineOther != "" ? lineOther : "-";
 
 
+
+
+
         if (title != "" && cbitem != "" && selectItem(cbMODEL) != "" && selectItem(cbLINE) != "" && partNo != "" && partName != "" && remark != "" && purpose != "" && methodOld != "" && methodNew != "" && detail != "" && requestPU != "") {
             setbtnAddFile(true);
-            console.log(strclass, duedate)
+            console.log(nbr[0]?.runningNumber, title, grpSection, cbitem, itOther, noti, drno, selectItem(cbMODEL), modelot, selectItem(cbLINE), lineOt, empCode, partNo, partName, remark, duedate, methodRemark, secForDD, purpose, methodOld, methodNew, detail, requestPU, strclass, selectItem(cbReqDocForPU), selectItem(cbReqDocForDD))
+            // return false
             getDataSrv.postInputData({
-                Ecrno: nbr[0]?.runningNumber, TitleNane: title, Section: grpSection, Item: cbitem, ItemOther: itOther, Notificaion: noti, DRNo: drno, Model: selectItem(cbMODEL), ModelOther: modelot, Line: selectItem(cbLINE), LineOther: lineOt, EmpCode: empCode, PartNo: partNo, PartName: partName, Remark: remark, DueDate: duedate, Method: methodRemark, SecForDD: secForDD, purpose: purpose, methodOld: methodOld, methodNew: methodNew, detail: detail, requestPU: requestPU, strclass: strclass
+                Ecrno: nbr[0]?.runningNumber, TitleNane: title, Section: grpSection, Item: cbitem, ItemOther: itOther, Notificaion: noti, DRNo: drno, Model: selectItem(cbMODEL), ModelOther: modelot, Line: selectItem(cbLINE), LineOther: lineOt, EmpCode: empCode, PartNo: partNo, PartName: partName, Remark: remark, DueDate: duedate, Method: methodRemark, SecForDD: secForDD, purpose: purpose, methodOld: methodOld, methodNew: methodNew, detail: detail, requestPU: requestPU, strclass: strclass, reqDocForPU: selectItem(cbReqDocForPU), reqDocForDD: selectItem(cbReqDocForDD)
             }).then((res) => {
                 try {
+                    setTableNotify(res.data);
+                    Swal.fire({
+                        icon: "success",
+                        title: "บันทึกรายการ ECR สำเร็จ",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
                     refresh();
                     setFilesDrawing('');
                     setFilesBR('');
@@ -444,7 +482,7 @@ function FormCreate(props) {
                     aria-labelledby="scroll-dialog-title"
                     aria-describedby="scroll-dialog-description"
                 >
-                    {/* <IconButton aria-label="close" onClick={() => close(false)}
+                    <IconButton aria-label="close" onClick={() => close(false)}
                         sx={{
                             position: 'absolute',
                             right: 8,
@@ -453,7 +491,7 @@ function FormCreate(props) {
                         }}
                     >
                         <CloseIcon />
-                    </IconButton> */}
+                    </IconButton>
                     <DialogContent dividers>
                         <Container>
                             <div class="row">
@@ -779,25 +817,47 @@ function FormCreate(props) {
                                             <Form.Label>DRAWING NO NEW : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                             <Form.Control as="textarea" rows={3} onChange={(event) => setMethodNew(event.target.value)} />
                                         </Col>
-
-                                    </Row>
-
-
-                                    <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
                                             <Form.Label>DETAIL / CHENGE POINT : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                             <Form.Control as="textarea" rows={3} onChange={(event) => setDetail(event.target.value)} />
                                         </Col>
-                                        <Col xs={12} md={6}> </Col>
                                     </Row>
-
 
                                     <Row className='styleRowText'>
                                         <Col xs={12} md={6}>
                                             <Form.Label>REQUEST PU  : <span style={{ color: 'red', fontSize: '18px' }}>*</span></Form.Label>
                                             <Form.Control as="textarea" rows={3} onChange={(event) => setRequestPU(event.target.value)} />
                                         </Col>
-                                        <Col xs={12} md={6}> </Col>
+                                        <Col xs={12} md={6}>
+                                        </Col>
+                                    </Row>
+
+
+                                    <Row className='styleRowText'>
+                                        <Col xs={12} md={6}>
+                                            <div className='styleCard'>
+                                                <Form.Label>Request document (FOR PU)</Form.Label>
+                                                <div>
+                                                    {
+                                                        cbReqDocForPU.map((item, index) => {
+                                                            return <div key={item?.dictCode} style={{ display: 'flex' }} > <input type="checkbox" value={item} onChange={(event) => handleCheckBoxReqDocForPU(index, event.target.checked)} />    <div style={{ display: 'none' }}> {item?.dictCode} </div> <div style={{ marginLeft: '13px' }}>{item?.dictDesc}</div> <br></br></div>
+                                                        })
+                                                    }
+                                                </div>
+                                            </div>
+                                        </Col>
+                                        <Col xs={12} md={6}>
+                                            <div className='styleCard'>
+                                                <Form.Label>Request document (FOR DD)</Form.Label>
+                                                <div>
+                                                    {
+                                                        cbReqDocForDD.map((item, index) => {
+                                                            return <div key={item?.dictCode} style={{ display: 'flex' }} > <input type="checkbox" value={item} onChange={(event) => handleCheckBoxReqDocForDD(index, event.target.checked)} />    <div style={{ display: 'none' }}> {item?.dictCode} </div> <div style={{ marginLeft: '13px' }}>{item?.dictDesc}</div> <br></br></div>
+                                                        })
+                                                    }
+                                                </div>
+                                            </div>
+                                        </Col>
                                     </Row>
 
 

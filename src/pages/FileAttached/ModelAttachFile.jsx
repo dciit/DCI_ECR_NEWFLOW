@@ -1,4 +1,4 @@
-import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import getDataFile from '../../service/getFileAttech.js'
 import Button from 'react-bootstrap/Button';
@@ -24,6 +24,9 @@ import Typography from '@mui/material/Typography';
 import Cookies from 'js-cookie';
 import './ModelAttachFile.css'
 import { useDropzone } from 'react-dropzone';
+import Checkbox from '@mui/material/Checkbox';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 
 
 
@@ -105,35 +108,6 @@ function ModelAttachFile(props) {
 
 
 
-    // var W3CDOM = (document.createElement && document.getElementsByTagName);
-
-    // function initFileUploads() {
-    //     if (!W3CDOM) return;
-    //     var fakeFileUpload = document.createElement('div');
-    //     fakeFileUpload.className = 'fakefile';
-    //     fakeFileUpload.appendChild(document.createElement('input'));
-    //     // var image = document.createElement('img');
-    //     // image.src = 'pix/button_select.gif';
-    //     // fakeFileUpload.appendChild(image);
-    //     var x = document.getElementsByTagName('input');
-    //     for (var i = 0; i < x.length; i++) {
-    //         if (x[i].type != 'file') continue;
-    //         if (x[i].parentNode.className != 'fileinputs') continue;
-    //         x[i].className = 'file hidden';
-    //         var clone = fakeFileUpload.cloneNode(true);
-    //         x[i].parentNode.appendChild(clone);
-    //         x[i].relatedElement = clone.getElementsByTagName('input')[0];
-    //         x[i].onchange = x[i].onmouseout = function () {
-    //             this.relatedElement.value = this.value;
-    //             setPath(this.value);
-    //         }
-    //     }
-    // }
-
-
-
-
-
 
     const handleClear = () => {
         ref.current.value = null;
@@ -188,10 +162,15 @@ function ModelAttachFile(props) {
 
 
     const OpenFile = (pathfilename) => {
-        // navigate(`/ECR/PrintPage/${ecrno}`,
-        // );
         window.open(`http://dciweb.dci.daikin.co.jp/ECR/asset/FileAttech/${pathfilename}`, '_blank', 'noopener,noreferrer');
     }
+
+
+    const [checked, setChecked] = React.useState(true);
+    const handleChange = (event) => {
+        setChecked(event.target.checked);
+    }
+
 
 
     return (
@@ -228,9 +207,56 @@ function ModelAttachFile(props) {
                     >
                         <CloseIcon />
                     </IconButton>
+
+
                     <DialogContent dividers>
                         <Typography gutterBottom>
                             <Container>
+
+
+                                {/* <Row>
+                                    <Col xs={12} md={4}>
+                                        {
+                                            permission.filter((item) => {
+                                                return item.menuCode == "BTN0002" && item.rolE_VIEW == "True"
+                                            }).length ? <>
+                                                <p>ไฟล์ :</p>
+                                                <input type="file" name="file" accept='application/pdf' ref={ref} onChange={changeHandler} />
+                                            </>
+                                                :
+                                                ""
+                                        }
+                                    </Col>
+                                    <Col xs={12} md={2}>
+                                        <p>ไม่ระบุ</p>
+                                        <Checkbox
+                                            checked={checked}
+                                            onChange={handleChange}
+                                            inputProps={{ 'aria-label': 'controlled' }}
+                                        />
+                                    </Col>
+                                    <Col xs={12} md={5}>
+                                        <p>REMARK <span style={{ color: 'red', fontSize: '18px' }}>*</span></p>
+                                        <TextField
+                                            id="outlined-multiline-flexible"
+                                            multiline
+                                            maxRows={5}
+                                            style={{ width: '300px' }}
+                                        />
+                                    </Col>
+                                    <Col xs={12} md={1}>
+                                        {
+                                            permission.filter((item) => {
+                                                return item.menuCode == "BTN0003" && item.rolE_VIEW == "True"
+                                            }).length ? <Button variant="success" onClick={(e) => { handleSubmission() }}>Add</Button>
+                                                :
+                                                ""
+                                        }
+                                    </Col>
+                                </Row> */}
+
+
+
                                 <Row>
                                     <Col xs={12} md={5}>
                                         {
@@ -245,17 +271,6 @@ function ModelAttachFile(props) {
                                         }
                                     </Col>
                                     <Col xs={12} md={6}>
-                                        {/* <div style={{ display: 'flex' }}>
-                                            <div class="fileinputs">
-                                                <input type="file" class="file" style={{ width: '300px' }} onChange={initFileUploads} />
-                                                <div class="fakefile">
-                                                    <input />
-                                                    <button>Browse..</button>
-                                                </div>
-                                            </div>
-                                        </div> */}
-
-
                                         <div>
                                             {
                                                 permission.filter((item) => {
@@ -281,11 +296,8 @@ function ModelAttachFile(props) {
                                         }
                                     </Col>
                                 </Row>
+                                <br></br>
                             </Container>
-                            <br></br>
-                            {/* {
-                                JSON.stringify(showFile)
-                            } */}
                             <TableContainer component={Paper}>
                                 <Table>
                                     <TableHead>
