@@ -55,6 +55,10 @@ const getDetailDIL = (ecrno) => {
 }
 
 
+const GetStatusDocument = (ecrno) => {
+    return http.APIECR.get(`GetStatusDocument/${ecrno}`);
+}
+
 
 
 export default {
@@ -69,4 +73,5 @@ export default {
     getSearchECRNO,
     getDeleteDoc,
     getDetailDIL,
+    GetStatusDocument,
 };

@@ -31,6 +31,10 @@ const getDataToAddFile = (ecrno) => {
     return http.SaveFile.get(`getDataToAddFile/${ecrno}`);
 }
 
+
+
+
+
 export default {
     getNbrAddFile,
     postFile,

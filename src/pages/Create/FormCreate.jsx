@@ -212,7 +212,7 @@ function FormCreate(props) {
             setcbReqDocForDD(res.data.filter(item => item.dictType == 'REQ_DOC_FORDD'));
         })
 
-        getDataSrvPermiss.getEmployeeForCreate().then((res) => {
+        getDataSrvPermiss.getEmployeeForCreateCheck().then((res) => {
             try {
                 setEmployeeArray(res.data);
             }
@@ -860,60 +860,63 @@ function FormCreate(props) {
                                         </Col>
                                     </Row>
 
+                                    <hr></hr>
 
-                                    <br></br>
                                     {
-                                        btnAddFile && <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                            <Col xs={12} md={4}>
-                                                <FormControl fullWidth>
-                                                    <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                    <Select
-                                                        labelId="demo-simple-select-label"
-                                                        id="demo-simple-select"
-                                                        value={employee}
-                                                        label="EmpCode"
-                                                        onChange={handleChangeEmployee}>
-                                                        {
-                                                            employeeArray.map((item, index) =>
-                                                                <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                            )
-                                                        }
-                                                    </Select>
-                                                </FormControl>
-                                            </Col>
-                                            <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                            </Col>
-                                            <Col xs={12} md={3}>
-                                                <FormControl fullWidth>
-                                                    <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                    <Select
-                                                        labelId="demo-simple-select-label"
-                                                        id="demo-simple-select"
-                                                        value={step}
-                                                        label="Status"
-                                                        onChange={handleChangeStep}>
-                                                        {
-                                                            stepArrayCre.map((item, index) =>
-                                                                <MenuItem value={item}>{item}</MenuItem>
-                                                            )
-                                                        }
-                                                    </Select>
-                                                </FormControl>
-                                            </Col>
-                                            <Col xs={12} md={2}>
-                                                {
-                                                    permission.filter((item) => {
-                                                        return ((permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == "ISSUED" || permission[0]?.grpRoleSect == "ADMIN"))
-                                                    }).length ? <>
-                                                        <Button variant="success" onClick={() => postAddNotifyTo(nbr[0]?.runningNumber, posit, "CREATE")}>
-                                                            + เพิ่มผู้ดำเนินการ
-                                                        </Button>
-                                                    </> : ""
-                                                }
-                                            </Col>
-                                        </Row>
+                                        btnAddFile && <>
+                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Check เอกสาร ECR ใน Section ของคุณ</p><br></br>
+                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Col xs={12} md={4}>
+                                                    <FormControl fullWidth>
+                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={employee}
+                                                            label="EmpCode"
+                                                            onChange={handleChangeEmployee}>
+                                                            {
+                                                                employeeArray.map((item, index) =>
+                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                </Col>
+                                                <Col xs={12} md={3}>
+                                                    <FormControl fullWidth>
+                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={step}
+                                                            label="Status"
+                                                            onChange={handleChangeStep}>
+                                                            {
+                                                                stepArrayCre.map((item, index) =>
+                                                                    <MenuItem value={item}>{item}</MenuItem>
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={2}>
+                                                    {
+                                                        permission.filter((item) => {
+                                                            return ((permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == "ISSUED" || permission[0]?.grpRoleSect == "ADMIN"))
+                                                        }).length ? <>
+                                                            <Button variant="success" onClick={() => postAddNotifyTo(nbr[0]?.runningNumber, posit, "CREATE")}>
+                                                                + เพิ่มผู้ดำเนินการ
+                                                            </Button>
+                                                        </> : ""
+                                                    }
+                                                </Col>
+                                            </Row>
+                                        </>
                                     }
 
                                     <br></br>

@@ -15,8 +15,8 @@ const getCheck = (docNo, status, section) => {
     return http.APIHEADER.get(`getCheck/${docNo}/${status}/${section}`);
 }
 
-const getApproved = (docNo, status, section) => {
-    return http.APIHEADER.get(`getApproved/${docNo}/${status}/${section}`);
+const postApproved = (param) => {
+    return http.APIHEADER.post(`postApproved`, param);
 }
 
 
@@ -34,7 +34,7 @@ const getECRListLoad = (section, status) => {
 export default {
     // getECRList,
     getCheck,
-    getApproved,
+    postApproved,
     getStatusCreate,
     getECRListLoad,
     postECRList

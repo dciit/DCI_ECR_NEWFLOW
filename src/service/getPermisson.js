@@ -14,24 +14,111 @@ const postAddPermission = (param) => {
 }
 
 
-const getEmployeeForCreate = () => {
-    return http.APIPERMISSION.get(`getEmployeeForCreate`);
+const getEmployeeForCreateCheck = () => {
+    return http.APIPERMISSION.get(`getEmployeeForCreateCheck`);
 }
 
-const getEmployeeForPU = () => {
-    return http.APIPERMISSION.get(`getEmployeeForPU`);
+const getEmployeeForCreateApproved = () => {
+    return http.APIPERMISSION.get(`getEmployeeForCreateApproved`);
 }
 
-const getEmployeeForDD = () => {
-    return http.APIPERMISSION.get(`getEmployeeForDD`);
+
+const getEmployeeForPUReceived = () => {
+    return http.APIPERMISSION.get(`getEmployeeForPUReceived`);
 }
 
-const getEmployeeForEN = () => {
-    return http.APIPERMISSION.get(`getEmployeeForEN`);
+const getEmployeeForPUIssued = () => {
+    return http.APIPERMISSION.get(`getEmployeeForPUIssued`);
 }
 
-const getEmployeeForQC = () => {
-    return http.APIPERMISSION.get(`getEmployeeForQC`);
+
+const getEmployeeForPUCheck = () => {
+    return http.APIPERMISSION.get(`getEmployeeForPUCheck`);
+}
+
+
+const getEmployeeForPUApproved = () => {
+    return http.APIPERMISSION.get(`getEmployeeForPUApproved`);
+}
+
+const getEmployeeForDDReceived = () => {
+    return http.APIPERMISSION.get(`getEmployeeForDDReceived`);
+}
+
+const getEmployeeForDDIssued = () => {
+    return http.APIPERMISSION.get(`getEmployeeForDDIssued`);
+}
+
+const getEmployeeForDDCheck = () => {
+    return http.APIPERMISSION.get(`getEmployeeForDDCheck`);
+}
+
+const getEmployeeForDDApproved = () => {
+    return http.APIPERMISSION.get(`getEmployeeForDDApproved`);
+}
+
+const getEmployeeForENReceived = () => {
+    return http.APIPERMISSION.get(`getEmployeeForENReceived`);
+}
+
+const getEmployeeForENIssued = () => {
+    return http.APIPERMISSION.get(`getEmployeeForENIssued`);
+}
+
+const getEmployeeForENCheck = () => {
+    return http.APIPERMISSION.get(`getEmployeeForENCheck`);
+}
+
+const getEmployeeForENApproved = () => {
+    return http.APIPERMISSION.get(`getEmployeeForENApproved`);
+}
+
+const getEmployeeForSQCReceived = () => {
+    return http.APIPERMISSION.get(`getEmployeeForSQCReceived`);
+}
+
+const getEmployeeForSQCIssued = () => {
+    return http.APIPERMISSION.get(`getEmployeeForSQCIssued`);
+}
+
+const getEmployeeForSQCCheck = () => {
+    return http.APIPERMISSION.get(`getEmployeeForSQCCheck`);
+}
+
+const getEmployeeForSQCApproved = () => {
+    return http.APIPERMISSION.get(`getEmployeeForSQCApproved`);
+}
+
+const getEmployeeForQCReceived = () => {
+    return http.APIPERMISSION.get(`getEmployeeForQCReceived`);
+}
+
+const getEmployeeForQCIssued = () => {
+    return http.APIPERMISSION.get(`getEmployeeForQCIssued`);
+}
+
+const getEmployeeForQCCheck = () => {
+    return http.APIPERMISSION.get(`getEmployeeForQCCheck`);
+}
+
+const getEmployeeForQCApproved = () => {
+    return http.APIPERMISSION.get(`getEmployeeForQCApproved`);
+}
+
+const getEmployeeForQAReceived = () => {
+    return http.APIPERMISSION.get(`getEmployeeForQAReceived`);
+}
+
+const getEmployeeForQAIssued = () => {
+    return http.APIPERMISSION.get(`getEmployeeForQAIssued`);
+}
+
+const getEmployeeForQACheck = () => {
+    return http.APIPERMISSION.get(`getEmployeeForQACheck`);
+}
+
+const getEmployeeForQAApproved = () => {
+    return http.APIPERMISSION.get(`getEmployeeForQAApproved`);
 }
 
 const postAddNotifyTo = (param) => {
@@ -71,15 +158,42 @@ const getPosition = (empCode) => {
 }
 
 
+const getNotifypersonBy = (ecrno, empLogin) => {
+    return http.APIPERMISSION.get(`getNotifypersonBy/${ecrno}/${empLogin}`)
+}
+
+
+
 export default {
     getPermission,
     getPermissionMenu,
     postAddPermission,
-    getEmployeeForCreate,
-    getEmployeeForPU,
-    getEmployeeForDD,
-    getEmployeeForEN,
-    getEmployeeForQC,
+    getEmployeeForCreateCheck,
+    getEmployeeForCreateApproved,
+    getEmployeeForPUReceived,
+    getEmployeeForPUIssued,
+    getEmployeeForPUCheck,
+    getEmployeeForPUApproved,
+    getEmployeeForDDReceived,
+    getEmployeeForDDIssued,
+    getEmployeeForDDCheck,
+    getEmployeeForDDApproved,
+    getEmployeeForENReceived,
+    getEmployeeForENIssued,
+    getEmployeeForENCheck,
+    getEmployeeForENApproved,
+    getEmployeeForSQCReceived,
+    getEmployeeForSQCIssued,
+    getEmployeeForSQCCheck,
+    getEmployeeForSQCApproved,
+    getEmployeeForQCReceived,
+    getEmployeeForQCIssued,
+    getEmployeeForQCCheck,
+    getEmployeeForQCApproved,
+    getEmployeeForQAReceived,
+    getEmployeeForQAIssued,
+    getEmployeeForQACheck,
+    getEmployeeForQAApproved,
     postAddNotifyTo,
     getNotifyTo,
     getDeleteNotify,
@@ -88,4 +202,5 @@ export default {
     getTestLogin,
     getDeletePermission,
     getPosition,
+    getNotifypersonBy,
 }

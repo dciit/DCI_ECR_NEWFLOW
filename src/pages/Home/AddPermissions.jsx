@@ -97,6 +97,7 @@ function AddPermissions() {
             try {
                 //handelSearch();
                 handelSearch();
+                // loadPage();
             }
             catch (error) {
                 console.log(error);

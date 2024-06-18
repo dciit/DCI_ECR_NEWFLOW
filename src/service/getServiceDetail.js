@@ -4,8 +4,32 @@ const postReceive = (param) => {
     return http.APIDETAIL.post(`postReceive`, param);
 }
 
-const postIssued = (param) => {
-    return http.APIDETAIL.post(`postIssued`, param);
+// const postIssued = (param) => {
+//     return http.APIDETAIL.post(`postIssued`, param);
+// }
+
+const postIssuedPU = (param) => {
+    return http.APIDETAIL.post(`postIssuedPU`, param);
+}
+
+const postIssuedDD = (param) => {
+    return http.APIDETAIL.post(`postIssuedDD`, param);
+}
+
+const postIssuedEN = (param) => {
+    return http.APIDETAIL.post(`postIssuedEN`, param);
+}
+
+const postIssuedSQC = (param) => {
+    return http.APIDETAIL.post(`postIssuedSQC`, param);
+}
+
+const postIssuedQC = (param) => {
+    return http.APIDETAIL.post(`postIssuedQC`, param);
+}
+
+const postIssuedQA = (param) => {
+    return http.APIDETAIL.post(`postIssuedQA`, param);
 }
 
 const getReturn = (param) => {
@@ -30,7 +54,12 @@ const postHold = (param) => {
 
 export default {
     postReceive,
-    postIssued,
+    postIssuedPU,
+    postIssuedDD,
+    postIssuedEN,
+    postIssuedSQC,
+    postIssuedQC,
+    postIssuedQA,
     getReturn,
     postApprovedDIL,
     postReturnDIL,

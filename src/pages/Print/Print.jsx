@@ -131,7 +131,7 @@ function Print() {
                                         {
                                             cbItemPU.map((item, index) => {
                                                 var isChecked = dataModaldt[0]?.item.split(',').includes(item?.dict_Code);
-                                                return <div key={item?.dict_Code} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.dict_Desc}</div> <br></br></div>
+                                                return <div key={item?.dict_Code} style={{ display: 'flex' }} > <div className='checkbox-container'><input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} /> </div>   <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.dict_Desc}</div> <br></br></div>
                                             })
                                         }
                                         <p style={{ marginLeft: '1.8pc', fontSize: '12px' }}>Other :<ins>{dataModaldt[0]?.itemPU_Other}</ins></p>

@@ -223,7 +223,7 @@ table.tableCreateform {
 .tscroll {
     overflow-x: scroll;
     margin-bottom: 10px;
-    height: 700px;
+    height: 500px;
 }
 
 /* .tscroll table tr:nth-child(2) th:first-child,

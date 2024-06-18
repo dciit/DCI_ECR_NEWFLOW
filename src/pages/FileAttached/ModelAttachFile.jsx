@@ -67,6 +67,8 @@ function ModelAttachFile(props) {
     const { show, close, item } = props;
     // const empCode = localStorage.getItem("name");
     const empCode = Cookies.get('code')
+    const user_name = Cookies.get('name')
+    const [permis, setpermis] = useState([]);
     const [copyPath, setCopyPath] = useState('');
     const ref = useRef();
     const permission = useSelector((state) => state.reducer.permission);
@@ -115,6 +117,7 @@ function ModelAttachFile(props) {
 
     let sectionFile = showFile[0]?.section
     let secPermission = permission[0]?.grpRoleSect
+
 
 
     const handleSubmission = () => {
@@ -278,9 +281,7 @@ function ModelAttachFile(props) {
                                                 }).length ? <>
                                                     <p>วาง Path File ที่นี้ <span style={{ color: 'red', fontSize: '18px' }}>*</span></p>
                                                     <input type="text" autoFocus style={{ width: '390px' }} value={copyPath} onChange={(event) => setCopyPath(event.target.value)} />
-                                                </>
-                                                    :
-                                                    ""
+                                                </> : ""
                                             }
                                         </div>
 
@@ -302,7 +303,7 @@ function ModelAttachFile(props) {
                                 <Table>
                                     <TableHead>
                                         <TableRow>
-                                            <StyledTableCell align="center">#</StyledTableCell>
+                                            <StyledTableCell align="center">No</StyledTableCell>
                                             <StyledTableCell align="center">File Name</StyledTableCell>
                                             <StyledTableCell align="center">File Path</StyledTableCell>
                                             <StyledTableCell align="center">Section</StyledTableCell>
@@ -310,34 +311,36 @@ function ModelAttachFile(props) {
                                             <StyledTableCell align="center">Add Date</StyledTableCell>
                                             <StyledTableCell align="center">Detail</StyledTableCell>
                                             <StyledTableCell align="center">Delete</StyledTableCell>
+                                            <StyledTableCell align="center"></StyledTableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {
                                             showFile?.map((item, index) => {
+                                                console.log(item.addfileby, user_name)
                                                 return <StyledTableRow key={item.docid}>
                                                     <StyledTableCell align="center">{item.no}</StyledTableCell>
-                                                    <StyledTableCell align="center">{item.filename}</StyledTableCell>
-                                                    <StyledTableCell align="center">{item.filepath}</StyledTableCell>
+                                                    <StyledTableCell align="left">{item.filename}</StyledTableCell>
+                                                    <StyledTableCell align="left">{item.filepath}</StyledTableCell>
                                                     <StyledTableCell align="center">{item.section}</StyledTableCell>
                                                     <StyledTableCell align="center">{item.addfileby}</StyledTableCell>
                                                     <StyledTableCell align="center">{item.addfiledate}</StyledTableCell>
                                                     <StyledTableCell align="center" style={{ color: '#0e68ff' }}>
-                                                        {/* <a href={`http://dciweb.dci.daikin.co.jp/ECR/asset/FileAttech/${item.pathfilename}`}> <LuLink></LuLink>
-                                                        </a> */}
                                                         <LuLink onClick={() => OpenFile(item.pathfilename)}>
                                                         </LuLink>
                                                     </StyledTableCell>
 
+
                                                     {
-                                                        permission.filter((item) => {
-                                                            return item.menuCode == "BTN0003" && item.rolE_VIEW == "True"
-                                                        }).length ? item.section == secPermission ?
+                                                        item.addfileby == user_name && <>
                                                             <StyledTableCell align="center" onClick={() => handleDelete(item.docid)}><Link><FcFullTrash></FcFullTrash></Link></StyledTableCell>
-                                                            :
                                                             <StyledTableCell />
-                                                            : ""
+                                                        </>
                                                     }
+
+
+
+
                                                 </StyledTableRow>
                                             })
                                         }

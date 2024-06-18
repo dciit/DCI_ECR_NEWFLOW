@@ -55,6 +55,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function Chat(props) {
     const { show, close, item } = props;
     const empCode = Cookies.get('code')
+    const user_name = Cookies.get('name')
 
     useEffect(() => {
         if (show) {
@@ -156,7 +157,7 @@ function Chat(props) {
                                                 <td align="center" style={{ textAlign: 'right', width: '21%', fontSize: '14px' }}>{item.remarkdate}</td>
                                                 <td>
                                                     {
-                                                        (item.type == "HOLD" && item.active == "1" ? <Button variant="success" onClick={() => postConfirmChat(item.ecrno, item.type, item.section, item.tosection, item.code)}>Confirm</Button> : "")
+                                                        (item.type == "HOLD" && item.active == "1" && item.responser == user_name ? <Button variant="success" onClick={() => postConfirmChat(item.ecrno, item.type, item.fromSECTION, item.tosection, item.code)}>Confirm</Button> : "")
                                                     }
                                                 </td>
                                             </tr>

@@ -1,4 +1,4 @@
-import { SOAP_URL_PART, TEST_API, API_ECR, API_REPORT, API_ADDFILE, API_CHAT, API_HEADER, API_DETAIL, API_PERMISSION } from "./constant"; // *{ อย่าลืมเรียก Part URL }*
+import { SOAP_URL_PART, TEST_API, API_ECR, API_REPORT, API_ADDFILE, API_CHAT, API_HEADER, API_DETAIL, API_PERMISSION, API_HOLD } from "./constant"; // *{ อย่าลืมเรียก Part URL }*
 import Axios from "axios"
 
 // LOGIN
@@ -93,7 +93,14 @@ const APIPERMISSION = Axios.create({
 // END PERMISSION
 
 
-
+//  HOLD
+const APIHOLD = Axios.create({
+    baseURL: API_HOLD,
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+// END HOLD
 
 
 export default {
@@ -106,4 +113,5 @@ export default {
     APIHEADER,
     APIDETAIL,
     APIPERMISSION,
+    APIHOLD,
 };

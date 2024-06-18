@@ -26,6 +26,7 @@ import { LegendToggleOutlined } from '@mui/icons-material';
 import { faFile, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { DownloadTableExcel } from 'react-export-table-to-excel';
+import { CircularProgress } from '@mui/material';
 
 
 function Createform() {
@@ -51,6 +52,7 @@ function Createform() {
     const [PartName, setPartName] = useState('');
     const [DrawingNo, setDrawingNo] = useState('');
     const [BRNo, setBRNO] = useState('');
+    const [load, setLoad] = useState(true);
 
 
 
@@ -69,6 +71,7 @@ function Createform() {
     const [getdata, setGetdata] = useState([])
     useEffect(() => {
         loadPage();
+        setLoad(true);
     }, [])
 
 
@@ -83,6 +86,7 @@ function Createform() {
         getDataSrvHD.getECRListLoad(selectSection, selectStatus).then((res) => {
             try {
                 setGetdata(res.data)
+                setLoad(false);
             }
             catch (error) {
                 console.log(error);
@@ -176,9 +180,11 @@ function Createform() {
     // ส่ง DocNo กับ Status ไป API
     const [DocNo, setDocNo] = useState(('%'));
     const getSearch = (event) => {
+        setLoad(true);
         getDataSrvHD.postECRList({ section: selectSection, ecrno: ECRNo, title: Title, model: Model, partName: PartName, drawingNo: DrawingNo, brno: BRNo, status: selectStatus, strclass: strClass, statusDuedate: selectDuedate }).then((res) => {
             try {
                 setGetdata(res.data)
+                setLoad(false);
             }
             catch (error) {
                 console.log(error);
@@ -350,9 +356,6 @@ function Createform() {
 
 
                     <div class="row" >
-                        {/* <div class="row justify-content-md-center"> */}
-                        {/* <div class="col col-lg-2">
-                        </div> */}
                         <div class="col-md-auto">
                             <button type="submit" class="btn btn-primary" onClick={getSearch}><FontAwesomeIcon icon={faMagnifyingGlass} /> Search</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             {
@@ -363,7 +366,7 @@ function Createform() {
                                     ""
                             }
                         </div>
-                        <div class="col col-lg-4">
+                        <div class="col col-lg-7">
                             <DownloadTableExcel
                                 filename="ECR Pending"
                                 sheet="Detail"
@@ -372,7 +375,9 @@ function Createform() {
                                 <button type="submit" class="btn btn-warning"> Export excel </button>
                             </DownloadTableExcel>
                         </div>
-                        {/* </div> */}
+                        {/* <div class="col col-lg-2">
+                            <p>TOTAL</p>
+                        </div> */}
                     </div>
                 </div>
             </div>
@@ -380,359 +385,362 @@ function Createform() {
 
 
 
+            {
+                load == true ? <div style={{ textAlign: 'center' }}><CircularProgress />กำลังโหลดข้อมูล</div> :
+                    <div class="tscroll">
+                        <table className='tableCreateform'>
+                            <thead>
+                                <tr>
+                                    <th colSpan={13} style={{ fontSize: '25px' }}>Detail</th>
+                                    <th colSpan={37} style={{ fontSize: '25px' }}>Actual Process</th>
+                                </tr>
+                                <tr>
+                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>TARGET</th>
+                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>STATUS</th>
+                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>RESPONSE SECTION</th>
+                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>CHECK DETAIL</th>
+                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DCS NO</th>
+                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DRAWING</th>
+                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>CLASS</th>
+                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>ECR NO</th>
+                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '400px', fontSize: '14px' }}>TITLE</th>
+                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>SECTION</th>
+                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>ATTACHED FILE</th>
+                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '200px', fontSize: '14px', padding: '8px' }}>COMMENT</th>
+                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>PRINT</th>
+                                    <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>CREATE</th>
+                                    <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>PU</th>
+                                    <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DD</th>
+                                    <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>EN</th>
+                                    <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>SQC</th>
+                                    <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>QC</th>
+                                    <th colSpan={8} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>SENT TO DIL</th>
+                                    <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>QA</th>
+                                </tr>
 
-            <div class="tscroll">
-                <table className='tableCreateform'>
-                    <thead>
-                        <tr>
-                            <th colSpan={13} style={{ fontSize: '25px' }}>Detail</th>
-                            <th colSpan={37} style={{ fontSize: '25px' }}>Actual Process</th>
-                        </tr>
-                        <tr>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>TARGET</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>STATUS</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>RESPONSE SECTION</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>CHECK DETAIL</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DCS NO</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DRAWING</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>CLASS</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>ECR NO</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '400px', fontSize: '14px' }}>TITLE</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>SECTION</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>ATTACHED FILE</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '200px', fontSize: '14px', padding: '8px' }}>COMMENT</th>
-                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>PRINT</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>CREATE</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>PU</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DD</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>EN</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>SQC</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>QC</th>
-                            <th colSpan={8} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>SENT TO DIL</th>
-                            <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>QA</th>
-                        </tr>
-
-                        <tr colSpan={20} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>
-                            <th colSpan={4}>(DIL Design Section)</th>
-                            <th colSpan={4}>(DIL Quality Control Section)</th>
-                        </tr>
-
-
-                        <tr style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>
-                            <th>Received</th>
-                            <th>Issued</th>
-                            <th>Checked</th>
-                            <th>Approved</th>
-
-                            <th>Received</th>
-                            <th>Issued</th>
-                            <th>Checked</th>
-                            <th>Approved</th>
-
-                            <th>Received</th>
-                            <th>Issued</th>
-                            <th>Checked</th>
-                            <th>Approved</th>
-
-                            <th>Received</th>
-                            <th>Issued</th>
-                            <th>Checked</th>
-                            <th>Approved</th>
-
-                            <th>Received</th>
-                            <th>Issued</th>
-                            <th>Checked</th>
-                            <th>Approved</th>
-
-                            <th>Received</th>
-                            <th>Issued</th>
-                            <th>Checked</th>
-                            <th>Approved</th>
-
-                            <th>Received</th>
-                            <th>Issued</th>
-                            <th>Checked</th>
-                            <th>Approved</th>
-                            <th>Received</th>
-                            <th>Issued</th>
-                            <th>Checked</th>
-                            <th>Approved</th>
-
-                            <th>Received</th>
-                            <th>Issued</th>
-                            <th>Checked</th>
-                            <th>Approved</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {/* {
-                            JSON.stringify(getdata)
-                        } */}
-                        {
-                            getdata?.map((item, index) => {  // ข้อมูลใหญ่
-                                let oCols = ['cre', 'pu', 'dd', 'en', 'sqc', 'qc', 'dil_dd', 'dil_qc', 'qa'];
-                                let oApps = ['received', 'issued', 'check', 'approved'];
-                                let oEcr = [];
-                                oCols.map((items, idx) => { // Section
-                                    let iECR = {
-                                        key: items, app: []
-                                    }
-                                    oApps.map((iApp, idxx) => { // Step
-                                        let name = item[`${items}${iApp}by`]; // by
-                                        let date = item[`${items}${iApp}date`]; // date
-                                        let status = item[`${items}${iApp}bit`]; //bit
-                                        let pending = item[`${items}${iApp}SumDate`];
-                                        let pendingDay = item[`${items}${iApp}SumDate`]; //sumdate
-                                        let namePending = item[`${items}${iApp}namepending`];
-                                        let holdDay = item[`${items}${iApp}HoldDate`];
+                                <tr colSpan={20} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>
+                                    <th colSpan={4}>(DIL Design Section)</th>
+                                    <th colSpan={4}>(DIL Quality Control Section)</th>
+                                </tr>
 
 
-                                        if (pendingDay > 0) {
-                                            pendingDay = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
-                                        }
-                                        else {
-                                            pendingDay = ""
-                                        }
+                                <tr style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>
+                                    <th>Received</th>
+                                    <th>Issued</th>
+                                    <th>Checked</th>
+                                    <th>Approved</th>
 
-                                        if (holdDay > 0) {
-                                            holdDay = item[`${items}${iApp}HoldDate`] + '  ' + 'Day'; //sumdate
-                                        }
-                                        else {
-                                            holdDay = ""
-                                        }
+                                    <th>Received</th>
+                                    <th>Issued</th>
+                                    <th>Checked</th>
+                                    <th>Approved</th>
 
+                                    <th>Received</th>
+                                    <th>Issued</th>
+                                    <th>Checked</th>
+                                    <th>Approved</th>
 
-                                        let alertHold = "";
-                                        let color = 'rgb(254 253 239)';
-                                        if (status == 'F') {
-                                            if (items == 'cre') {
-                                                color = 'rgb(44 255 171)';
+                                    <th>Received</th>
+                                    <th>Issued</th>
+                                    <th>Checked</th>
+                                    <th>Approved</th>
+
+                                    <th>Received</th>
+                                    <th>Issued</th>
+                                    <th>Checked</th>
+                                    <th>Approved</th>
+
+                                    <th>Received</th>
+                                    <th>Issued</th>
+                                    <th>Checked</th>
+                                    <th>Approved</th>
+
+                                    <th>Received</th>
+                                    <th>Issued</th>
+                                    <th>Checked</th>
+                                    <th>Approved</th>
+                                    <th>Received</th>
+                                    <th>Issued</th>
+                                    <th>Checked</th>
+                                    <th>Approved</th>
+
+                                    <th>Received</th>
+                                    <th>Issued</th>
+                                    <th>Checked</th>
+                                    <th>Approved</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {/* {
+                                    JSON.stringify(getdata)
+                                } */}
+                                {
+                                    getdata?.map((item, index) => {  // ข้อมูลใหญ่
+                                        let oCols = ['cre', 'pu', 'dd', 'en', 'sqc', 'qc', 'dil_dd', 'dil_qc', 'qa'];
+                                        let oApps = ['received', 'issued', 'check', 'approved'];
+                                        let oEcr = [];
+                                        oCols.map((items, idx) => { // Section
+                                            let iECR = {
+                                                key: items, app: []
                                             }
-                                            else if (items == 'pu') {
-                                                color = 'rgb(44 255 171)';
-                                            }
-                                            else if (items == 'dd') {
-                                                color = 'rgb(44 255 171)';
-                                            }
-                                            else if (items == 'en') {
-                                                color = 'rgb(44 255 171)';
-                                            }
-                                            else if (items == 'sqc') {
-                                                color = 'rgb(44 255 171)';
-                                            }
-                                            else if (items == 'qc') {
-                                                color = 'rgb(44 255 171)';
-                                            }
-                                            else if (items == 'dil_dd' || items == 'dil_qc') {
-                                                color = 'rgb(44 255 171)';
-                                            }
-                                            else if (items == 'qa') {
-                                                color = 'rgb(44 255 171)';
-                                            }
-                                        } else if (status == 'R') {
-                                            color = 'red'
-                                        }
-                                        else if (status == "H") {
-                                            color = 'yellow'
-                                            alertHold = <span className='circle gelatine'></span>;
-                                        }
-                                        else {
-                                            color = 'rgb(254 253 239)'
-                                        }
+                                            oApps.map((iApp, idxx) => { // Step
+                                                let name = item[`${items}${iApp}by`]; // by
+                                                let date = item[`${items}${iApp}date`]; // date
+                                                let status = item[`${items}${iApp}bit`]; //bit
+                                                let pending = item[`${items}${iApp}SumDate`];
+                                                let pendingDay = item[`${items}${iApp}SumDate`]; //sumdate
+                                                let namePending = item[`${items}${iApp}namepending`];
+                                                let holdDay = item[`${items}${iApp}HoldDate`];
 
 
-                                        let icon = '';
-                                        if (status == "F" || status == "R") {
-                                            if (iApp == "received" || iApp == "issued" || iApp == "check") {
-                                                icon = <IoArrowForward style={{ color: "rgb(28 3 217)" }} />
+                                                if (pendingDay > 0) {
+                                                    pendingDay = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
+                                                }
+                                                else {
+                                                    pendingDay = ""
+                                                }
+
+                                                if (holdDay > 0) {
+                                                    // holdDay = item[`${items}${iApp}HoldDate`] + '  ' + 'Day'; //sumdate
+                                                    holdDay = <p style={{ fontSize: '10px', color: 'blue' }}>{item[`${items}${iApp}HoldDate`] + '  ' + 'Day'}</p>
+                                                }
+                                                else {
+                                                    if (status == "F") {
+                                                        holdDay = <p style={{ fontSize: '10px', color: '#7e8af5f0' }}>{"Less than 1 day"}</p>
+                                                    }
+                                                    else {
+                                                        holdDay = "";
+                                                    }
+                                                }
+
+
+                                                let alertHold = "";
+                                                let color = 'rgb(254 253 239)';
+                                                if (status == 'F') {
+                                                    if (items == 'cre') {
+                                                        color = 'rgb(44 255 171)';
+                                                    }
+                                                    else if (items == 'pu') {
+                                                        color = 'rgb(44 255 171)';
+                                                    }
+                                                    else if (items == 'dd') {
+                                                        color = 'rgb(44 255 171)';
+                                                    }
+                                                    else if (items == 'en') {
+                                                        color = 'rgb(44 255 171)';
+                                                    }
+                                                    else if (items == 'sqc') {
+                                                        color = 'rgb(44 255 171)';
+                                                    }
+                                                    else if (items == 'qc') {
+                                                        color = 'rgb(44 255 171)';
+                                                    }
+                                                    else if (items == 'dil_dd' || items == 'dil_qc') {
+                                                        color = 'rgb(44 255 171)';
+                                                    }
+                                                    else if (items == 'qa') {
+                                                        color = 'rgb(44 255 171)';
+                                                    }
+                                                } else if (status == 'R') {
+                                                    color = 'red'
+                                                }
+                                                else if (status == "H") {
+                                                    color = 'yellow'
+                                                    alertHold = <span className='circle gelatine'></span>;
+                                                }
+                                                else {
+                                                    color = 'rgb(254 253 239)'
+                                                }
+
+
+                                                let icon = '';
+                                                if (status == "F" || status == "R") {
+                                                    if (iApp == "received" || iApp == "issued" || iApp == "check") {
+                                                        icon = <IoArrowForward style={{ color: "rgb(28 3 217)" }} />
+                                                    }
+                                                    else {
+                                                        icon = <IoArrowForward style={{ color: "rgb(147 12 158)" }} />
+                                                    }
+                                                }
+
+                                                let colorPendingDate = 'rgb(54 145 245)'
+
+                                                if (pending >= 3) {
+                                                    colorPendingDate = 'red'
+                                                }
+                                                else {
+                                                    colorPendingDate = 'rgb(54 145 245)'
+                                                }
+
+
+                                                iECR.app.push({
+                                                    name: name,
+                                                    date: date,
+                                                    status: status,
+                                                    color: color,
+                                                    title: iApp,
+                                                    icon: icon,
+                                                    pendingDay: pendingDay,
+                                                    colorPendingDate: colorPendingDate,
+                                                    namePedning: namePending,
+                                                    holdDay: holdDay,
+                                                    alertHold: alertHold,
+                                                });
+                                            });
+                                            oEcr.push(iECR);
+
+                                        });
+
+                                        var status = ''
+                                        let lSec = '';
+                                        sectionArray.filter((vSec, iSec) => {
+                                            if (vSec == "DIL_DD") {
+                                                lSec = "DIL";
+                                            }
+                                            else if (vSec == "DIL_QC") {
+                                                lSec = "DIL";
                                             }
                                             else {
-                                                icon = <IoArrowForward style={{ color: "rgb(147 12 158)" }} />
+                                                lSec = vSec;
                                             }
+
+                                            status = item[`${lSec.toLowerCase()}_status`] == 'U' ? (status == '' ? lSec : status) : status;
+                                        });
+
+
+                                        let targetDate = item.targetDate;
+
+                                        let colorTargetDate = 'ghostwhite'
+                                        if (targetDate >= 0 && targetDate <= 14) {
+                                            colorTargetDate = 'red'
                                         }
-
-                                        let colorPendingDate = 'rgb(54 145 245)'
-
-                                        if (pending >= 3) {
-                                            colorPendingDate = 'red'
+                                        else if (targetDate >= 15 && targetDate <= 21) {
+                                            colorTargetDate = 'yellow'
                                         }
                                         else {
-                                            colorPendingDate = 'rgb(54 145 245)'
+                                            colorTargetDate = 'ghostwhite'
                                         }
 
 
-                                        iECR.app.push({
-                                            name: name,
-                                            date: date,
-                                            status: status,
-                                            color: color,
-                                            title: iApp,
-                                            icon: icon,
-                                            pendingDay: pendingDay,
-                                            colorPendingDate: colorPendingDate,
-                                            namePedning: namePending,
-                                            holdDay: holdDay,
-                                            alertHold: alertHold,
-                                        });
-                                    });
-                                    oEcr.push(iECR);
-
-                                });
-
-                                var status = ''
-                                let lSec = '';
-                                sectionArray.filter((vSec, iSec) => {
-                                    if (vSec == "DIL_DD") {
-                                        lSec = "DIL";
-                                    }
-                                    else if (vSec == "DIL_QC") {
-                                        lSec = "DIL";
-                                    }
-                                    else {
-                                        lSec = vSec;
-                                    }
-
-                                    status = item[`${lSec.toLowerCase()}_status`] == 'U' ? (status == '' ? lSec : status) : status;
-                                });
+                                        let AlertDuedate = item.targetDate;
+                                        let datealertDuedate = "";
+                                        if (AlertDuedate >= 1) {
+                                            datealertDuedate = <p className='pulse' style={{ color: 'red', fontWeight: '500', fontSize: '16px' }}>OVER {AlertDuedate} วัน</p>;
+                                        }
+                                        else if (AlertDuedate == 0 && item.strClass != "D") {
+                                            datealertDuedate = <p style={{ color: 'yellow' }}>DUEDATE {AlertDuedate} วัน</p>;
+                                        }
+                                        else if (AlertDuedate == 0 && item.strClass == "D") {
+                                            datealertDuedate = <p style={{ color: 'yellow' }}>Waiting Due Date</p>;
+                                        }
+                                        else if (AlertDuedate < -0) {
+                                            datealertDuedate = <p>REMAIN {AlertDuedate * -1} วัน</p>;
+                                        }
 
 
-                                let targetDate = item.targetDate;
+                                        let lcount = "";
+                                        if (item.count > 0) {
+                                            lcount = <span className='hithere content' >{item.count}</span>;
+                                        }
+                                        else {
+                                            lcount = "";
+                                        }
 
-                                let colorTargetDate = 'ghostwhite'
-                                if (targetDate >= 0 && targetDate <= 14) {
-                                    colorTargetDate = 'red'
-                                }
-                                else if (targetDate >= 15 && targetDate <= 21) {
-                                    colorTargetDate = 'yellow'
-                                }
-                                else {
-                                    colorTargetDate = 'ghostwhite'
-                                }
-
-
-                                let AlertDuedate = item.targetDate;
-                                let datealertDuedate = "";
-                                if (AlertDuedate >= 1) {
-                                    datealertDuedate = <p className='pulse' style={{ color: 'red', fontWeight: '500', fontSize: '16px' }}>OVER {AlertDuedate} วัน</p>;
-                                }
-                                else if (AlertDuedate == 0 && item.strClass != "D") {
-                                    datealertDuedate = <p style={{ color: 'yellow' }}>DUEDATE {AlertDuedate} วัน</p>;
-                                }
-                                else if (AlertDuedate == 0 && item.strClass == "D") {
-                                    datealertDuedate = <p style={{ color: 'yellow' }}>Waiting Due Date</p>;
-                                }
-                                else if (AlertDuedate < -0) {
-                                    datealertDuedate = <p>REMAIN {AlertDuedate * -1} วัน</p>;
-                                }
-
-
-                                let lcount = "";
-                                if (item.count > 0) {
-                                    lcount = <span className='hithere content' >{item.count}</span>;
-                                }
-                                else {
-                                    lcount = "";
-                                }
-
-                                let HoldTotal = item.hOLDDATETOTAL;
+                                        let HoldTotal = item.hOLDDATETOTAL;
 
 
 
-                                return <tr style={{ backgroundColor: (item.counthold > 0 ? 'yellow' : '') }}>
-                                    <td className='headcol' style={{ fontSize: '16px', padding: '8px' }}><nobr>{item.dueDate}<br></br><p style={{ fontSize: '14px', color: 'rgb(94 66 201)', marginBottom: '1px' }}>{datealertDuedate}</p></nobr></td>
-                                    <td>
-                                        <p style={{ padding: '8px', marginBottom: '-1px' }}>{(status != '' ? status : 'FINISH')}</p>
-                                        <p className='pulse' style={{ color: '#f1720de6' }}>{(item.counthold > 0 ? 'HOLD' : '')}</p>
-                                    </td>
-                                    <td>
-                                        <p style={{ padding: '8px', marginBottom: '-1px' }}>{item.hOLDTOSECTION}</p>
-                                        <p style={{ fontSize: '12px' }}>{(HoldTotal != 0 ? "(" + HoldTotal + " " + "Day" + ")" : "")}</p>
-                                    </td>
-                                    <td>
-                                        <Link underline="hover">
-                                            <center><FcFinePrint style={{ width: '35px', height: '45px' }} onClick={() => handleShowDetail(item.ecrno)} /></center>
-                                        </Link>
-                                        {/* <Link underline="hover">
+                                        return <tr style={{ backgroundColor: (item.counthold > 0 ? 'yellow' : '') }}>
+                                            <td className='headcol' style={{ fontSize: '16px', padding: '8px' }}><nobr>{item.dueDate}<br></br><p style={{ fontSize: '14px', color: 'rgb(94 66 201)', marginBottom: '1px' }}>{datealertDuedate}</p></nobr></td>
+                                            <td>
+                                                <p style={{ padding: '8px', marginBottom: '-1px' }}>{(status != '' ? status : 'FINISH')}</p>
+                                                <p className='pulse' style={{ color: '#f1720de6' }}>{(item.counthold > 0 ? 'HOLD' : '')}</p>
+                                            </td>
+                                            <td>
+                                                <p style={{ padding: '8px', marginBottom: '-1px' }}>{item.hOLDTOSECTION}</p>
+                                                <p style={{ fontSize: '12px' }}>{(HoldTotal != 0 ? "(" + HoldTotal + " " + "Day" + ")" : "")}</p>
+                                            </td>
+                                            <td>
+                                                <Link underline="hover">
+                                                    <center><FcFinePrint style={{ width: '35px', height: '45px' }} onClick={() => handleShowDetail(item.ecrno)} /></center>
+                                                </Link>
+                                                {/* <Link underline="hover">
                                             <center><FcOk style={{ width: '35px', height: '45px' }} onClick={() => handleShowDetail(item.ecrno)} /></center>
                                         </Link> */}
-                                    </td>
-                                    <td style={{ fontSize: '14px', padding: '8px' }}>{item.notificationNo}</td>
-                                    <td style={{ fontSize: '14px', padding: '8px' }}><nobr>{item.partNo}</nobr></td>
-                                    <td style={{ fontSize: '14px', padding: '8px' }}>{item.strClass}</td>
-                                    <td style={{ fontSize: '14px', padding: '8px' }}>{item.ecrno}</td>
-                                    <td style={{ fontSize: '14px', padding: '8px', width: '400px' }}><nobr>{item.title}</nobr></td>
-                                    <td style={{ fontSize: '14px', padding: '8px' }}>
-                                        {
-                                            showSection(item.section)
-                                        }
-                                    </td>
-                                    <td>
-                                        <FcDocument style={{
-                                            width: '30px', height: '40px'
-                                        }} onClick={() => {
-                                            setEcrnoSelected(item)
-                                            setOpenAttrFile(true);
-                                        }} />
-                                    </td>
-                                    <td>
-                                        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'row-reverse' }}>
-                                            {lcount}
-                                            <center>
-                                                <FcSms style={{
-                                                    width: '28px', height: '35px'
+                                            </td>
+                                            <td style={{ fontSize: '14px', padding: '8px' }}>{item.notificationNo}</td>
+                                            <td style={{ fontSize: '14px', padding: '8px' }}><nobr>{item.partNo}</nobr></td>
+                                            <td style={{ fontSize: '14px', padding: '8px' }}>{item.strClass}</td>
+                                            <td style={{ fontSize: '14px', padding: '8px' }}>{item.ecrno}</td>
+                                            <td style={{ fontSize: '14px', padding: '8px', width: '400px' }}><nobr>{item.title}</nobr></td>
+                                            <td style={{ fontSize: '14px', padding: '8px' }}>
+                                                {
+                                                    showSection(item.section)
+                                                }
+                                            </td>
+                                            <td>
+                                                <FcDocument style={{
+                                                    width: '30px', height: '40px'
                                                 }} onClick={() => {
                                                     setEcrnoSelected(item)
-                                                    setOpenModalChat(true);
+                                                    setOpenAttrFile(true);
                                                 }} />
-                                            </center>
-                                        </div>
-                                    </td>
+                                            </td>
+                                            <td>
+                                                <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'row-reverse' }}>
+                                                    {lcount}
+                                                    <center>
+                                                        <FcSms style={{
+                                                            width: '28px', height: '35px'
+                                                        }} onClick={() => {
+                                                            setEcrnoSelected(item)
+                                                            setOpenModalChat(true);
+                                                        }} />
+                                                    </center>
+                                                </div>
+                                            </td>
 
-                                    <td>
-                                        <Button style={{ backgroundColor: 'white', borderColor: 'white' }} onClick={() => PrintECR(item.ecrno)}> <FcPrint style={{
-                                            width: '32px', height: '40px'
-                                        }} />
-                                        </Button>
-                                        <Link id='linkprint' to={`/ECR/PrintPage/${item.ecrno}`} target="_blank">
-                                        </Link>
-                                    </td>
-                                    {
-                                        oEcr.map((vSec, iSec) => {
-                                            return <>
-                                                {
-                                                    vSec.app.map((vApp, iApp) => {
-                                                        return <td style={{ backgroundColor: vApp.color, width: '30px' }}>
-                                                            <div style={{ fontSize: '11px ', height: '50px', justifyContent: 'center', alignItems: 'center', width: '90px', marginTop: '10px' }}>
-                                                                <div>
-                                                                    {vApp.name} <span>{vApp.alertHold}</span>
-                                                                </div>
-                                                                <div style={{ fontSize: '10px' }}>
-                                                                    {vApp.date}
-                                                                </div>
-                                                                <div style={{ fontSize: '10px', color: 'blue' }}>
-                                                                    {vApp.holdDay}
-                                                                </div>
-                                                                <div style={{ color: vApp.colorPendingDate, fontSize: '11px', fontWeight: '700' }}>  {vApp.pendingDay}
-                                                                </div>
-                                                                <div style={{ color: 'rgb(101 93 192)' }}>  {vApp.namePedning}</div>
-                                                            </div>
-                                                        </td>
-                                                    })
-                                                }
-                                            </>
-                                        })
-                                    }
-                                </tr>
-                            })
-                        }
-                    </tbody >
-                </table>
-            </div>
-
-
-            {/* {
-                JSON.stringify(getdata)
-            } */}
+                                            <td>
+                                                <Button style={{ backgroundColor: 'white', borderColor: 'white' }} onClick={() => PrintECR(item.ecrno)}> <FcPrint style={{
+                                                    width: '32px', height: '40px'
+                                                }} />
+                                                </Button>
+                                                <Link id='linkprint' to={`/ECR/PrintPage/${item.ecrno}`} target="_blank">
+                                                </Link>
+                                            </td>
+                                            {
+                                                oEcr.map((vSec, iSec) => {
+                                                    return <>
+                                                        {
+                                                            vSec.app.map((vApp, iApp) => {
+                                                                return <td style={{ backgroundColor: vApp.color, width: '30px' }}>
+                                                                    <div style={{ fontSize: '11px ', height: '50px', justifyContent: 'center', alignItems: 'center', width: '90px', marginTop: '10px' }}>
+                                                                        <div>
+                                                                            {vApp.name} <span>{vApp.alertHold}</span>
+                                                                        </div>
+                                                                        <div style={{ fontSize: '10px' }}>
+                                                                            {vApp.date}
+                                                                        </div>
+                                                                        <div>
+                                                                            {vApp.holdDay}
+                                                                        </div>
+                                                                        <div style={{ color: vApp.colorPendingDate, fontSize: '11px', fontWeight: '700' }}>  {vApp.pendingDay}
+                                                                        </div>
+                                                                        <div style={{ color: 'rgb(101 93 192)' }}>  {vApp.namePedning}</div>
+                                                                    </div>
+                                                                </td>
+                                                            })
+                                                        }
+                                                    </>
+                                                })
+                                            }
+                                        </tr>
+                                    })
+                                }
+                            </tbody >
+                        </table>
+                    </div>
+            }
 
             <div style={{ display: 'none' }}>
                 {/* <div> */}
@@ -766,7 +774,6 @@ function Createform() {
                                         else {
                                             pendingDayToExcel = 0;
                                         }
-                                        console.log(pendingDayToExcel, status)
                                     });
                                 });
                                 return <tr>

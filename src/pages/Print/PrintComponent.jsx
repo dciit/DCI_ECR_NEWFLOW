@@ -22,7 +22,6 @@ import { Label } from 'semantic-ui-react';
 // });
 
 function PrintComponent() {
-
     useEffect(() => {
         getTestParameter();
         setTimeout(() => {
@@ -119,7 +118,8 @@ function PrintComponent() {
                                             {
                                                 cbItemPU.map((item, index) => {
                                                     var isChecked = dataModaldt[0]?.item.split(',').includes(item?.dict_Code);
-                                                    return <div key={item?.dict_Code} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.dict_Desc}</div> <br></br></div>
+                                                    return <div key={item?.dict_Code} style={{ display: 'flex' }} > <div className='checkbox-container'>
+                                                        <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled /> </div>   <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.dict_Desc}</div> <br></br></div>
                                                 })
                                             }
                                             <p style={{ marginLeft: '1.8pc', fontSize: '12px' }}>Other :<ins>{dataModaldt[0]?.itemPU_Other}</ins></p>
@@ -128,7 +128,8 @@ function PrintComponent() {
                                             {
                                                 cbItemDD.map((item, index) => {
                                                     var isChecked = dataModaldt[0]?.item.split(',').includes(item?.dict_Code);
-                                                    return <div key={item?.dict_Code} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled />    <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.dict_Desc}</div> <br></br></div>
+                                                    return <div key={item?.dict_Code} style={{ display: 'flex' }} > <div className='checkbox-container'>
+                                                        <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled /> </div>   <div style={{ display: 'none' }}> {item?.dict_Code} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.dict_Desc}</div> <br></br></div>
                                                 })
                                             }
 
@@ -141,7 +142,8 @@ function PrintComponent() {
                                                 {
                                                     cbModel.map((item, index) => {
                                                         var isChecked = dataModaldt[0]?.model.split(',').includes(item?.req_MODELCODE);
-                                                        return <div key={item?.req_MODELCODE} style={{ display: 'flex', marginLeft: '0.3pc' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled />    <div style={{ display: 'none' }}> {item?.req_MODELCODE} </div> <div style={{ marginLeft: '4px', fontSize: '12px' }}>{item?.req_MODELNAME}</div> <br></br></div>
+                                                        return <div key={item?.req_MODELCODE} style={{ display: 'flex', marginLeft: '0.3pc' }} ><div className='checkbox-container'>
+                                                            <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled /></div><div style={{ display: 'none' }}> {item?.req_MODELCODE} </div> <div style={{ marginLeft: '4px', fontSize: '12px' }}>{item?.req_MODELNAME}</div> <br></br></div>
                                                     })
                                                 }
                                             </div>
@@ -153,7 +155,7 @@ function PrintComponent() {
                                                 {
                                                     cbLine.map((item, index) => {
                                                         var isChecked = dataModaldt[0]?.line.split(',').includes(item?.req_LINECODE);
-                                                        return <div key={item?.req_LINECODE} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled />    <div style={{ display: 'none' }}> {item?.req_LINECODE} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.req_LINENAME}</div> <br></br></div>
+                                                        return <div key={item?.req_LINECODE} style={{ display: 'flex' }} > <div className='checkbox-container'><input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled /> </div>   <div style={{ display: 'none' }}> {item?.req_LINECODE} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.req_LINENAME}</div> <br></br></div>
                                                     })
                                                 }
                                             </div>
@@ -192,7 +194,7 @@ function PrintComponent() {
                                 {
                                     cbForDD.map((item, index) => {
                                         var isChecked = dataModaldt[0]?.for_DDSection.split(',').includes(item?.req_FORCODE);
-                                        return <div key={item?.req_FORCODE} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled />    <div style={{ display: 'none' }}> {item?.req_FORCODE} </div> <div style={{ marginLeft: '13px', fontSize: '11px' }}>{item?.req_FORNAME}</div> <br></br></div>
+                                        return <div key={item?.req_FORCODE} style={{ display: 'flex' }} > <div className='checkbox-container'><input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled /></div>    <div style={{ display: 'none' }}> {item?.req_FORCODE} </div> <div style={{ marginLeft: '13px', fontSize: '11px' }}>{item?.req_FORNAME}</div> <br></br></div>
                                     })
                                 }
                             </div>
@@ -205,14 +207,14 @@ function PrintComponent() {
                             <div class="col-md-10" >
                                 <table style={{ width: '100%' }}>
                                     <tr style={{ border: '1px solid black' }}>
-                                        <td style={{ border: '1px solid black', fontSize: '13px' }}><center>PART NO. (DRAWING)</center></td>
-                                        <td style={{ border: '1px solid black', fontSize: '13px' }}><center>PART NAME</center></td>
-                                        <td style={{ border: '1px solid black', fontSize: '13px' }}><center>REMART</center></td>
+                                        <td width={'25%'} style={{ border: '1px solid black', fontSize: '13px' }}><center>PART NO. (DRAWING)</center></td>
+                                        <td width={'25%'} style={{ border: '1px solid black', fontSize: '13px' }}><center>PART NAME</center></td>
+                                        <td width={'50%'} style={{ border: '1px solid black', fontSize: '13px' }}><center>REMARK</center></td>
                                     </tr>
                                     <tr style={{ border: '1px solid black' }}>
                                         <td style={{ border: '1px solid black', fontSize: '12px', width: '4pc' }}><center><b>{dataModaldt[0]?.part_No}</b></center></td>
                                         <td style={{ border: '1px solid black', fontSize: '12px', width: '4pc' }}><center><b>{dataModaldt[0]?.part_Name}</b></center></td>
-                                        <td style={{ border: '1px solid black', fontSize: '12px', width: '4pc' }}><center><b>{dataModaldt[0]?.remark}</b></center></td>
+                                        <td style={{ border: '1px solid black', fontSize: '12px', width: '4pc', wordBreak: 'break-word', fontWeight: 'bold' }}>{dataModaldt[0]?.remark}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -284,7 +286,9 @@ function PrintComponent() {
                                                 {
                                                     cbSecDD.map((item, index) => {
                                                         var isChecked = dataModaldt[0]?.dD_Remark1.split(',').includes(item?.req_ITEMDESIGNCODE);
-                                                        return <div key={item?.req_ITEMDESIGNCODE} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled />    <div style={{ display: 'none' }}> {item?.req_ITEMDESIGNCODE} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.req_ITEMDESIGNNAME}</div> <br></br></div>
+                                                        return <div key={item?.req_ITEMDESIGNCODE} style={{ display: 'flex' }} > <div className='checkbox-container'>
+                                                            <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled />
+                                                        </div>  <div style={{ display: 'none' }}> {item?.req_ITEMDESIGNCODE} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.req_ITEMDESIGNNAME}</div> <br></br></div>
                                                     })
                                                 }
                                                 <br></br>
@@ -406,34 +410,40 @@ function PrintComponent() {
                                             </div>
 
                                             <div class="col-md-5" style={{ border: '1px solid black', marginLeft: '-11px' }}>
-                                                <ins>การเตรียมการควบคุมในการผลิต</ins><br></br>
+                                                <ins>การเตรียมการควบคุมในการผลิต (AGM UP)</ins><br></br>
                                                 <div class="row">
                                                     <div class="col-md-12" >
                                                         {
                                                             cbSecQC.slice(0, 6).map((item, index) => {
                                                                 var isChecked = dataModaldt[0]?.qC_Remark2.split(',').includes(item?.req_ITEMQCCODE);
                                                                 return <div key={item?.req_ITEMQCCODE} style={{ display: 'flex' }} >
-                                                                    <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled />    <div style={{ display: 'none' }}> {item?.req_ITEMQCCODE} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.req_ITEMQCNAME}</div> <br></br></div>
+                                                                    <div className='checkbox-container'> <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled /> </div>   <div style={{ display: 'none' }}> {item?.req_ITEMQCCODE} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.req_ITEMQCNAME}</div> <br></br></div>
                                                             })
                                                         }
 
 
                                                         <div key={cbSecQC[6]?.req_ITEMQCCODE} style={{ display: 'flex' }} >
                                                             {
-                                                                <><input defaultChecked={dataModaldt[0]?.qC_Remark2.split(',').includes("QCD07")} type="checkbox" disabled /><div style={{ display: 'none' }}> {cbSecQC[6]?.req_ITEMQCCODE} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}></div>
+                                                                <><div className='checkbox-container'><input defaultChecked={dataModaldt[0]?.qC_Remark2.split(',').includes("QCD07")} type="checkbox" disabled /></div><div style={{ display: 'none' }}> {cbSecQC[6]?.req_ITEMQCCODE} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}></div>
                                                                     7) Process :
-                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input defaultChecked={dataModaldt[0]?.qC_Remark2.split(',').includes(cbSecQC[7]?.req_ITEMQCCODE)} type="radio" name={'matrerial'} disabled />
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <div className='radio-container'>
+                                                                        <input defaultChecked={dataModaldt[0]?.qC_Remark2.split(',').includes(cbSecQC[7]?.req_ITEMQCCODE)} type="radio" name={'matrerial'} disabled />
+                                                                    </div>
                                                                     Mix Matreial
-                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input defaultChecked={dataModaldt[0]?.qC_Remark2.split(',').includes(cbSecQC[8]?.req_ITEMQCCODE)} type="radio" name={'matrerial'} disabled /> Can not mix </>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <div className='radio-container'>
+                                                                        <input defaultChecked={dataModaldt[0]?.qC_Remark2.split(',').includes(cbSecQC[8]?.req_ITEMQCCODE)} type="radio" name={'matrerial'} disabled /></div> Can not mix </>
                                                             }
                                                         </div >
 
                                                         <div key={cbSecQC[7]?.req_ITEMQCCODE} style={{ display: 'flex' }} >
                                                             {
                                                                 <> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Customer :
-                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input defaultChecked={dataModaldt[0]?.qC_Remark2.split(',').includes(cbSecQC[9]?.req_ITEMQCCODE)} type="radio" name={'pallet'} disabled />
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <div className='radio-container'>
+                                                                        <input defaultChecked={dataModaldt[0]?.qC_Remark2.split(',').includes(cbSecQC[9]?.req_ITEMQCCODE)} type="radio" name={'pallet'} disabled />
+                                                                    </div>
                                                                     Mix Pallet
-                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input defaultChecked={dataModaldt[0]?.qC_Remark2.split(',').includes(cbSecQC[10]?.req_ITEMQCCODE)} type="radio" name={'pallet'} disabled /> Can not mix
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <div className='radio-container'>
+                                                                        <input defaultChecked={dataModaldt[0]?.qC_Remark2.split(',').includes(cbSecQC[10]?.req_ITEMQCCODE)} type="radio" name={'pallet'} disabled /></div> Can not mix
                                                                 </>
                                                             }
                                                         </div >
@@ -443,7 +453,7 @@ function PrintComponent() {
                                                         {
                                                             cbSecQC.slice(10, 11).map((item, index) => {
                                                                 var isChecked = dataModaldt[0]?.qC_Remark2.split(',').includes(item?.req_ITEMQCCODE);
-                                                                return <div key={item?.req_ITEMQCCODE} style={{ display: 'flex' }} > <input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled />    <div style={{ display: 'none' }}> {item?.req_ITEMQCCODE} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.req_ITEMQCNAME}</div> <br></br></div>
+                                                                return <div key={item?.req_ITEMQCCODE} style={{ display: 'flex' }} > <div className='checkbox-container'><input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled /></div>    <div style={{ display: 'none' }}> {item?.req_ITEMQCCODE} </div> <div style={{ marginLeft: '13px', fontSize: '12px' }}>{item?.req_ITEMQCNAME}</div> <br></br></div>
                                                             })
                                                         }
                                                     </div>
@@ -498,7 +508,7 @@ function PrintComponent() {
                                         <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Accepted Section : DIL</td>
                                     </tr>
                                     <tr style={{ border: '1px solid black' }}>
-                                        <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Date : {dataModaldt[0]?.sqC_IssuedDate}</td>
+                                        <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Date : {dataModaldt[0]?.diL_DD_Date}</td>
                                     </tr>
                                     <tr style={{ border: '1px solid black' }}>
                                         <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
@@ -506,14 +516,17 @@ function PrintComponent() {
                                         <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Issued</b></center></td>
                                     </tr>
                                     <tr style={{ border: '1px solid black' }}>
-                                        <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.sqC_ApprovedBy}<br></br>{dataModaldt[0]?.sqC_ApprovedDate}</center></td>
-                                        <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.sqC_CheckBy}<br></br>{dataModaldt[0]?.sqC_CheckDate}</center></td>
-                                        <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.sqC_IssuedBy}<br></br>{dataModaldt[0]?.sqC_IssuedDate}</center></td>
+                                        <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.diL_DDApprovedBy}<br></br>{dataModaldt[0]?.diL_DD_Date}</center></td>
+                                        <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.diL_DDCheckBy}<br></br>{dataModaldt[0]?.diL_DD_Date}</center></td>
+                                        <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.diL_DDIssuedBy}<br></br>{dataModaldt[0]?.diL_DD_Date}</center></td>
                                     </tr>
                                 </table>
                             </div>
                         </div>
 
+                        {/* {
+                            JSON.stringify(dataModaldt)
+                        } */}
 
 
                         <p style={{ fontSize: '12px', margin: '0px' }}>4. JUDGEMENT (DIL Quality ControlSection) [Incase necessary]</p>
@@ -531,7 +544,7 @@ function PrintComponent() {
                                         <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Accepted Section : DIL</td>
                                     </tr>
                                     <tr style={{ border: '1px solid black' }}>
-                                        <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Date : {dataModaldt[0]?.sqC_IssuedDate}</td>
+                                        <td style={{ border: '1px solid black', fontSize: '10px' }} colspan="3">Date : {dataModaldt[0]?.diL_QC_Date}</td>
                                     </tr>
                                     <tr style={{ border: '1px solid black' }}>
                                         <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
@@ -539,9 +552,9 @@ function PrintComponent() {
                                         <td style={{ border: '1px solid black', fontSize: '8px', width: '4pc' }}><center><b>Issued</b></center></td>
                                     </tr>
                                     <tr style={{ border: '1px solid black' }}>
-                                        <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.sqC_ApprovedBy}<br></br>{dataModaldt[0]?.sqC_ApprovedDate}</center></td>
-                                        <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.sqC_CheckBy}<br></br>{dataModaldt[0]?.sqC_CheckDate}</center></td>
-                                        <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.sqC_IssuedBy}<br></br>{dataModaldt[0]?.sqC_IssuedDate}</center></td>
+                                        <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.diL_QCApprovedBy}<br></br>{dataModaldt[0]?.diL_QC_Date}</center></td>
+                                        <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.diL_QCCheckBy}<br></br>{dataModaldt[0]?.diL_QC_Date}</center></td>
+                                        <td style={{ border: '1px solid black', fontSize: '10px' }}><center>{dataModaldt[0]?.diL_QCIssuedBy}<br></br>{dataModaldt[0]?.diL_QC_Date}</center></td>
                                     </tr>
                                 </table>
                             </div>
@@ -562,7 +575,7 @@ function PrintComponent() {
                                                 cbChCustomer.map((item, index) => {
                                                     var isChecked = dataModaldt[0]?.qA_ChangeCustomer.split(',').includes(item?.req_QACHECKCODE);
                                                     return <div key={item?.req_QACHECKCODE} style={{ display: 'flex' }} >
-                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled />    <div style={{ display: 'none' }}> {item?.req_QACHECKCODE} </div> <div style={{ marginLeft: '13px', fontSize: '11px' }}>{item?.req_QACHECKNAME}</div> <br></br></div>
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <div className='checkbox-container'><input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled /> </div>   <div style={{ display: 'none' }}> {item?.req_QACHECKCODE} </div> <div style={{ marginLeft: '13px', fontSize: '11px' }}>{item?.req_QACHECKNAME}</div> <br></br></div>
                                                 })
                                             }
                                         </div>
@@ -575,7 +588,7 @@ function PrintComponent() {
                                                     cbCustomer.map((item, index) => {
                                                         var isChecked = dataModaldt[0]?.qA_CustomerName.split(',').includes(item?.req_QACUSTOMERCODE);
                                                         return <div key={item?.req_QACUSTOMERCODE} style={{ display: 'flex' }} >
-                                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled />    <div style={{ display: 'none' }}> {item?.req_QACUSTOMERCODE} </div> <div style={{ marginLeft: '13px', fontSize: '11px' }}>{item?.req_QACUSTOMERNAME}</div> <br></br></div>
+                                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <div className='checkbox-container'><input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled /></div>    <div style={{ display: 'none' }}> {item?.req_QACUSTOMERCODE} </div> <div style={{ marginLeft: '13px', fontSize: '11px' }}>{item?.req_QACUSTOMERNAME}</div> <br></br></div>
                                                     })
                                                 }
                                                 {dataModaldt[0]?.qA_OtherCustomer}
@@ -628,7 +641,7 @@ function PrintComponent() {
                                         cbdistribution.map((item, index) => {
                                             var isChecked = dataModaldt[0]?.distribution.split(',').includes(item?.req_DISTRIBUTIONCODE);
                                             return <div key={item?.req_DISTRIBUTIONCODE} style={{ display: 'flex' }} >
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled />    <div style={{ display: 'none' }}> {item?.req_DISTRIBUTIONCODE} </div> <div style={{ marginLeft: '13px', fontSize: '11px' }}>{item?.req_DISTRIBUTIONNAME}</div> <br></br></div>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <div className='checkbox-container'><input defaultChecked={isChecked} type="checkbox" value={item} onChange={(event) => handleCheckBoxPUEdit(index, event.target.checked)} disabled /></div>    <div style={{ display: 'none' }}> {item?.req_DISTRIBUTIONCODE} </div> <div style={{ marginLeft: '13px', fontSize: '11px' }}>{item?.req_DISTRIBUTIONNAME}</div> <br></br></div>
                                         })
                                     }
                                 </div>
@@ -654,7 +667,7 @@ function PrintComponent() {
                     </div>
                 </div >
             </div>
-        </page>
+        </page >
 
     )
 }
