@@ -5,5 +5,5 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   // base: './'
-  base: 'ECR/'
+  base: 'ECR_APP_TEST/'
 })

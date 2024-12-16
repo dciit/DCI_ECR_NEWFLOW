@@ -21,12 +21,24 @@ import Print from '../../../public/asset/Image/Print2.png'
 import Chatt from '../../../public/asset/Image/Chat60.png'
 import { Link, useNavigate } from 'react-router-dom';
 import { useHref } from 'react-router';
-import { FcFinePrint, FcPrint, FcSms, FcDocument, FcOk } from "react-icons/fc";
+import { FcFinePrint, FcPrint, FcSms, FcDocument, FcOk, FcKindle, FcLink, FcSearch, FcAssistant } from "react-icons/fc";
 import { LegendToggleOutlined } from '@mui/icons-material';
 import { faFile, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { DownloadTableExcel } from 'react-export-table-to-excel';
 import { CircularProgress } from '@mui/material';
+import pinkImg from '../../../public/asset/Image/pink.jpg'
+import yellowImg from '../../../public/asset/Image/yellow.png'
+import greenImg from '../../../public/asset/Image/green.png'
+import redImg from '../../../public/asset/Image/red.png'
+import blueImg from '../../../public/asset/Image/blue.png'
+import orangeImg from '../../../public/asset/Image/orange.jpg';
+import FullTitle from '../../FullTitle/FullTitle.jsx';
+import { display, fontSize, width } from '@mui/system';
+import { Badge, Card, Spin } from 'antd';
+import MGR_Assigned from '../Assigned/MGR_Assigned.jsx';
+import { Empty } from 'antd';
+
 
 
 function Createform() {
@@ -37,6 +49,8 @@ function Createform() {
     const section = Cookies.get('section')
     const [openAttrFile, setOpenAttrFile] = useState(false);
     const [openModalChat, setOpenModalChat] = useState(false);
+    const [openModalTitle, setOpenModalTitle] = useState(false);
+    const [openModelAssigned, setOpenModalAssigned] = useState(false);
     const [openModalCreate, setOpenModalCreate] = useState(false);
     const [openModalDetail, setOpenModalDetail] = useState(false);
     const [ecrnoSelected, setEcrnoSelected] = useState('');
@@ -53,6 +67,7 @@ function Createform() {
     const [DrawingNo, setDrawingNo] = useState('');
     const [BRNo, setBRNO] = useState('');
     const [load, setLoad] = useState(true);
+    const [DefaultLoad, setDefaultLoad] = useState(true);
 
 
 
@@ -72,6 +87,7 @@ function Createform() {
     useEffect(() => {
         loadPage();
         setLoad(true);
+        setDefaultLoad(true);
     }, [])
 
 
@@ -80,6 +96,36 @@ function Createform() {
             loadPage();
         }
     }, [openModalChat])
+
+
+    useEffect(() => {
+        if (openModalTitle == false) {
+            loadPage();
+        }
+    }, [openModalTitle])
+
+
+    useEffect(() => {
+        if (openModelAssigned == false) {
+            loadPage();
+        }
+    }, [openModelAssigned])
+
+
+    useEffect(() => {
+        if (openModalCreate == false) {
+            getSearch();
+        }
+    }, [openModalCreate])
+
+
+    useEffect(() => {
+        if (openModelAssigned == false) {
+            getSearch();
+        }
+    }, [openModelAssigned])
+
+
 
 
     function loadPage() {
@@ -99,6 +145,7 @@ function Createform() {
     //// **************DAILOG DETAIL  *************************
 
     const [loadStatusCreate, setLoadStatusCreate] = useState(false);
+
     useEffect(() => {
         if (loadStatusCreate == true) {
             setOpenModalDetail(true);
@@ -152,7 +199,9 @@ function Createform() {
         return varGrp;
     }
 
-    const [selectSection, setSelectSection] = useState(grp(permission[0]?.grpRoleSect));
+
+    const [SectionDefaultLoad, setSectionDefaultLoad] = useState(grp(permission[0]?.grpRoleSect));
+    const [selectSection, setSelectSection] = useState("ALL");
 
     const handleChange = (event) => {
         setSelectSection(event.target.value);
@@ -181,6 +230,7 @@ function Createform() {
     const [DocNo, setDocNo] = useState(('%'));
     const getSearch = (event) => {
         setLoad(true);
+        setDefaultLoad(false);
         getDataSrvHD.postECRList({ section: selectSection, ecrno: ECRNo, title: Title, model: Model, partName: PartName, drawingNo: DrawingNo, brno: BRNo, status: selectStatus, strclass: strClass, statusDuedate: selectDuedate }).then((res) => {
             try {
                 setGetdata(res.data)
@@ -211,7 +261,7 @@ function Createform() {
     const classArray = ['ALL', 'CLASS A', 'CLASS B', 'CLASS C', 'CLASS D', 'CLASS E']
 
 
-
+    const content = <div className='Loading' />;
 
     return (<>
         <div className='stylePagee'>
@@ -220,8 +270,9 @@ function Createform() {
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-auto">
-                            <label for="colFormLabelSm" >Section :</label>
+                            <label for="colFormLabelSm" >Process in Section :</label>
                         </div>
+
                         <div class="col-md-auto">
                             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                                 <InputLabel id="demo-select-small-label">Section</InputLabel>
@@ -366,7 +417,7 @@ function Createform() {
                                     ""
                             }
                         </div>
-                        <div class="col col-lg-7">
+                        <div class="col col-lg-2">
                             <DownloadTableExcel
                                 filename="ECR Pending"
                                 sheet="Detail"
@@ -375,10 +426,34 @@ function Createform() {
                                 <button type="submit" class="btn btn-warning"> Export excel </button>
                             </DownloadTableExcel>
                         </div>
-                        {/* <div class="col col-lg-2">
-                            <p>TOTAL</p>
+                        <div class="col col-lg-1">
+                            <p><span><img src={greenImg} alt="logo" style={{ width: '20px', height: '20px' }} /></span> FINISHED</p>
+                        </div>
+                        <div class="col col-lg-1">
+                            <p><span><img src={yellowImg} alt="logo" style={{ width: '21px', border: 'solid 1px #ede587' }} /></span> HOLD</p>
+                        </div>
+                        {/* <div class="col col-lg-1">
+                            <p><span><img src={pinkImg} alt="logo" style={{ width: '20px', height: '20px' }} /></span> RETURNED</p>
                         </div> */}
+                        <div class="col col-lg-1">
+                            <p><span><img src={orangeImg} alt="logo" style={{ width: '20px', height: '20px' }} className='hithere waiting' /></span> WAITING</p>
+                        </div>
+                        <div class="col col-lg-1">
+                            <p><span><img src={redImg} alt="logo" style={{ width: '20px', height: '20px' }} className='hithere content' /></span> ACTION</p>
+                        </div>
                     </div>
+
+                    {
+                        DefaultLoad ? <div class="row" style={{ marginTop: '10px' }}>
+                            <div class="col col-lg-6" style={{ color: '#aaacad' }}>
+                                <p>หมายเหตุ : 1.เมื่อ Login เข้าสู่ระบบ เอกสาร ECR ที่โชว์จะเป็นเอกสารที่ยังคงค้างในแผนกของคุณตามสิทธิ์ Login <br></br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    2.เมื่อต้องการเห็นเอกสาร ECR ที่ยังคงค้างในระบบทั้งหมดให้เลือก Process in Section เป็น ALL แล้วกดปุ่ม Search
+                                </p>
+                            </div>
+                        </div> : ""
+                    }
+
                 </div>
             </div>
             <br></br>
@@ -386,361 +461,732 @@ function Createform() {
 
 
             {
-                load == true ? <div style={{ textAlign: 'center' }}><CircularProgress />กำลังโหลดข้อมูล</div> :
-                    <div class="tscroll">
-                        <table className='tableCreateform'>
-                            <thead>
-                                <tr>
-                                    <th colSpan={13} style={{ fontSize: '25px' }}>Detail</th>
-                                    <th colSpan={37} style={{ fontSize: '25px' }}>Actual Process</th>
-                                </tr>
-                                <tr>
-                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>TARGET</th>
-                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>STATUS</th>
-                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '6%', fontSize: '14px' }}>RESPONSE SECTION</th>
-                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>CHECK DETAIL</th>
-                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DCS NO</th>
-                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DRAWING</th>
-                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>CLASS</th>
-                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>ECR NO</th>
-                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '400px', fontSize: '14px' }}>TITLE</th>
-                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>SECTION</th>
-                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px', padding: '8px' }}>ATTACHED FILE</th>
-                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', width: '200px', fontSize: '14px', padding: '8px' }}>COMMENT</th>
-                                    <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>PRINT</th>
-                                    <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>CREATE</th>
-                                    <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>PU</th>
-                                    <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>DD</th>
-                                    <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>EN</th>
-                                    <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>SQC</th>
-                                    <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>QC</th>
-                                    <th colSpan={8} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>SENT TO DIL</th>
-                                    <th colSpan={4} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>QA</th>
-                                </tr>
+                load == true ? <div class="text-center">
+                    <Spin tip="Loading" size="large">
+                        {content}
+                    </Spin>
+                </div> : <>
+                    {
+                        getdata.length > 0 ? <>{
+                            <div className='tableCreateform'>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colSpan={15} style={{ fontSize: '25px' }}>Detail</th>
+                                            <th colSpan={37} style={{ fontSize: '25px' }}>Actual Process</th>
+                                        </tr>
+                                        <tr>
+                                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', width: '6%', fontSize: '14px' }}>TARGET</th>
+                                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', width: '6%', fontSize: '14px' }}>STATUS</th>
+                                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', width: '6%', fontSize: '14px' }}>RESPONSE SECTION</th>
+                                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px', padding: '8px' }}>CHECK DETAIL</th>
+                                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px' }}>DCS NO</th>
+                                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px' }}>DRAWING</th>
+                                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px', padding: '8px' }}>CLASS</th>
+                                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px' }}>ECR NO</th>
+                                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', width: '400px', fontSize: '14px' }}>TITLE</th>
+                                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', width: '400px', fontSize: '14px' }}>FULL TITLE</th>
+                                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px', padding: '8px' }}>SECTION</th>
+                                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px', padding: '8px' }}>ATTACHED FILE</th>
+                                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', width: '200px', fontSize: '14px', padding: '8px' }}>COMMENT</th>
+                                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px' }}>PRINT</th>
+                                            <th rowSpan={3} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px' }}>MGR Assigned</th>
+                                            <th colSpan={3} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px' }}>CREATE</th>
+                                            <th colSpan={3} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px' }}>PU</th>
+                                            <th colSpan={3} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px' }}>DD</th>
+                                            <th colSpan={3} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px' }}>EN</th>
+                                            <th colSpan={2} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px' }}>SQC</th>
+                                            <th colSpan={2} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px' }}>QC</th>
+                                            <th colSpan={2} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px' }}>SENT TO DIL</th>
+                                            <th colSpan={3} rowSpan={2} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px' }}>QA</th>
+                                        </tr>
 
-                                <tr colSpan={20} style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>
-                                    <th colSpan={4}>(DIL Design Section)</th>
-                                    <th colSpan={4}>(DIL Quality Control Section)</th>
-                                </tr>
-
-
-                                <tr style={{ color: 'white', backgroundColor: 'rgb(7 107 173)', fontSize: '14px' }}>
-                                    <th>Received</th>
-                                    <th>Issued</th>
-                                    <th>Checked</th>
-                                    <th>Approved</th>
-
-                                    <th>Received</th>
-                                    <th>Issued</th>
-                                    <th>Checked</th>
-                                    <th>Approved</th>
-
-                                    <th>Received</th>
-                                    <th>Issued</th>
-                                    <th>Checked</th>
-                                    <th>Approved</th>
-
-                                    <th>Received</th>
-                                    <th>Issued</th>
-                                    <th>Checked</th>
-                                    <th>Approved</th>
-
-                                    <th>Received</th>
-                                    <th>Issued</th>
-                                    <th>Checked</th>
-                                    <th>Approved</th>
-
-                                    <th>Received</th>
-                                    <th>Issued</th>
-                                    <th>Checked</th>
-                                    <th>Approved</th>
-
-                                    <th>Received</th>
-                                    <th>Issued</th>
-                                    <th>Checked</th>
-                                    <th>Approved</th>
-                                    <th>Received</th>
-                                    <th>Issued</th>
-                                    <th>Checked</th>
-                                    <th>Approved</th>
-
-                                    <th>Received</th>
-                                    <th>Issued</th>
-                                    <th>Checked</th>
-                                    <th>Approved</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {/* {
-                                    JSON.stringify(getdata)
-                                } */}
-                                {
-                                    getdata?.map((item, index) => {  // ข้อมูลใหญ่
-                                        let oCols = ['cre', 'pu', 'dd', 'en', 'sqc', 'qc', 'dil_dd', 'dil_qc', 'qa'];
-                                        let oApps = ['received', 'issued', 'check', 'approved'];
-                                        let oEcr = [];
-                                        oCols.map((items, idx) => { // Section
-                                            let iECR = {
-                                                key: items, app: []
-                                            }
-                                            oApps.map((iApp, idxx) => { // Step
-                                                let name = item[`${items}${iApp}by`]; // by
-                                                let date = item[`${items}${iApp}date`]; // date
-                                                let status = item[`${items}${iApp}bit`]; //bit
-                                                let pending = item[`${items}${iApp}SumDate`];
-                                                let pendingDay = item[`${items}${iApp}SumDate`]; //sumdate
-                                                let namePending = item[`${items}${iApp}namepending`];
-                                                let holdDay = item[`${items}${iApp}HoldDate`];
+                                        <tr colSpan={10} style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px' }}>
+                                            <th colSpan={1}>(DIL DD Section)</th>
+                                            <th colSpan={1}>(DIL QC Section)</th>
+                                        </tr>
 
 
-                                                if (pendingDay > 0) {
-                                                    pendingDay = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
-                                                }
-                                                else {
-                                                    pendingDay = ""
-                                                }
+                                        <tr style={{ color: 'white', backgroundColor: 'rgb(40 136 231)', fontSize: '14px' }}>
 
-                                                if (holdDay > 0) {
-                                                    // holdDay = item[`${items}${iApp}HoldDate`] + '  ' + 'Day'; //sumdate
-                                                    holdDay = <p style={{ fontSize: '10px', color: 'blue' }}>{item[`${items}${iApp}HoldDate`] + '  ' + 'Day'}</p>
-                                                }
-                                                else {
-                                                    if (status == "F") {
-                                                        holdDay = <p style={{ fontSize: '10px', color: '#7e8af5f0' }}>{"Less than 1 day"}</p>
+                                            <th>Issued</th>
+                                            <th>Checked</th>
+                                            <th>Approved</th>
+
+
+                                            <th>Issued</th>
+                                            <th>Checked</th>
+                                            <th>Approved</th>
+
+
+                                            <th>Issued</th>
+                                            <th>Checked</th>
+                                            <th>Approved</th>
+
+
+                                            <th>Issued</th>
+                                            <th>Checked</th>
+                                            <th>Approved</th>
+
+
+                                            <th>Issued</th>
+                                            <th>Checked</th>
+
+
+
+                                            <th>Issued</th>
+                                            <th>Checked</th>
+
+
+
+
+
+                                            <th colSpan={1}>Approved</th>
+
+
+                                            <th colSpan={1}>Approved</th>
+
+
+
+                                            <th>Checked</th>
+                                            <th>Approved</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        {
+                                            getdata?.map((item, index) => {  // ข้อมูลใหญ่
+                                                //let oCols = ['cre', 'pu', 'dd', 'en', 'sqc', 'qc', 'dil_dd', 'dil_qc', 'qa'];
+                                                let oCols = ['cre', 'pu', 'dd', 'en'];
+                                                let oCols1 = ['sqc', 'qc'];
+                                                let oCols2 = ['dil_dd', 'dil_qc'];
+                                                let oCols3 = ['qa'];
+                                                let oApps = ['issued', 'check', 'approved'];
+                                                let oAppa1 = ['issued', 'check'];
+                                                let oApps2 = ['approved'];
+                                                let oApps3 = ['check', 'approved'];
+                                                let oEcr = [];
+                                                let returnSec = '';
+                                                let returnStep = 'issued';
+                                                let holdSec = '';
+                                                let holdStep = 'issued';
+
+
+
+                                                if (typeof item.returnDoc != 'undefined' && item.returnDoc.length) {
+                                                    if (item.returnDoc[0].empSection == "CREATE") {
+                                                        returnSec = 'cre'
                                                     }
-                                                    else {
-                                                        holdDay = "";
+                                                    else if (item.returnDoc[0].empSection != "CREATE") {
+                                                        returnSec = item.returnDoc[0].empSection;
                                                     }
                                                 }
 
-
-                                                let alertHold = "";
-                                                let color = 'rgb(254 253 239)';
-                                                if (status == 'F') {
-                                                    if (items == 'cre') {
-                                                        color = 'rgb(44 255 171)';
+                                                if (typeof item.holdDoc != 'undefined' && item.holdDoc.length) {
+                                                    if (item.holdDoc[0].empSection == "CREATE") {
+                                                        holdSec = 'cre'
                                                     }
-                                                    else if (items == 'pu') {
-                                                        color = 'rgb(44 255 171)';
-                                                    }
-                                                    else if (items == 'dd') {
-                                                        color = 'rgb(44 255 171)';
-                                                    }
-                                                    else if (items == 'en') {
-                                                        color = 'rgb(44 255 171)';
-                                                    }
-                                                    else if (items == 'sqc') {
-                                                        color = 'rgb(44 255 171)';
-                                                    }
-                                                    else if (items == 'qc') {
-                                                        color = 'rgb(44 255 171)';
-                                                    }
-                                                    else if (items == 'dil_dd' || items == 'dil_qc') {
-                                                        color = 'rgb(44 255 171)';
-                                                    }
-                                                    else if (items == 'qa') {
-                                                        color = 'rgb(44 255 171)';
-                                                    }
-                                                } else if (status == 'R') {
-                                                    color = 'red'
-                                                }
-                                                else if (status == "H") {
-                                                    color = 'yellow'
-                                                    alertHold = <span className='circle gelatine'></span>;
-                                                }
-                                                else {
-                                                    color = 'rgb(254 253 239)'
-                                                }
-
-
-                                                let icon = '';
-                                                if (status == "F" || status == "R") {
-                                                    if (iApp == "received" || iApp == "issued" || iApp == "check") {
-                                                        icon = <IoArrowForward style={{ color: "rgb(28 3 217)" }} />
-                                                    }
-                                                    else {
-                                                        icon = <IoArrowForward style={{ color: "rgb(147 12 158)" }} />
+                                                    else if (item.holdDoc[0].empSection != "CREATE") {
+                                                        holdSec = item.holdDoc[0].empSection;
                                                     }
                                                 }
 
-                                                let colorPendingDate = 'rgb(54 145 245)'
+                                                oCols.map((items, idx) => { // Section
+                                                    let iECR = {
+                                                        key: items, app: []
+                                                    }
 
-                                                if (pending >= 3) {
-                                                    colorPendingDate = 'red'
-                                                }
-                                                else {
-                                                    colorPendingDate = 'rgb(54 145 245)'
-                                                }
+                                                    oApps.map((iApp, idxx) => { // Step
+                                                        let name = item[`${items}${iApp}by`]; // by
+                                                        let date = item[`${items}${iApp}date`]; // date
+                                                        let status = item[`${items}${iApp}bit`]; //bit
+                                                        let pending = item[`${items}${iApp}SumDate`];
+                                                        let pendingDay = item[`${items}${iApp}SumDate`]; //sumdate
+                                                        let namePending = item[`${items}${iApp}namepending`];
+                                                        let holdDay = item[`${items}${iApp}HoldDate`];
 
 
-                                                iECR.app.push({
-                                                    name: name,
-                                                    date: date,
-                                                    status: status,
-                                                    color: color,
-                                                    title: iApp,
-                                                    icon: icon,
-                                                    pendingDay: pendingDay,
-                                                    colorPendingDate: colorPendingDate,
-                                                    namePedning: namePending,
-                                                    holdDay: holdDay,
-                                                    alertHold: alertHold,
+                                                        if (pendingDay > 0) {
+                                                            pendingDay = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
+                                                        }
+                                                        else {
+                                                            pendingDay = ""
+                                                        }
+
+                                                        if (holdDay > 0) {
+                                                            holdDay = <p style={{ fontSize: '10px', color: 'blue' }}>{item[`${items}${iApp}HoldDate`] + '  ' + 'Day'}</p>
+                                                        }
+                                                        else {
+                                                            if (status == "F") {
+                                                                holdDay = <p style={{ fontSize: '10px', color: '#7e8af5f0' }}>{"Less than 1 day"}</p>
+                                                            }
+                                                            else {
+                                                                holdDay = "";
+                                                            }
+                                                        }
+
+
+                                                        let alertHold = "";
+                                                        let color = 'rgb(254 253 239)';
+                                                        if (status == 'F') {
+                                                            if (['cre', 'pu', 'dd', 'en'].includes(items)) {
+                                                                color = 'rgb(44 255 171)';
+                                                            }
+                                                        }
+
+                                                        else {
+                                                            color = 'rgb(254 253 239)'
+                                                        }
+
+                                                        let icon = '';
+                                                        if (status == "F" || status == "R") {
+                                                            if (iApp == "received" || iApp == "issued" || iApp == "check") {
+                                                                icon = <IoArrowForward style={{ color: "rgb(28 3 217)" }} />
+                                                            }
+                                                            else {
+                                                                icon = <IoArrowForward style={{ color: "rgb(147 12 158)" }} />
+                                                            }
+                                                        }
+
+                                                        let colorPendingDate = 'rgb(54 145 245)'
+
+                                                        if (pending >= 3) {
+                                                            colorPendingDate = 'red'
+                                                        }
+                                                        else {
+                                                            colorPendingDate = 'rgb(54 145 245)'
+                                                        }
+
+
+                                                        iECR.app.push({
+                                                            ecrno: item.ecrno,
+                                                            name: name,
+                                                            date: date,
+                                                            status: status,
+                                                            color: color,
+                                                            title: iApp,
+                                                            icon: icon,
+                                                            pendingDay: pendingDay,
+                                                            colorPendingDate: colorPendingDate,
+                                                            namePedning: namePending,
+                                                            holdDay: holdDay,
+                                                            alertHold: alertHold,
+                                                            returnSec: (returnSec.toUpperCase() == items.toUpperCase() && iApp == 'issued') ? 1 : 0,
+                                                            holdSec: (holdSec.toUpperCase() == items.toUpperCase() && iApp == 'issued') ? 1 : 0,
+                                                            sendDIL: item.sendDIL,
+                                                        });
+                                                    });
+
+
+                                                    oEcr.push(iECR);
+
                                                 });
-                                            });
-                                            oEcr.push(iECR);
 
-                                        });
+                                                oCols1.map((items, idx) => { // Section
+                                                    let iECR = {
+                                                        key: items, app: []
+                                                    }
 
-                                        var status = ''
-                                        let lSec = '';
-                                        sectionArray.filter((vSec, iSec) => {
-                                            if (vSec == "DIL_DD") {
-                                                lSec = "DIL";
-                                            }
-                                            else if (vSec == "DIL_QC") {
-                                                lSec = "DIL";
-                                            }
-                                            else {
-                                                lSec = vSec;
-                                            }
-
-                                            status = item[`${lSec.toLowerCase()}_status`] == 'U' ? (status == '' ? lSec : status) : status;
-                                        });
+                                                    oAppa1.map((iApp, idxx) => { // Step
+                                                        let name = item[`${items}${iApp}by`]; // by
+                                                        let date = item[`${items}${iApp}date`]; // date
+                                                        let status = item[`${items}${iApp}bit`]; //bit
+                                                        let pending = item[`${items}${iApp}SumDate`];
+                                                        let pendingDay = item[`${items}${iApp}SumDate`]; //sumdate
+                                                        let namePending = item[`${items}${iApp}namepending`];
+                                                        let holdDay = item[`${items}${iApp}HoldDate`];
 
 
-                                        let targetDate = item.targetDate;
+                                                        if (pendingDay > 0) {
+                                                            pendingDay = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
+                                                        }
+                                                        else {
+                                                            pendingDay = ""
+                                                        }
 
-                                        let colorTargetDate = 'ghostwhite'
-                                        if (targetDate >= 0 && targetDate <= 14) {
-                                            colorTargetDate = 'red'
-                                        }
-                                        else if (targetDate >= 15 && targetDate <= 21) {
-                                            colorTargetDate = 'yellow'
-                                        }
-                                        else {
-                                            colorTargetDate = 'ghostwhite'
-                                        }
-
-
-                                        let AlertDuedate = item.targetDate;
-                                        let datealertDuedate = "";
-                                        if (AlertDuedate >= 1) {
-                                            datealertDuedate = <p className='pulse' style={{ color: 'red', fontWeight: '500', fontSize: '16px' }}>OVER {AlertDuedate} วัน</p>;
-                                        }
-                                        else if (AlertDuedate == 0 && item.strClass != "D") {
-                                            datealertDuedate = <p style={{ color: 'yellow' }}>DUEDATE {AlertDuedate} วัน</p>;
-                                        }
-                                        else if (AlertDuedate == 0 && item.strClass == "D") {
-                                            datealertDuedate = <p style={{ color: 'yellow' }}>Waiting Due Date</p>;
-                                        }
-                                        else if (AlertDuedate < -0) {
-                                            datealertDuedate = <p>REMAIN {AlertDuedate * -1} วัน</p>;
-                                        }
+                                                        if (holdDay > 0) {
+                                                            holdDay = <p style={{ fontSize: '10px', color: 'blue' }}>{item[`${items}${iApp}HoldDate`] + '  ' + 'Day'}</p>
+                                                        }
+                                                        else {
+                                                            if (status == "F") {
+                                                                holdDay = <p style={{ fontSize: '10px', color: '#7e8af5f0' }}>{"Less than 1 day"}</p>
+                                                            }
+                                                            else {
+                                                                holdDay = "";
+                                                            }
+                                                        }
 
 
-                                        let lcount = "";
-                                        if (item.count > 0) {
-                                            lcount = <span className='hithere content' >{item.count}</span>;
-                                        }
-                                        else {
-                                            lcount = "";
-                                        }
+                                                        let alertHold = "";
+                                                        let color = 'rgb(254 253 239)';
+                                                        if (status == 'F') {
+                                                            if (['sqc', 'qc'].includes(items)) {
+                                                                color = 'rgb(44 255 171)';
+                                                            }
+                                                        }
 
-                                        let HoldTotal = item.hOLDDATETOTAL;
+                                                        else {
+                                                            color = 'rgb(254 253 239)'
+                                                        }
+
+                                                        let icon = '';
+                                                        if (status == "F" || status == "R") {
+                                                            if (iApp == "received" || iApp == "issued" || iApp == "check") {
+                                                                icon = <IoArrowForward style={{ color: "rgb(28 3 217)" }} />
+                                                            }
+                                                            else {
+                                                                icon = <IoArrowForward style={{ color: "rgb(147 12 158)" }} />
+                                                            }
+                                                        }
+
+                                                        let colorPendingDate = 'rgb(54 145 245)'
+
+                                                        if (pending >= 3) {
+                                                            colorPendingDate = 'red'
+                                                        }
+                                                        else {
+                                                            colorPendingDate = 'rgb(54 145 245)'
+                                                        }
+
+
+                                                        iECR.app.push({
+                                                            ecrno: item.ecrno,
+                                                            name: name,
+                                                            date: date,
+                                                            status: status,
+                                                            color: color,
+                                                            title: iApp,
+                                                            icon: icon,
+                                                            pendingDay: pendingDay,
+                                                            colorPendingDate: colorPendingDate,
+                                                            namePedning: namePending,
+                                                            holdDay: holdDay,
+                                                            alertHold: alertHold,
+                                                            returnSec: (returnSec.toUpperCase() == items.toUpperCase() && iApp == 'issued') ? 1 : 0,
+                                                            holdSec: (holdSec.toUpperCase() == items.toUpperCase() && iApp == 'issued') ? 1 : 0,
+                                                            sendDIL: item.sendDIL,
+                                                        });
+                                                    });
+
+
+                                                    oEcr.push(iECR);
+
+                                                });
+
+
+                                                oCols2.map((items, idx) => { // Section
+                                                    let iECR = {
+                                                        key: items, app: []
+                                                    }
+
+                                                    oApps2.map((iApp, idxx) => { // Step
+                                                        let name = item[`${items}${iApp}by`]; // by
+                                                        let date = item[`${items}${iApp}date`]; // date
+                                                        let status = item[`${items}${iApp}bit`]; //bit
+                                                        let pending = item[`${items}${iApp}SumDate`];
+                                                        let pendingDay = item[`${items}${iApp}SumDate`]; //sumdate
+                                                        let namePending = item[`${items}${iApp}namepending`];
+                                                        let holdDay = item[`${items}${iApp}HoldDate`];
+
+
+                                                        if (pendingDay > 0) {
+                                                            pendingDay = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
+                                                        }
+                                                        else {
+                                                            pendingDay = ""
+                                                        }
+
+                                                        if (holdDay > 0) {
+                                                            holdDay = <p style={{ fontSize: '10px', color: 'blue' }}>{item[`${items}${iApp}HoldDate`] + '  ' + 'Day'}</p>
+                                                        }
+                                                        else {
+                                                            if (status == "F") {
+                                                                holdDay = <p style={{ fontSize: '10px', color: '#7e8af5f0' }}>{"Less than 1 day"}</p>
+                                                            }
+                                                            else {
+                                                                holdDay = "";
+                                                            }
+                                                        }
+
+
+                                                        let alertHold = "";
+                                                        let color = 'rgb(254 253 239)';
+
+                                                        if (status == 'F') {
+                                                            if (['dil_dd', 'dil_qc'].includes(items)) {
+                                                                color = 'rgb(44 255 171)';
+                                                            }
+                                                        }
+                                                        else {
+                                                            color = 'rgb(254 253 239)'
+                                                        }
 
 
 
-                                        return <tr style={{ backgroundColor: (item.counthold > 0 ? 'yellow' : '') }}>
-                                            <td className='headcol' style={{ fontSize: '16px', padding: '8px' }}><nobr>{item.dueDate}<br></br><p style={{ fontSize: '14px', color: 'rgb(94 66 201)', marginBottom: '1px' }}>{datealertDuedate}</p></nobr></td>
-                                            <td>
-                                                <p style={{ padding: '8px', marginBottom: '-1px' }}>{(status != '' ? status : 'FINISH')}</p>
-                                                <p className='pulse' style={{ color: '#f1720de6' }}>{(item.counthold > 0 ? 'HOLD' : '')}</p>
-                                            </td>
-                                            <td>
-                                                <p style={{ padding: '8px', marginBottom: '-1px' }}>{item.hOLDTOSECTION}</p>
-                                                <p style={{ fontSize: '12px' }}>{(HoldTotal != 0 ? "(" + HoldTotal + " " + "Day" + ")" : "")}</p>
-                                            </td>
-                                            <td>
-                                                <Link underline="hover">
-                                                    <center><FcFinePrint style={{ width: '35px', height: '45px' }} onClick={() => handleShowDetail(item.ecrno)} /></center>
-                                                </Link>
-                                                {/* <Link underline="hover">
+
+                                                        let icon = '';
+                                                        if (status == "F" || status == "R") {
+                                                            if (iApp == "received" || iApp == "issued" || iApp == "check") {
+                                                                icon = <IoArrowForward style={{ color: "rgb(28 3 217)" }} />
+                                                            }
+                                                            else {
+                                                                icon = <IoArrowForward style={{ color: "rgb(147 12 158)" }} />
+                                                            }
+                                                        }
+
+                                                        let colorPendingDate = 'rgb(54 145 245)'
+
+                                                        if (pending >= 3) {
+                                                            colorPendingDate = 'red'
+                                                        }
+                                                        else {
+                                                            colorPendingDate = 'rgb(54 145 245)'
+                                                        }
+
+
+                                                        iECR.app.push({
+                                                            ecrno: item.ecrno,
+                                                            name: name,
+                                                            date: date,
+                                                            status: status,
+                                                            color: color,
+                                                            title: iApp,
+                                                            icon: icon,
+                                                            pendingDay: pendingDay,
+                                                            colorPendingDate: colorPendingDate,
+                                                            namePedning: namePending,
+                                                            holdDay: holdDay,
+                                                            alertHold: alertHold,
+                                                            returnSec: (returnSec.toUpperCase() == items.toUpperCase() && iApp == 'issued') ? 1 : 0,
+                                                            holdSec: (holdSec.toUpperCase() == items.toUpperCase() && iApp == 'issued') ? 1 : 0,
+                                                            sendDIL: item.sendDIL,
+                                                        });
+                                                    });
+
+
+                                                    oEcr.push(iECR);
+
+                                                });
+
+
+                                                oCols3.map((items, idx) => { // Section
+                                                    let iECR = {
+                                                        key: items, app: []
+                                                    }
+
+                                                    oApps3.map((iApp, idxx) => { // Step
+                                                        let name = item[`${items}${iApp}by`]; // by
+                                                        let date = item[`${items}${iApp}date`]; // date
+                                                        let status = item[`${items}${iApp}bit`]; //bit
+                                                        let pending = item[`${items}${iApp}SumDate`];
+                                                        let pendingDay = item[`${items}${iApp}SumDate`]; //sumdate
+                                                        let namePending = item[`${items}${iApp}namepending`];
+                                                        let holdDay = item[`${items}${iApp}HoldDate`];
+
+
+                                                        if (pendingDay > 0) {
+                                                            pendingDay = 'Pending' + '  ' + item[`${items}${iApp}SumDate`] + '  ' + 'Day'; //sumdate
+                                                        }
+                                                        else {
+                                                            pendingDay = ""
+                                                        }
+
+                                                        if (holdDay > 0) {
+                                                            holdDay = <p style={{ fontSize: '10px', color: 'blue' }}>{item[`${items}${iApp}HoldDate`] + '  ' + 'Day'}</p>
+                                                        }
+                                                        else {
+                                                            if (status == "F") {
+                                                                holdDay = <p style={{ fontSize: '10px', color: '#7e8af5f0' }}>{"Less than 1 day"}</p>
+                                                            }
+                                                            else {
+                                                                holdDay = "";
+                                                            }
+                                                        }
+
+
+                                                        let alertHold = "";
+                                                        let color = 'rgb(254 253 239)';
+                                                        if (status == 'F') {
+                                                            if (['qa'].includes(items)) {
+                                                                color = 'rgb(44 255 171)';
+                                                            }
+                                                        }
+
+                                                        else {
+                                                            color = 'rgb(254 253 239)'
+                                                        }
+
+                                                        let icon = '';
+                                                        if (status == "F" || status == "R") {
+                                                            if (iApp == "received" || iApp == "issued" || iApp == "check") {
+                                                                icon = <IoArrowForward style={{ color: "rgb(28 3 217)" }} />
+                                                            }
+                                                            else {
+                                                                icon = <IoArrowForward style={{ color: "rgb(147 12 158)" }} />
+                                                            }
+                                                        }
+
+                                                        let colorPendingDate = 'rgb(54 145 245)'
+
+                                                        if (pending >= 3) {
+                                                            colorPendingDate = 'red'
+                                                        }
+                                                        else {
+                                                            colorPendingDate = 'rgb(54 145 245)'
+                                                        }
+
+
+                                                        iECR.app.push({
+                                                            ecrno: item.ecrno,
+                                                            name: name,
+                                                            date: date,
+                                                            status: status,
+                                                            color: color,
+                                                            title: iApp,
+                                                            icon: icon,
+                                                            pendingDay: pendingDay,
+                                                            colorPendingDate: colorPendingDate,
+                                                            namePedning: namePending,
+                                                            holdDay: holdDay,
+                                                            alertHold: alertHold,
+                                                            returnSec: (returnSec.toUpperCase() == items.toUpperCase() && iApp == 'issued') ? 1 : 0,
+                                                            holdSec: (holdSec.toUpperCase() == items.toUpperCase() && iApp == 'issued') ? 1 : 0,
+                                                            sendDIL: item.sendDIL,
+                                                        });
+                                                    });
+
+
+                                                    oEcr.push(iECR);
+
+                                                });
+
+
+
+
+                                                var status = ''
+                                                let lSec = '';
+                                                sectionArray.filter((vSec, iSec) => {
+                                                    if (vSec == "DIL_DD") {
+                                                        lSec = "DIL";
+                                                    }
+                                                    else if (vSec == "DIL_QC") {
+                                                        lSec = "DIL";
+                                                    }
+                                                    else {
+                                                        lSec = vSec;
+                                                    }
+
+                                                    status = item[`${lSec.toLowerCase()}_status`] == 'U' ? (status == '' ? lSec : status) : status;
+                                                });
+
+
+                                                let targetDate = item.targetDate;
+
+                                                let colorTargetDate = 'ghostwhite'
+                                                if (targetDate >= 0 && targetDate <= 14) {
+                                                    colorTargetDate = 'red'
+                                                }
+                                                else if (targetDate >= 15 && targetDate <= 21) {
+                                                    colorTargetDate = 'yellow'
+                                                }
+                                                else {
+                                                    colorTargetDate = 'ghostwhite'
+                                                }
+
+
+                                                let AlertDuedate = item.targetDate;
+                                                let datealertDuedate = "";
+                                                if (AlertDuedate >= 1) {
+                                                    datealertDuedate = <p className='pulse' style={{ color: 'red', fontWeight: '500', fontSize: '16px' }}>OVER {AlertDuedate} วัน</p>;
+                                                }
+                                                else if (AlertDuedate == 0 && item.strClass != "D") {
+                                                    datealertDuedate = <p style={{ color: 'yellow' }}>DUEDATE {AlertDuedate} วัน</p>;
+                                                }
+                                                else if (AlertDuedate == 0 && item.strClass == "D") {
+                                                    datealertDuedate = <p style={{ color: 'yellow' }}>Waiting Due Date</p>;
+                                                }
+                                                else if (AlertDuedate < -0) {
+                                                    datealertDuedate = <p>REMAIN {AlertDuedate * -1} วัน</p>;
+                                                }
+
+
+                                                let lcount = "";
+
+                                                if (item.count > 0) {
+                                                    lcount = <span className='hithere content' >{item.count}</span>;
+                                                }
+                                                else {
+                                                    lcount = "";
+                                                }
+
+                                                // if (item.counthold > 0) {
+                                                //     lcount = <span className='hithere content' >{item.counthold}</span>;
+                                                // }
+                                                // else {
+                                                //     lcount = "";
+                                                // }
+
+                                                let HoldTotal = item.hOLDDATETOTAL;
+
+
+                                                return <tr style={{ backgroundColor: (item.counthold > 0 ? 'yellow' : '') }}>
+                                                    <td className='headcol' style={{ fontSize: '16px', padding: '8px' }}><nobr>{item.dueDate}<br></br><p style={{ fontSize: '14px', color: 'rgb(94 66 201)', marginBottom: '1px' }}>{datealertDuedate}</p></nobr></td>
+                                                    <td>
+                                                        <p style={{ padding: '8px', marginBottom: '-1px', fontSize: '14px' }}>{(status != '' ? status : 'FINISH')}</p>
+                                                        <p className='pulse' style={{ color: '#f1720de6' }}>{(item.counthold > 0 ? 'HOLD' : '')}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p style={{ padding: '8px', marginBottom: '-1px', fontSize: '14px' }}>{item.hOLDTOSECTION}</p>
+                                                        <p style={{ fontSize: '12px' }}>{(HoldTotal != 0 ? "(" + HoldTotal + " " + "Day" + ")" : "")}</p>
+                                                    </td>
+                                                    <td>
+                                                        <Link underline="hover">
+                                                            <center><FcFinePrint style={{ width: '35px', height: '28px' }} onClick={() => handleShowDetail(item.ecrno)} /></center>
+                                                        </Link>
+                                                        {/* <Link underline="hover">
                                             <center><FcOk style={{ width: '35px', height: '45px' }} onClick={() => handleShowDetail(item.ecrno)} /></center>
                                         </Link> */}
-                                            </td>
-                                            <td style={{ fontSize: '14px', padding: '8px' }}>{item.notificationNo}</td>
-                                            <td style={{ fontSize: '14px', padding: '8px' }}><nobr>{item.partNo}</nobr></td>
-                                            <td style={{ fontSize: '14px', padding: '8px' }}>{item.strClass}</td>
-                                            <td style={{ fontSize: '14px', padding: '8px' }}>{item.ecrno}</td>
-                                            <td style={{ fontSize: '14px', padding: '8px', width: '400px' }}><nobr>{item.title}</nobr></td>
-                                            <td style={{ fontSize: '14px', padding: '8px' }}>
-                                                {
-                                                    showSection(item.section)
-                                                }
-                                            </td>
-                                            <td>
-                                                <FcDocument style={{
-                                                    width: '30px', height: '40px'
-                                                }} onClick={() => {
-                                                    setEcrnoSelected(item)
-                                                    setOpenAttrFile(true);
-                                                }} />
-                                            </td>
-                                            <td>
-                                                <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'row-reverse' }}>
-                                                    {lcount}
-                                                    <center>
-                                                        <FcSms style={{
-                                                            width: '28px', height: '35px'
+                                                    </td>
+                                                    <td style={{ fontSize: '13px', padding: '8px' }}>{item.notificationNo}</td>
+                                                    <td style={{ fontSize: '13px', padding: '8px' }}><nobr>{item.partNo.substring(0, 25)}</nobr></td>
+                                                    <td style={{ fontSize: '13px', padding: '8px' }}>{item.strClass}</td>
+                                                    <td style={{ fontSize: '13px', padding: '8px' }}>{item.ecrno}</td>
+                                                    <td style={{ fontSize: '13px', padding: '8px' }}><nobr>{item.title.substring(0, 30)}</nobr></td>
+                                                    <td>
+                                                        <FcSearch style={{
+                                                            width: '28px', height: '25px'
                                                         }} onClick={() => {
                                                             setEcrnoSelected(item)
-                                                            setOpenModalChat(true);
+                                                            setOpenModalTitle(true);
                                                         }} />
-                                                    </center>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <Button style={{ backgroundColor: 'white', borderColor: 'white' }} onClick={() => PrintECR(item.ecrno)}> <FcPrint style={{
-                                                    width: '32px', height: '40px'
-                                                }} />
-                                                </Button>
-                                                <Link id='linkprint' to={`/ECR/PrintPage/${item.ecrno}`} target="_blank">
-                                                </Link>
-                                            </td>
-                                            {
-                                                oEcr.map((vSec, iSec) => {
-                                                    return <>
+                                                    </td>
+                                                    <td style={{ fontSize: '14px', padding: '8px' }}>
                                                         {
-                                                            vSec.app.map((vApp, iApp) => {
-                                                                return <td style={{ backgroundColor: vApp.color, width: '30px' }}>
-                                                                    <div style={{ fontSize: '11px ', height: '50px', justifyContent: 'center', alignItems: 'center', width: '90px', marginTop: '10px' }}>
-                                                                        <div>
-                                                                            {vApp.name} <span>{vApp.alertHold}</span>
-                                                                        </div>
-                                                                        <div style={{ fontSize: '10px' }}>
-                                                                            {vApp.date}
-                                                                        </div>
-                                                                        <div>
-                                                                            {vApp.holdDay}
-                                                                        </div>
-                                                                        <div style={{ color: vApp.colorPendingDate, fontSize: '11px', fontWeight: '700' }}>  {vApp.pendingDay}
-                                                                        </div>
-                                                                        <div style={{ color: 'rgb(101 93 192)' }}>  {vApp.namePedning}</div>
-                                                                    </div>
-                                                                </td>
-                                                            })
+                                                            showSection(item.section)
                                                         }
-                                                    </>
-                                                })
-                                            }
-                                        </tr>
-                                    })
-                                }
-                            </tbody >
-                        </table>
-                    </div>
+                                                    </td>
+                                                    <td>
+                                                        <FcLink style={{
+                                                            width: '30px', height: '25px'
+                                                        }} onClick={() => {
+                                                            setEcrnoSelected(item)
+                                                            setOpenAttrFile(true);
+                                                        }} />
+                                                    </td>
+                                                    <td>
+                                                        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'row-reverse' }}>
+                                                            {lcount}
+                                                            <center>
+                                                                <FcSms style={{
+                                                                    width: '28px', height: '25px'
+                                                                }} onClick={() => {
+                                                                    setEcrnoSelected(item)
+                                                                    setOpenModalChat(true);
+                                                                }} />
+                                                            </center>
+                                                        </div>
+                                                    </td>
+
+                                                    <td>
+                                                        <Button style={{ backgroundColor: 'white', borderColor: 'white' }} onClick={() => PrintECR(item.ecrno)}> <FcPrint style={{
+                                                            width: '26px', height: '26px'
+                                                        }} />
+                                                        </Button>
+                                                        <Link id='linkprint' to={`/ECR/PrintPage/${item.ecrno}`} target="_blank">
+                                                        </Link>
+                                                    </td>
+
+
+
+                                                    <td>
+                                                        <Badge.Ribbon text={item.sectionAssigned} color="volcano" >
+                                                        </Badge.Ribbon>
+                                                        <nobr style={{ color: 'white' }} > {item.sectionAssigned}</nobr>
+                                                        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'row-reverse' }}>
+                                                            <center>
+                                                                <FcAssistant style={{
+                                                                    width: '30px', height: '44px'
+                                                                }} onClick={() => {
+                                                                    setEcrnoSelected(item)
+                                                                    setOpenModalAssigned(true);
+                                                                }}
+                                                                />
+                                                            </center>
+                                                        </div>
+                                                    </td>
+
+
+                                                    {
+                                                        oEcr.map((vSec, iSec) => {
+                                                            return <>
+                                                                {
+                                                                    (vSec.key == "dil_dd" || vSec.key == "dil_qc") ? <>
+                                                                        {
+                                                                            vSec.app.map((vApp, iApp) => {
+                                                                                return vApp.sendDIL == "NO NEED" ? <td style={{ backgroundColor: vApp.color, width: '30px' }}><p style={{
+                                                                                    color: '#5e1fdf', fontWeight: '700'
+                                                                                }}>NO NEED</p></td>
+                                                                                    :
+                                                                                    <td style={{ backgroundColor: vApp.returnSec == 1 ? 'yellow' : vApp.holdSec == 1 ? 'yellow' : vApp.color, width: '30px' }}>
+                                                                                        <div style={{ fontSize: '11px ', height: '50px', justifyContent: 'center', alignItems: 'center', width: '90px', marginTop: '10px' }}>
+                                                                                            <div>
+                                                                                                {vApp.name}  <span>{(vApp.status == "R") && <span className='Waiting gelatine'></span>}</span>
+                                                                                            </div>
+                                                                                            <div style={{ fontSize: '10px' }}>
+                                                                                                {vApp.date}
+                                                                                            </div>
+                                                                                            <div>
+                                                                                                {vApp.holdDay}
+                                                                                            </div>
+                                                                                            <div style={{ color: vApp.colorPendingDate, fontSize: '11px', fontWeight: '700' }}>  {vApp.pendingDay}
+                                                                                            </div>
+                                                                                            <div style={{ color: 'rgb(101 93 192)' }}>  {vApp.namePedning}</div>
+                                                                                        </div>
+                                                                                    </td>
+                                                                            })
+                                                                        }
+                                                                    </>
+                                                                        :
+                                                                        <>
+                                                                            {
+                                                                                vSec.app.map((vApp, iApp) => {
+                                                                                    return <td style={{ backgroundColor: vApp.returnSec == 1 ? 'yellow' : vApp.holdSec == 1 ? 'yellow' : vApp.color, width: '30px' }}>
+                                                                                        <div style={{ fontSize: '11px ', height: '50px', justifyContent: 'center', alignItems: 'center', width: '90px', marginTop: '10px' }}>
+                                                                                            <div>
+                                                                                                {vApp.name}  <span>{(vApp.status == "R") && <span className='Waiting gelatine'></span>}</span>
+                                                                                            </div>
+                                                                                            <div style={{ fontSize: '10px' }}>
+                                                                                                {vApp.date}
+                                                                                            </div>
+                                                                                            <div>
+                                                                                                {vApp.holdDay}
+                                                                                            </div>
+                                                                                            <div style={{ color: vApp.colorPendingDate, fontSize: '11px', fontWeight: '700' }}>  {vApp.pendingDay}
+                                                                                            </div>
+                                                                                            <div style={{ color: 'rgb(101 93 192)' }}>  {vApp.namePedning}</div>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                })
+                                                                            }
+                                                                        </>
+                                                                }
+                                                            </>
+                                                        })
+                                                    }
+                                                </tr >
+                                            })
+                                        }
+                                    </tbody >
+                                </table>
+                            </div>
+                        }
+                        </> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    }
+                </>
             }
+
+
+
 
             <div style={{ display: 'none' }}>
                 {/* <div> */}
@@ -805,7 +1251,7 @@ function Createform() {
         <FormCreate
             show={openModalCreate}
             close={setOpenModalCreate}
-            refresh={loadPage}
+            refresh={getSearch}
             section={permission[0]?.grpRoleSect}
         />
 
@@ -813,9 +1259,8 @@ function Createform() {
         <FormModalDetail
             ecrno={ecrnoSelected}
             show={openModalDetail}
-
             close={setOpenModalDetail}
-            refresh={loadPage}
+            refresh={getSearch}
             statusCreateAppBit={statusCreateAppBit[0]?.createapproved}
         />
 
@@ -823,6 +1268,19 @@ function Createform() {
         <Chat
             show={openModalChat}
             close={setOpenModalChat}
+            item={ecrnoSelected}
+        />
+
+
+        <FullTitle
+            show={openModalTitle}
+            close={setOpenModalTitle}
+            item={ecrnoSelected}
+        />
+
+        <MGR_Assigned
+            show={openModelAssigned}
+            close={setOpenModalAssigned}
             item={ecrnoSelected}
         />
     </>

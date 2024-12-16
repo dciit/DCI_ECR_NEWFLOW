@@ -163,6 +163,31 @@ const getNotifypersonBy = (ecrno, empLogin) => {
 }
 
 
+const getEmployeeReceiveSection = (Section) => {
+    return http.APIPERMISSION.get(`getEmployeeReceiveSection/${Section}`)
+}
+
+const GetAddMGBySection = (EcrNO, EmpCode, Section, Issued) => {
+    return http.APIPERMISSION.get(`GetAddMGBySection/${EcrNO}/${EmpCode}/${Section}/${Issued}`)
+}
+
+
+const getTableMGReceive = (ecrno) => {
+    return http.APIPERMISSION.get(`getTableMGReceive/${ecrno}`);
+}
+
+const GetDeleteMGReceiveSection = (ecrno, empcode, section) => {
+    return http.APIPERMISSION.get(`GetDeleteMGReceiveSection/${ecrno}/${empcode}/${section}`);
+}
+
+const getTableMGReceiveBySection = (ecrno, empCode) => {
+    return http.APIPERMISSION.get(`getTableMGReceiveBySection/${ecrno}/${empCode}`);
+}
+
+
+const getSectionHold = (ecrno) => {
+    return http.APIPERMISSION.get(`getSectionHold/${ecrno}`);
+}
 
 export default {
     getPermission,
@@ -203,4 +228,10 @@ export default {
     getDeletePermission,
     getPosition,
     getNotifypersonBy,
+    getEmployeeReceiveSection,
+    GetAddMGBySection,
+    getTableMGReceive,
+    GetDeleteMGReceiveSection,
+    getTableMGReceiveBySection,
+    getSectionHold,
 }

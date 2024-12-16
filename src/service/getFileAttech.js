@@ -23,9 +23,11 @@ const getShowFile = (docNo) => {
     return http.SaveFile.get(`getShowFile/${docNo}`);
 }
 
-const getDeleteFile = (docNo) => {
-    return http.SaveFile.get(`getDeleteFile/${docNo}`);
+
+const PostDeleteFile = (param) => {
+    return http.DeleteFile.post(`PostDeleteFile`, param);
 }
+
 
 const getDataToAddFile = (ecrno) => {
     return http.SaveFile.get(`getDataToAddFile/${ecrno}`);
@@ -40,7 +42,7 @@ export default {
     postFile,
     postPathFile,
     getShowFile,
-    getDeleteFile,
+    PostDeleteFile,
     getECRNO,
     getDataToAddFile,
 };

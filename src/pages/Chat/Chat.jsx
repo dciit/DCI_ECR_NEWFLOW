@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
+import { useSelector } from 'react-redux';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import getChat from '../../service/getServiceChat.js'
+import getDataFile from '../../service/getFileAttech.js'
 import TableRow from '@mui/material/TableRow';
 import { styled } from '@mui/material/styles';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -15,6 +17,20 @@ import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2'
+import ModelAttachFile from '../FileAttached/ModelAttachFile.jsx';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+import TableContainer from '@mui/material/TableContainer';
+import Paper from '@mui/material/Paper';
+import Table from 'react-bootstrap/Table';
+import TableHead from '@mui/material/TableHead';
+import TableBody from '@mui/material/TableBody';
+import { LuLink } from "react-icons/lu";
+import { Link } from 'react-router-dom';
+import { FcFullTrash } from "react-icons/fc";
+
+
 
 
 
@@ -58,14 +74,16 @@ function Chat(props) {
     const user_name = Cookies.get('name')
 
     useEffect(() => {
-        if (show) {
+        if (show == true) {
             initFiles();
         }
     }, [show]);
 
 
+
     // ************SHOW FILE************
     const [showChat, setShowChat] = useState([]);
+
     const initFiles = () => {
         getChat.getChat(item.ecrno).then((res) => {
             try {
@@ -100,6 +118,117 @@ function Chat(props) {
 
 
 
+    ///**** ADD FILE */
+    const [permis, setpermis] = useState([]);
+    const [copyPath, setCopyPath] = useState('');
+    const ref = useRef();
+    const permission = useSelector((state) => state.reducer.permission);
+
+
+    useEffect(() => {
+        initFilesLoad();
+    }, [show]);
+
+    // ************SHOW FILE************
+    const [showFile, setshowFile] = useState([]);
+
+    const initFilesLoad = () => {
+        getDataFile.getShowFile(item.ecrno).then((res) => {
+            try {
+                setshowFile(res.data);
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    }
+    // ************END  SHOW FILE ************
+
+
+    // ************ ADD FILE  ************
+    const [selectedFile, setSelectedFile] = useState('');
+
+
+    const changeHandler = (event) => {
+        // setPathPDF(event.target.files[0]);
+        setSelectedFile(event.target.files[0]);
+    };
+
+
+    const [pathPDF, setPathPDF] = useState('');
+    const [path, setPath] = useState('');
+
+
+
+
+
+    const handleClear = () => {
+        ref.current.value = null;
+    }
+
+    let sectionFile = showFile[0]?.section
+    let secPermission = permission[0]?.grpRoleSect
+
+
+
+    const handleSubmission = () => {
+        if (selectedFile != '' && copyPath != '') {
+            getDataFile.postFile({
+                ECRNO: item.ecrno, SECTION: secPermission, DOCNAME: item.title, ACTION: 'UPDATE', LOGBY: empCode, FileAttached: selectedFile, StatusFile: 'INSERT', FILEPATH: copyPath
+            }).then((res) => {
+                try {
+                    initFiles();
+                    handleClear();
+                    setSelectedFile('');
+                    setCopyPath('');
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        }
+        else {
+            alert("กรุณากรอก Path File และ เลือกไฟล์ ให้ครบ");
+        }
+    };
+    // ************END  ADD FILE  ************
+
+
+
+    // // ************DELETE************
+    // const handleDelete = (docid) => {
+    //     getDataFile.getDeleteFile(docid).then((res) => {
+    //         try {
+    //             initFiles();
+    //         }
+    //         catch (error) {
+    //             console.log(error);
+    //             return error;
+    //         }
+    //     });
+    // };
+    // // ************END  DELETE************
+
+    const handelCose = (event) => {
+        close(false);
+    }
+
+
+    const OpenFile = (pathfilename) => {
+        window.open(`http://dciweb.dci.daikin.co.jp/ECR/asset/FileAttech/${pathfilename}`, '_blank', 'noopener,noreferrer');
+    }
+
+
+    const [checked, setChecked] = useState(true);
+    const handleChange = (event) => {
+        setChecked(event.target.checked);
+    }
+
+
+    ///****END FILE */
+
     return (
         <>
             <div>
@@ -114,7 +243,7 @@ function Chat(props) {
                         aria-describedby="scroll-dialog-description"
                     >
                         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                            <b><h1>Remark</h1></b>
+                            <h1>Remark</h1>
                             <center>ECR NO : {item.ecrno}</center>
                         </DialogTitle>
                         <IconButton aria-label="close" onClick={() => close(false)}
@@ -129,9 +258,6 @@ function Chat(props) {
                         </IconButton>
                         <DialogContent dividers>
                             <Typography gutterBottom>
-                                {/* {
-                                    JSON.stringify(showChat)
-                                } */}
                                 <table className='customers'>
                                     <thead>
                                         <tr>
@@ -157,7 +283,7 @@ function Chat(props) {
                                                 <td align="center" style={{ textAlign: 'right', width: '21%', fontSize: '14px' }}>{item.remarkdate}</td>
                                                 <td>
                                                     {
-                                                        (item.type == "HOLD" && item.active == "1" && item.responser == user_name ? <Button variant="success" onClick={() => postConfirmChat(item.ecrno, item.type, item.fromSECTION, item.tosection, item.code)}>Confirm</Button> : "")
+                                                        ((item.type == "HOLD" || item.type == "RETURN") && item.active == "1" && item.responser == user_name ? <Button variant="success" onClick={() => postConfirmChat(item.ecrno, item.type, item.fromSECTION, item.tosection, item.code)}>Confirm</Button> : "")
                                                     }
                                                 </td>
                                             </tr>
@@ -165,6 +291,96 @@ function Chat(props) {
                                     }
                                     </tbody>
                                 </table>
+                                {/* </Typography> */}
+                                {/* </DialogContent> */}
+
+
+
+                                {/* <br></br>
+                      <hr></hr>
+                            <Container>
+                                <Row>
+                                    <Col xs={12} md={5}>
+                                        {
+                                            permission.filter((item) => {
+                                                return item.menuCode == "BTN0002" && item.rolE_VIEW == "True"
+                                            }).length ? <>
+                                              <h1>Add File</h1>
+                                                <input type="file" name="file" accept='application/pdf' ref={ref} onChange={changeHandler} />
+                                            </>
+                                                :
+                                                ""
+                                        }
+                                    </Col>
+                                    <Col xs={12} md={6}>
+                                        <div>
+                                            {
+                                                permission.filter((item) => {
+                                                    return item.menuCode == "BTN0003" && item.rolE_VIEW == "True"
+                                                }).length ? <>
+                                                    <p>วาง Path File ที่นี้ <span style={{ color: 'red', fontSize: '18px' }}>*</span></p>
+                                                    <input type="text" autoFocus style={{ width: '390px' }} value={copyPath} onChange={(event) => setCopyPath(event.target.value)} />
+                                                </> : ""
+                                            }
+                                        </div>
+
+
+                                    </Col>
+                                    <Col xs={12} md={1}>
+                                        {
+                                            permission.filter((item) => {
+                                                return item.menuCode == "BTN0003" && item.rolE_VIEW == "True"
+                                            }).length ? <Button variant="success" onClick={(e) => { handleSubmission() }}>Add</Button>
+                                                :
+                                                ""
+                                        }
+                                    </Col>
+                                </Row>
+                                <br></br>
+                            </Container>
+                            <TableContainer component={Paper}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <StyledTableCell align="center">No</StyledTableCell>
+                                            <StyledTableCell align="center">File Name</StyledTableCell>
+                                            <StyledTableCell align="center">File Path</StyledTableCell>
+                                            <StyledTableCell align="center">Section</StyledTableCell>
+                                            <StyledTableCell align="center">Add By</StyledTableCell>
+                                            <StyledTableCell align="center">Add Date</StyledTableCell>
+                                            <StyledTableCell align="center">Detail</StyledTableCell>
+                                            <StyledTableCell align="center">Delete</StyledTableCell>
+                                            <StyledTableCell align="center"></StyledTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {
+                                            showFile?.map((item, index) => {
+                                                console.log(item.addfileby, user_name)
+                                                return <StyledTableRow key={item.docid}>
+                                                    <StyledTableCell align="center">{item.no}</StyledTableCell>
+                                                    <StyledTableCell align="left">{item.filename}</StyledTableCell>
+                                                    <StyledTableCell align="left">{item.filepath}</StyledTableCell>
+                                                    <StyledTableCell align="center">{item.section}</StyledTableCell>
+                                                    <StyledTableCell align="center">{item.addfileby}</StyledTableCell>
+                                                    <StyledTableCell align="center">{item.addfiledate}</StyledTableCell>
+                                                    <StyledTableCell align="center" style={{ color: '#0e68ff' }}>
+                                                        <LuLink onClick={() => OpenFile(item.pathfilename)}>
+                                                        </LuLink>
+                                                    </StyledTableCell>
+                                                    
+                                                    {
+                                                        item.addfileby == user_name && <>
+                                                            <StyledTableCell align="center" onClick={() => handleDelete(item.docid)}><Link><FcFullTrash></FcFullTrash></Link></StyledTableCell>
+                                                            <StyledTableCell />
+                                                        </>
+                                                    }
+                                                </StyledTableRow>
+                                            })
+                                        }
+                                    </TableBody>
+                                </Table>
+                            </TableContainer> */}
                             </Typography>
                         </DialogContent>
                         <DialogActions>
@@ -174,6 +390,135 @@ function Chat(props) {
                         </DialogActions>
                     </Dialog>
                 </BootstrapDialog>
+
+
+                {/* ///**** ADD FILE */}
+                {/* <BootstrapDialog
+                open={show}
+            >
+                <Dialog
+                    open={show}
+                    fullWidth
+                    maxWidth="md"
+                    aria-labelledby="scroll-dialog-title"
+                    aria-describedby="scroll-dialog-description"
+                >
+                    <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+                        <Row>
+                            <Col xs={12} md={7}>
+                                <b><h1>Add File</h1></b>
+                            </Col>
+                            <Col xs={12} md={5}>
+                                <p>ECR NO : {item.ecrno}</p>
+                            </Col>
+                        </Row>
+                    </DialogTitle>
+                    <IconButton aria-label="close" onClick={handelCose}
+                        sx={{
+                            position: 'absolute',
+                            right: 8,
+                            top: 8,
+                            color: (theme) => theme.palette.grey[500],
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+
+
+                    <DialogContent dividers>
+                        <Typography gutterBottom>
+                            <Container>
+                                <Row>
+                                    <Col xs={12} md={5}>
+                                        {
+                                            permission.filter((item) => {
+                                                return item.menuCode == "BTN0002" && item.rolE_VIEW == "True"
+                                            }).length ? <>
+                                                <p>-</p>
+                                                <input type="file" name="file" accept='application/pdf' ref={ref} onChange={changeHandler} />
+                                            </>
+                                                :
+                                                ""
+                                        }
+                                    </Col>
+                                    <Col xs={12} md={6}>
+                                        <div>
+                                            {
+                                                permission.filter((item) => {
+                                                    return item.menuCode == "BTN0003" && item.rolE_VIEW == "True"
+                                                }).length ? <>
+                                                    <p>วาง Path File ที่นี้ <span style={{ color: 'red', fontSize: '18px' }}>*</span></p>
+                                                    <input type="text" autoFocus style={{ width: '390px' }} value={copyPath} onChange={(event) => setCopyPath(event.target.value)} />
+                                                </> : ""
+                                            }
+                                        </div>
+
+
+                                    </Col>
+                                    <Col xs={12} md={1}>
+                                        {
+                                            permission.filter((item) => {
+                                                return item.menuCode == "BTN0003" && item.rolE_VIEW == "True"
+                                            }).length ? <Button variant="success" onClick={(e) => { handleSubmission() }}>Add</Button>
+                                                :
+                                                ""
+                                        }
+                                    </Col>
+                                </Row>
+                                <br></br>
+                            </Container>
+                            <TableContainer component={Paper}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <StyledTableCell align="center">No</StyledTableCell>
+                                            <StyledTableCell align="center">File Name</StyledTableCell>
+                                            <StyledTableCell align="center">File Path</StyledTableCell>
+                                            <StyledTableCell align="center">Section</StyledTableCell>
+                                            <StyledTableCell align="center">Add By</StyledTableCell>
+                                            <StyledTableCell align="center">Add Date</StyledTableCell>
+                                            <StyledTableCell align="center">Detail</StyledTableCell>
+                                            <StyledTableCell align="center">Delete</StyledTableCell>
+                                            <StyledTableCell align="center"></StyledTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {
+                                            showFile?.map((item, index) => {
+                                                console.log(item.addfileby, user_name)
+                                                return <StyledTableRow key={item.docid}>
+                                                    <StyledTableCell align="center">{item.no}</StyledTableCell>
+                                                    <StyledTableCell align="left">{item.filename}</StyledTableCell>
+                                                    <StyledTableCell align="left">{item.filepath}</StyledTableCell>
+                                                    <StyledTableCell align="center">{item.section}</StyledTableCell>
+                                                    <StyledTableCell align="center">{item.addfileby}</StyledTableCell>
+                                                    <StyledTableCell align="center">{item.addfiledate}</StyledTableCell>
+                                                    <StyledTableCell align="center" style={{ color: '#0e68ff' }}>
+                                                        <LuLink onClick={() => OpenFile(item.pathfilename)}>
+                                                        </LuLink>
+                                                    </StyledTableCell>
+                                                    
+                                                    {
+                                                        item.addfileby == user_name && <>
+                                                            <StyledTableCell align="center" onClick={() => handleDelete(item.docid)}><Link><FcFullTrash></FcFullTrash></Link></StyledTableCell>
+                                                            <StyledTableCell />
+                                                        </>
+                                                    }
+                                                </StyledTableRow>
+                                            })
+                                        }
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Typography>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button variant="secondary" onClick={handelCose}>
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </BootstrapDialog > */}
             </div>
         </>
     )

@@ -45,8 +45,33 @@ const postReturnDIL = (param) => {
 }
 
 
-const postHold = (param) => {
-    return http.APIDETAIL.post(`postHold`, param);
+const postHoldPU = (param) => {
+    return http.APIDETAIL.post(`postHoldPU`, param);
+}
+
+
+const postHoldDD = (param) => {
+    return http.APIDETAIL.post(`postHoldDD`, param);
+}
+
+
+const postHoldEN = (param) => {
+    return http.APIDETAIL.post(`postHoldEN`, param);
+}
+
+
+const postHoldSQC = (param) => {
+    return http.APIDETAIL.post(`postHoldSQC`, param);
+}
+
+
+const postHoldQC = (param) => {
+    return http.APIDETAIL.post(`postHoldQC`, param);
+}
+
+
+const postHoldQA = (param) => {
+    return http.APIDETAIL.post(`postHoldQA`, param);
 }
 
 
@@ -63,5 +88,10 @@ export default {
     getReturn,
     postApprovedDIL,
     postReturnDIL,
-    postHold,
+    postHoldPU,
+    postHoldDD,
+    postHoldEN,
+    postHoldSQC,
+    postHoldQC,
+    postHoldQA,
 };

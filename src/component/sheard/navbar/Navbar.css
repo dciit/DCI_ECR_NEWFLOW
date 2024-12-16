@@ -23,6 +23,7 @@
     .styleText {
         margin-right: 10px;
         font-size: 20px;
+        color: white;
     }
 
     .styTextmarginleft {
@@ -45,7 +46,7 @@
         margin-top: -15px; */
 
 
-        font-size: 47px;
+        font-size: 40px;
         font-weight: 1000;
         background: linear-gradient(45deg, #ffa69e, #faf3dd, #b8f2e6, #aed9e0, #5e6472);
         background-size: 40%;
@@ -70,7 +71,9 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         animation: gradient 5s infinite;
-        margin-top: -10px;
+        /* margin-top: -10px; */
+        margin-top: 48px;
+        margin-left: -205px;
     }
 
     @keyframes gradient {

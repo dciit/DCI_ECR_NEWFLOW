@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { persistor } from "../src/redux/store";
 import jsCookie from 'js-cookie';
 const Routess = () => {
-    const BASE_PATH = 'ECR';
+    const BASE_PATH = 'ECR_APP_TEST';
     // let REDUX_VER = useSelector(state => state.reducer.ver);
     // console.log(REDUX_VER)
     // let ENV_VER = import.meta.env.VITE_VERSION;

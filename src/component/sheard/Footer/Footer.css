@@ -4,11 +4,11 @@ footer {
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 8px;
+    padding: 2px;
     text-align: center;
-    height: 2pc;
+    height: 20px;
     color: #8ce8f3;
-    margin-left: 147px;
+    /* margin-left: 147px; */
 }
 
 .styleFooter {

@@ -24,7 +24,7 @@ function Backend() {
                     <div>
                         <Navbars />
                         <div className='styleNavbar'>
-                            <Sidebars />
+                            {/* <Sidebars /> */}
                             <Outlet />
                         </div>
                         <Footer />

@@ -1,6 +1,7 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import getDataFile from '../../service/getFileAttech.js'
+import serverDeleteFile from '../../service/DeleteFile.server.js'
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -123,7 +124,7 @@ function ModelAttachFile(props) {
     const handleSubmission = () => {
         if (selectedFile != '' && copyPath != '') {
             getDataFile.postFile({
-                ECRNO: item.ecrno, SECTION: secPermission, DOCNAME: item.title, ACTION: 'UPDATE', LOGBY: empCode, FileAttached: selectedFile, StatusFile: 'INSERT', FILEPATH: copyPath
+                ECRNO: item.ecrno, SECTION: secPermission, DOCNAME: item.title, LOGBY: empCode, FileAttached: selectedFile, StatusFile: 'INSERT', FILEPATH: copyPath
             }).then((res) => {
                 try {
                     initFiles();
@@ -146,8 +147,8 @@ function ModelAttachFile(props) {
 
 
     // ************DELETE************
-    const handleDelete = (docid) => {
-        getDataFile.getDeleteFile(docid).then((res) => {
+    const handleDelete = (docid, section, docname, pathfilename, filename) => {
+        serverDeleteFile.PostDeleteFile({ DOCID: docid, SECTION: section, DOCNAME: docname, DOCFILE: pathfilename, FILENAME: filename, LOGBY: empCode }).then((res) => {
             try {
                 initFiles();
             }
@@ -192,11 +193,9 @@ function ModelAttachFile(props) {
                         <Row>
                             <Col xs={12} md={7}>
                                 <b><h1>Add File</h1></b>
-                                {/* <>1={path}</>
-                                <>2={pathPDF}</> */}
                             </Col>
                             <Col xs={12} md={5}>
-                                <p>ECR NO : {item.ecrno}</p>
+                                {/* <p>ECR NO : {item.ecrno}</p> */}
                             </Col>
                         </Row>
                     </DialogTitle>
@@ -215,51 +214,6 @@ function ModelAttachFile(props) {
                     <DialogContent dividers>
                         <Typography gutterBottom>
                             <Container>
-
-
-                                {/* <Row>
-                                    <Col xs={12} md={4}>
-                                        {
-                                            permission.filter((item) => {
-                                                return item.menuCode == "BTN0002" && item.rolE_VIEW == "True"
-                                            }).length ? <>
-                                                <p>ไฟล์ :</p>
-                                                <input type="file" name="file" accept='application/pdf' ref={ref} onChange={changeHandler} />
-                                            </>
-                                                :
-                                                ""
-                                        }
-                                    </Col>
-                                    <Col xs={12} md={2}>
-                                        <p>ไม่ระบุ</p>
-                                        <Checkbox
-                                            checked={checked}
-                                            onChange={handleChange}
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    </Col>
-                                    <Col xs={12} md={5}>
-                                        <p>REMARK <span style={{ color: 'red', fontSize: '18px' }}>*</span></p>
-                                        <TextField
-                                            id="outlined-multiline-flexible"
-                                            multiline
-                                            maxRows={5}
-                                            style={{ width: '300px' }}
-                                        />
-                                    </Col>
-                                    <Col xs={12} md={1}>
-                                        {
-                                            permission.filter((item) => {
-                                                return item.menuCode == "BTN0003" && item.rolE_VIEW == "True"
-                                            }).length ? <Button variant="success" onClick={(e) => { handleSubmission() }}>Add</Button>
-                                                :
-                                                ""
-                                        }
-                                    </Col>
-                                </Row> */}
-
-
-
                                 <Row>
                                     <Col xs={12} md={5}>
                                         {
@@ -299,6 +253,7 @@ function ModelAttachFile(props) {
                                 </Row>
                                 <br></br>
                             </Container>
+
                             <TableContainer component={Paper}>
                                 <Table>
                                     <TableHead>
@@ -317,7 +272,6 @@ function ModelAttachFile(props) {
                                     <TableBody>
                                         {
                                             showFile?.map((item, index) => {
-                                                console.log(item.addfileby, user_name)
                                                 return <StyledTableRow key={item.docid}>
                                                     <StyledTableCell align="center">{item.no}</StyledTableCell>
                                                     <StyledTableCell align="left">{item.filename}</StyledTableCell>
@@ -330,17 +284,13 @@ function ModelAttachFile(props) {
                                                         </LuLink>
                                                     </StyledTableCell>
 
-
                                                     {
                                                         item.addfileby == user_name && <>
-                                                            <StyledTableCell align="center" onClick={() => handleDelete(item.docid)}><Link><FcFullTrash></FcFullTrash></Link></StyledTableCell>
+                                                            <StyledTableCell align="center" onClick={() => handleDelete(item.docid, item.section, item.docname,
+                                                                decodeURIComponent(item.pathfilename), item.filename)}><Link><FcFullTrash></FcFullTrash></Link></StyledTableCell>
                                                             <StyledTableCell />
                                                         </>
                                                     }
-
-
-
-
                                                 </StyledTableRow>
                                             })
                                         }

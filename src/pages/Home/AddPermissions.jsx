@@ -170,36 +170,38 @@ function AddPermissions() {
                         </div>
 
                         <br></br>  <br></br>
-                        <table className='tablePermiss'>
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Code</th>
-                                    <th>Full Name</th>
-                                    <th>Section</th>
-                                    <th>Step</th>
-                                    <th>Position</th>
-                                    <th>Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    data?.map((item, index) => {
-                                        return <tr key={item.ecrno}>
-                                            <td align="center" style={{ textAlign: 'center' }}>{item.no}</td>
-                                            <td align="center" style={{ textAlign: 'center' }}>{item.code}</td>
-                                            <td align="center" style={{ textAlign: 'left' }}>{item.fullName}</td>
-                                            <td align="center" style={{ textAlign: 'center' }}>{item.section}</td>
-                                            <td align="center" style={{ textAlign: 'center' }}>{item.step}</td>
-                                            <td align="center" style={{ textAlign: 'center' }}>{item.position}</td>
-                                            <td align="center" style={{ textAlign: 'center' }}>  <Button variant="danger" onClick={() => handelDelete(item.code, item.grpCode)}>
-                                                ลบ
-                                            </Button></td>
-                                        </tr>
-                                    })
-                                }
-                            </tbody>
-                        </table>
+                        <div>
+                            <table className='tablePermiss'>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Code</th>
+                                        <th>Full Name</th>
+                                        <th>Section</th>
+                                        <th>Step</th>
+                                        <th>Position</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        data?.map((item, index) => {
+                                            return <tr key={item.ecrno}>
+                                                <td align="center" style={{ textAlign: 'center' }}>{item.no}</td>
+                                                <td align="center" style={{ textAlign: 'center' }}>{item.code}</td>
+                                                <td align="center" style={{ textAlign: 'left' }}>{item.fullName}</td>
+                                                <td align="center" style={{ textAlign: 'center' }}>{item.section}</td>
+                                                <td align="center" style={{ textAlign: 'center' }}>{item.step}</td>
+                                                <td align="center" style={{ textAlign: 'center' }}>{item.position}</td>
+                                                <td align="center" style={{ textAlign: 'center' }}>  <Button variant="danger" onClick={() => handelDelete(item.code, item.grpCode)}>
+                                                    ลบ
+                                                </Button></td>
+                                            </tr>
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -19,8 +19,6 @@ function LoginLayout() {
                 <div class="col-sm-8" >
                     {/* <img src={Picture2} className='image-1' /> */}
                     <div style={{ marginLeft: '0%' }}>
-                        <h1 className='styleH'>ECR Online (TEST)</h1>
-                        <h5 className='styletextP'>Engineering Change Request (ECR)</h5>
                         <LoginVI />
                     </div>
                     {/* <img src={Pichon} className='image-2' /> */}

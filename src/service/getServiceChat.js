@@ -6,7 +6,6 @@ const getChat = (docNo) => {
 }
 
 const postConfirmChat = (param) => {
-    console.log(param)
     return http.APICHAT.post(`postConfirmChat`, param);
 }
 

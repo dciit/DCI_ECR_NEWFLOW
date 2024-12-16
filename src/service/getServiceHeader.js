@@ -30,6 +30,13 @@ const getECRListLoad = (section, status) => {
 }
 
 
+const getFullTitle = (ecrNo) => {
+    return http.APIHEADER.get(`getFullTitle/${ecrNo}`);
+}
+
+
+
+
 
 export default {
     // getECRList,
@@ -37,5 +44,6 @@ export default {
     postApproved,
     getStatusCreate,
     getECRListLoad,
-    postECRList
+    postECRList,
+    getFullTitle,
 };

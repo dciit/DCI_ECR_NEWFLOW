@@ -402,11 +402,12 @@ function FormCreate(props) {
                 getDataSrvPermiss.getNotifyTo(ecR_NO).then((res) => {
                     try {
                         setTableNotify(res.data);
+                        console.log(res.data)
                         Swal.fire({
                             icon: "success",
                             title: "เพิ่มผู้ดำเนินการเรียบร้อยแล้ว",
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 500
                         });
                     }
                     catch (error) {

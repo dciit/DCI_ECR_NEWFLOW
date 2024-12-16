@@ -3,7 +3,10 @@ import getDataSrv from '../../service/getdataService.js';
 import getDataSrvHD from '../../service/getServiceHeader.js';
 import getDataSrvDT from '../../service/getServiceDetail.js';
 import getDataSrvPermiss from '../../service/getPermisson.js'
+import getDataSrvReturn from '../../service/serviceReturn.js'
 import serviceHold from '../../service/getHold.js'
+import serverCheckDoc from '../../service/getCheckDocument.server.js'
+import serverAppDoc from '../../service/getApprovedDocument.server.js'
 import './FormDetail.css';
 import Button from 'react-bootstrap/Button';
 import { styled } from '@mui/material/styles';
@@ -46,6 +49,7 @@ import FormLabel from '@mui/material/FormLabel';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faCheck, faFileCirclePlus, faPenToSquare, faRotateLeft, faTShirt, faTrashCan, faTriangleExclamation, faWarning, faXmark } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2'
+import { Spin } from 'antd';
 
 
 
@@ -113,6 +117,7 @@ function FormDetail(props) {
     const [cbReqDocForDDEdit, setcbReqDocForDDEdit] = useState([]);
     const [cbItemSecDD, setCBItemSecDD] = useState([]);
     const [dictQC, setDictQC] = useState([]);
+    const [SectionHold, setSectionHold] = useState([]);
     const [cbChchanges, setcbChchanges] = useState([]);
     const [cbCustomer, setcbCustomer] = useState([]);
     const [cbDistribution, setCBDistribution] = useState([]);
@@ -160,6 +165,7 @@ function FormDetail(props) {
     const [informationDate, setInformationDate] = useState(moment().format('YYYY-MM-DD'));
     const [informationBy, setInformationBy] = useState('');
     const [employeeArrayCRE, setEmployeeArrayCRE] = useState([]);
+    const [employeeArrayReceiveSection, setemployeeArrayReceiveSection] = useState([]);
     const [employeeArrayCreateCheck, setemployeeArrayCreateCheck] = useState([]);
     const [employeeArrayCreateApproved, setemployeeArrayCreateApproved] = useState([]);
     const [employeeArrayPUReceive, setemployeeArrayPUReceive] = useState([]);
@@ -188,10 +194,12 @@ function FormDetail(props) {
     const [employeeArrayQAApproved, setemployeeArrayQAApproved] = useState([]);
     const [employee, setemployee] = useState('');
     const [step, setStep] = useState('ISSUED');
+    const [MGReceiveSec, setMGReceiveSec] = useState('');
     // const [step2, setStep2] = useState('CHECK');
     // const [step3, setStep3] = useState('APPROVED');
     const [showDtSec, setshowDtSec] = useState(false);
     const [tableNotify, setTableNotify] = useState([]);
+    const [tableMGReceive, settableMGReceive] = useState([]);
     const [notify, setNotify] = useState('PU');
     const { show, close, ecrno, refresh, statusCreateAppBit } = props;
     let section = permission[0]?.grpRoleSect;
@@ -212,6 +220,7 @@ function FormDetail(props) {
 
 
 
+
     useEffect(() => {
         if (show == true) {
             setLoad(true);
@@ -220,6 +229,7 @@ function FormDetail(props) {
             setExpanded(Ppanel(section, position, statusCreateAppBit));
         }
     }, [show]);
+
 
     useEffect(() => {
         if (typeof dataModaldt != 'undefined' && Object.keys(dataModaldt).length) {
@@ -232,6 +242,7 @@ function FormDetail(props) {
         if (strclass != '') {
         }
     }, [strclass])
+
 
 
 
@@ -280,7 +291,6 @@ function FormDetail(props) {
         serviceHold.getECRHOLD(ecrno).then((res) => {
             try {
                 setdataHold(res.data)
-                console.log(res.data)
             }
             catch (error) {
                 console.log(error);
@@ -580,7 +590,6 @@ function FormDetail(props) {
         getDataSrv.GetStatusDocument(ecrno).then((res) => {
             try {
                 setStatusDoc(res.data);
-                // console.log(res.data)
             }
             catch (error) {
                 console.log(error);
@@ -592,7 +601,16 @@ function FormDetail(props) {
         getDataSrvPermiss.getNotifypersonBy(ecrno, empCode).then((res) => {
             try {
                 setNotifyStep(res.data);
-                // console.log(res.data)
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+
+        getDataSrvPermiss.getTableMGReceive(ecrno).then((res) => {
+            try {
+                settableMGReceive(res.data);
             }
             catch (error) {
                 console.log(error);
@@ -600,6 +618,21 @@ function FormDetail(props) {
             }
         });
     }
+
+    useEffect(() => {
+        getDataSrvPermiss.getSectionHold((ecrno)).then((res) => {
+            try {
+                setSectionHold(res.data)
+                console.log(res.data);
+            } catch (error) {
+
+            }
+        })
+    }, [dataModaldt])
+
+    // useEffect(() => {
+    //     setExpanded(section_DocList);
+    // }, [statusDoc])
     //*********************END SECTION CEREATE******************** */
 
     const group = (val) => {
@@ -617,6 +650,7 @@ function FormDetail(props) {
     const creSec = group(dataModaldt[0]?.section);
     const roleSec = permission[0]?.grpRoleSect;
     let StatusDocList = statusDoc[0]?.statusDoc;
+    let section_DocList = statusDoc[0]?.section_Doc;
 
 
     const Ppanel = (section, step, statusCreateAppBit) => {
@@ -784,7 +818,7 @@ function FormDetail(props) {
     }
 
     function handleChangeRadioDILDD(event) {
-        setRadioDILDD(event.target.value);
+        setRadioDILDD(event.target.value)
     };
 
 
@@ -925,6 +959,7 @@ function FormDetail(props) {
         else if (section == 'QA') {
             sectionReceive = dataModaldt[0].qA_Remark_Receive
         }
+
 
         getDataSrvDT.postReceive({ ecrno: ecrno, remark: sectionReceive, issued: empCode, section: section }).then((res) => {
             try {
@@ -1250,20 +1285,16 @@ function FormDetail(props) {
     //****************************END FUNCTION ISSUED   QA************ */
 
     //**************************** FUNCTION CHECK************ */
-    const getCheck = (ecrno, ecrCreateBySection, ecrCreateStatus, shortSec = '') => {
-        // if (tableNotify[0][`${shortSec}_approvedCode`] != null && shortSec != '') {
-        let createBySection = (ecrCreateBySection == 'Design') ? 'DD' : 'PU';
-        let _section = (createBySection == section) ? (ecrCreateStatus == 'U' || ecrCreateStatus == 'R') ? 'CREATE' : section : section;
-        getDataSrvHD.getCheck(ecrno, empCode, _section).then((res) => {
+    const BtnCheckCreate = (ecrno) => {
+        serverCheckDoc.getCheckCreate(ecrno, empCode).then((res) => {
             try {
-                // close(false);
-                refresh();
                 Swal.fire({
                     icon: "success",
                     title: "Successfully",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1000
                 });
+                refresh();
                 initFiles()
             }
             catch (error) {
@@ -1271,21 +1302,209 @@ function FormDetail(props) {
                 return error;
             }
         });
-        // }
-        // else {
-        //     Swal.fire({
-        //         icon: "error",
-        //         title: "กรุณาเลือกผู้ Approve เอกสาร ECR ใน Section ของคุณ",
-        //         showConfirmButton: false,
-        //         timer: 3500
-        //     });
-        // }
+    };
+
+    const BtnCheckPU = (ecrno) => {
+        serverCheckDoc.getCheckPU(ecrno, empCode).then((res) => {
+            try {
+                Swal.fire({
+                    icon: "success",
+                    title: "Successfully",
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+                refresh();
+                initFiles()
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+
+    const BtnCheckDD = (ecrno) => {
+        serverCheckDoc.getCheckDD(ecrno, empCode).then((res) => {
+            try {
+                // close(false);
+                Swal.fire({
+                    icon: "success",
+                    title: "Successfully",
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+                refresh();
+                initFiles()
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+
+    const BtnCheckEN = (ecrno) => {
+        serverCheckDoc.getCheckEN(ecrno, empCode).then((res) => {
+            try {
+                // close(false);
+                Swal.fire({
+                    icon: "success",
+                    title: "Successfully",
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+                refresh();
+                initFiles()
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+
+
+    const BtnCheckSQC = (ecrno) => {
+        serverCheckDoc.getCheckSQC(ecrno, empCode).then((res) => {
+            try {
+                // close(false);
+                Swal.fire({
+                    icon: "success",
+                    title: "Successfully",
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+                refresh();
+                initFiles()
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+
+    const BtnCheckQC = (ecrno) => {
+        serverCheckDoc.getCheckQC(ecrno, empCode).then((res) => {
+            try {
+                Swal.fire({
+                    icon: "success",
+                    title: "Successfully",
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+                refresh();
+                initFiles()
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+
+    const BtnCheckQA = (ecrno) => {
+        serverCheckDoc.getCheckQA(ecrno, empCode).then((res) => {
+            try {
+                // close(false);
+                Swal.fire({
+                    icon: "success",
+                    title: "Successfully",
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+                refresh();
+                initFiles()
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
     };
     //****************************END FUNCTION CHECK************ */
 
 
     //**************************** FUNCTION APPROVED************ */
-    const postApproved = (ecrno, ecrCreateBySection, ecrCreateStatus) => {
+    const BtnApprovedCreate = (ecrno) => {
+        serverAppDoc.getApprovedCreate(ecrno, empCode, dataModaldt[0].duedate).then((res) => {
+            try {
+                Swal.fire({
+                    text: "Please select the manager assigned to handle ECR documents in each department.",
+                    icon: "warning"
+                });
+                refresh();
+                initFiles()
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+
+
+    const BtnApprovedPU = (ecrno) => {
+        serverAppDoc.getApprovedPU(ecrno, empCode).then((res) => {
+            try {
+                Swal.fire({
+                    icon: "success",
+                    title: "Successfully",
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+                refresh();
+                initFiles()
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+
+
+    const BtnApprovedDD = (ecrno) => {
+        serverAppDoc.getApprovedDD(ecrno, empCode, radioDILDD).then((res) => {
+            try {
+                Swal.fire({
+                    icon: "success",
+                    title: "Successfully",
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+                refresh();
+                initFiles()
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+
+
+    const BtnApprovedEN = (ecrno) => {
+        serverAppDoc.getApprovedEN(ecrno, empCode).then((res) => {
+            try {
+                Swal.fire({
+                    icon: "success",
+                    title: "Successfully",
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+                refresh();
+                initFiles()
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+
+
+    const BtnApprovedGroupQC = (ecrno, ecrCreateBySection, ecrCreateStatus) => {
         let createBySection = (ecrCreateBySection == 'Design') ? 'DD' : 'PU';
         let _section = (createBySection == section) ? (ecrCreateStatus == 'U' || ecrCreateStatus == 'R') ? 'CREATE' : section : section;
 
@@ -1308,13 +1527,10 @@ function FormDetail(props) {
         const qA_InformatonBy = dataModaldt[0]?.qA_InformatonBy;
         const distribution = dataModaldt[0]?.distribution;
 
-        console.log(ecrno, empCode, _section, remarkQC2, qA_ChangeCustomer, qA_CustomerName, qA_OtherCustomer, qA_InformationDate, qA_InformatonBy, distribution)
-        // return false
-        // getDataSrvHD.postApproved(ecrno, empCode, _section).then((res) => {
-        getDataSrvHD.postApproved({ ecrno: ecrno, issued: empCode, section: _section, remarkqc: remarkQC2, qA_ChangeCustomer: qA_ChangeCustomer, qA_CustomerName: qA_CustomerName, qA_OtherCustomer: qA_OtherCustomer, qA_InformationDate: qA_InformationDate, qA_InformatonBy: qA_InformatonBy, distribution: distribution }).then((res) => {
+
+        serverAppDoc.postApprovedGroupQC({ ecrno: ecrno, issued: empCode, section: _section, remarkqc: remarkQC2, qA_ChangeCustomer: qA_ChangeCustomer, qA_CustomerName: qA_CustomerName, qA_OtherCustomer: qA_OtherCustomer, qA_InformationDate: qA_InformationDate, qA_InformatonBy: qA_InformatonBy, distribution: distribution }).then((res) => {
             try {
                 refresh();
-                // close(false);
                 Swal.fire({
                     icon: "success",
                     title: "Successfully",
@@ -1331,7 +1547,45 @@ function FormDetail(props) {
     };
     //****************************END FUNCTION APPROVED************ */
 
+    const BtnApprovedDILDD = (ecrno) => {
+        serverAppDoc.getApprovedDILDD(ecrno, empCode).then((res) => {
+            try {
+                Swal.fire({
+                    icon: "success",
+                    title: "Successfully",
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+                refresh();
+                initFiles()
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
 
+
+
+    const BtnApprovedDILQC = (ecrno) => {
+        serverAppDoc.getApprovedDILQC(ecrno, empCode).then((res) => {
+            try {
+                Swal.fire({
+                    icon: "success",
+                    title: "Successfully",
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+                refresh();
+                initFiles()
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
 
     //**************************** FUNCTION APPROVED DIL************ */
     const ApprovedDIL = () => {
@@ -1378,11 +1632,702 @@ function FormDetail(props) {
 
 
     //**************************** FUNCTION RETURN************ */
-    const getReturn = (ecrno) => {
+    const postReturnCreCheck = (ecrno) => {
         if (remarkCancel != "" && strSection != "") {
-            //  getDataSrvDT.getReturn({ ecrno: ecrno, remark: remarkCancel, issued: empCode, section: section, position: position, toSection: strSection }).then((res) => {
-            getDataSrvDT.getReturn({
-                ecrno: ecrno, fromsection: section, tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            getDataSrvReturn.postReturnCreCheck({
+                ecrno: ecrno, fromsection: "CREATE", fromstep: 'CHECK', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกที่จะทำการ HOLD เอกสาร ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnCreApproved = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnCreApproved({
+                ecrno: ecrno, fromsection: "CREATE", fromstep: 'APPROVE', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnPUReceive = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnPUReceive({
+                ecrno: ecrno, fromsection: "PU", fromstep: 'RECEIVE', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnPUIssued = (ecrno, ecrCreateBySection, ecrCreateStatus) => {
+        if (remarkCancel != "" && strSection != "") {
+            let createBySection = (ecrCreateBySection == 'Design') ? 'DD' : 'PU';
+            let _section = (createBySection == section) ? (ecrCreateStatus == 'U' || ecrCreateStatus == 'F') ? 'CREATE' : section : section;
+
+            getDataSrvReturn.postReturnPUIssued({
+                ecrno: ecrno, fromsection: _section, fromstep: 'ISSUED', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnPUCheck = (ecrno, ecrCreateBySection, ecrCreateStatus) => {
+        if (remarkCancel != "" && strSection != "") {
+            let createBySection = (ecrCreateBySection == 'Design') ? 'DD' : 'PU';
+            let _section = (createBySection == section) ? (ecrCreateStatus == 'U' || ecrCreateStatus == 'F') ? 'CREATE' : section : section;
+
+            getDataSrvReturn.postReturnPUCheck({
+                ecrno: ecrno, fromsection: _section, fromstep: 'CHECK', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnPUApproved = (ecrno, ecrCreateBySection, ecrCreateStatus) => {
+        if (remarkCancel != "" && strSection != "") {
+            let createBySection = (ecrCreateBySection == 'Design') ? 'DD' : 'PU';
+            let _section = (createBySection == section) ? (ecrCreateStatus == 'U' || ecrCreateStatus == 'F') ? 'CREATE' : section : section;
+
+            getDataSrvReturn.postReturnPUApproved({
+                ecrno: ecrno, fromsection: _section, fromstep: 'APPROVE', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnDDReceive = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnDDReceive({
+                ecrno: ecrno, fromsection: "DD", fromstep: 'RECEIVE', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnDDIssued = (ecrno, ecrCreateBySection, ecrCreateStatus) => {
+        if (remarkCancel != "" && strSection != "") {
+            let createBySection = (ecrCreateBySection == 'Design') ? 'DD' : 'PU';
+            let _section = (createBySection == section) ? (ecrCreateStatus == 'U' || ecrCreateStatus == 'F') ? 'CREATE' : section : section;
+
+            getDataSrvReturn.postReturnDDIssued({
+                ecrno: ecrno, fromsection: _section, fromstep: 'ISSUED', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnDDCheck = (ecrno, ecrCreateBySection, ecrCreateStatus) => {
+        if (remarkCancel != "" && strSection != "") {
+            let createBySection = (ecrCreateBySection == 'Design') ? 'DD' : 'PU';
+            let _section = (createBySection == section) ? (ecrCreateStatus == 'U' || ecrCreateStatus == 'F') ? 'CREATE' : section : section;
+
+            getDataSrvReturn.postReturnDDCheck({
+                ecrno: ecrno, fromsection: _section, fromstep: 'CHECK', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnDDApproved = (ecrno, ecrCreateBySection, ecrCreateStatus) => {
+        if (remarkCancel != "" && strSection != "") {
+            let createBySection = (ecrCreateBySection == 'Design') ? 'DD' : 'PU';
+            let _section = (createBySection == section) ? (ecrCreateStatus == 'U' || ecrCreateStatus == 'F') ? 'CREATE' : section : section;
+
+            getDataSrvReturn.postReturnDDApproved({
+                ecrno: ecrno, fromsection: _section, fromstep: 'APPROVE', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+    const postReturnENReceive = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnENReceive({
+                ecrno: ecrno, fromsection: "EN", fromstep: 'RECEIVE', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnENIssued = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnENIssued({
+                ecrno: ecrno, fromsection: "EN", fromstep: 'ISSUED', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnENCheck = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnENCheck({
+                ecrno: ecrno, fromsection: "EN", fromstep: 'CHECK', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnENApproved = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnENApproved({
+                ecrno: ecrno, fromsection: "EN", fromstep: 'APPROVE', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnSQCReceive = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnSQCReceive({
+                ecrno: ecrno, fromsection: "SQC", fromstep: 'RECEIVE', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnSQCIssued = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnSQCIssued({
+                ecrno: ecrno, fromsection: "SQC", fromstep: 'ISSUED', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnSQCCheck = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnSQCCheck({
+                ecrno: ecrno, fromsection: "SQC", fromstep: 'CHECK', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnSQCApproved = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnSQCApproved({
+                ecrno: ecrno, fromsection: "SQC", fromstep: 'APPROVE', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnQCReceive = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnQCReceive({
+                ecrno: ecrno, fromsection: "QC", fromstep: 'RECEIVE', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnQCIssued = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnQCIssued({
+                ecrno: ecrno, fromsection: "QC", fromstep: 'ISSUED', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnQCCheck = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnQCCheck({
+                ecrno: ecrno, fromsection: "QC", fromstep: 'CHECK', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnQCApproved = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnQCApproved({
+                ecrno: ecrno, fromsection: "QC", fromstep: 'APPROVE', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnQAReceive = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnQAReceive({
+                ecrno: ecrno, fromsection: "QA", fromstep: 'RECEIVE', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnQAIssued = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnQAIssued({
+                ecrno: ecrno, fromsection: "QA", fromstep: 'ISSUED', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnQACheck = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnQACheck({
+                ecrno: ecrno, fromsection: "QA", fromstep: 'CHECK', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
+            }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    close(false);
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+
+
+    const postReturnQAApproved = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            getDataSrvReturn.postReturnQAApproved({
+                ecrno: ecrno, fromsection: "QA", fromstep: 'APPROVE', tosection: strSection, remark: remarkCancel, issued: empCode, posi: position
             }).then((res) => {
                 try {
                     //initFiles();
@@ -1407,11 +2352,11 @@ function FormDetail(props) {
     //****************************END FUNCTION RETURN************ */
 
 
-    //**************************** FUNCTION HOLD************ */
-    const postHold = (ecrno) => {
+    //**************************** FUNCTION HOLD PU************ */
+    const postHoldPU = (ecrno) => {
         if (remarkCancel != "" && strSection != "") {
             //  return false;
-            getDataSrvDT.postHold({ ecrno: ecrno, remark: remarkCancel, issued: empCode, section: section, position: position, toSection: strSection }).then((res) => {
+            getDataSrvDT.postHoldPU({ ecrno: ecrno, remark: remarkCancel, issued: empCode, section: section, position: position, toSection: strSection }).then((res) => {
                 try {
                     //initFiles();
                     refresh();
@@ -1438,7 +2383,177 @@ function FormDetail(props) {
             this.txtCancel.focus();
         }
     };
-    //****************************END FUNCTION HOLD************ */
+    //****************************END FUNCTION HOLD PU************ */
+
+
+    //**************************** FUNCTION HOLD DD************ */
+    const postHoldDD = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            //  return false;
+            getDataSrvDT.postHoldDD({ ecrno: ecrno, remark: remarkCancel, issued: empCode, section: section, position: position, toSection: strSection }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    // close(false);
+                    Swal.fire({
+                        icon: "success",
+                        title: "HOLD",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+    //****************************END FUNCTION HOLD DD************ */
+
+
+    //**************************** FUNCTION HOLD EN************ */
+    const postHoldEN = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            //  return false;
+            getDataSrvDT.postHoldEN({ ecrno: ecrno, remark: remarkCancel, issued: empCode, section: section, position: position, toSection: strSection }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    // close(false);
+                    Swal.fire({
+                        icon: "success",
+                        title: "HOLD",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+    //****************************END FUNCTION HOLD EN************ */
+
+
+    //**************************** FUNCTION HOLD SQC************ */
+    const postHoldSQC = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            //  return false;
+            getDataSrvDT.postHoldSQC({ ecrno: ecrno, remark: remarkCancel, issued: empCode, section: section, position: position, toSection: strSection }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    // close(false);
+                    Swal.fire({
+                        icon: "success",
+                        title: "HOLD",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+    //****************************END FUNCTION HOLD SQC************ */
+
+
+    //**************************** FUNCTION HOLD QC************ */
+    const postHoldQC = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            //  return false;
+            getDataSrvDT.postHoldQC({ ecrno: ecrno, remark: remarkCancel, issued: empCode, section: section, position: position, toSection: strSection }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    // close(false);
+                    Swal.fire({
+                        icon: "success",
+                        title: "HOLD",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+    //****************************END FUNCTION HOLD QC************ */
+
+
+    //**************************** FUNCTION HOLD QA************ */
+    const postHoldQA = (ecrno) => {
+        if (remarkCancel != "" && strSection != "") {
+            //  return false;
+            getDataSrvDT.postHoldQA({ ecrno: ecrno, remark: remarkCancel, issued: empCode, section: section, position: position, toSection: strSection }).then((res) => {
+                try {
+                    //initFiles();
+                    refresh();
+                    // close(false);
+                    Swal.fire({
+                        icon: "success",
+                        title: "HOLD",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาใส่เหตุผลและเลือกแผนกตีกลับ (Return) ",
+                showConfirmButton: false,
+                timer: 3500
+            });
+            this.txtCancel.focus();
+        }
+    };
+    //****************************END FUNCTION HOLD QA************ */
 
 
     const stepArray = ['ISSUED', 'CHECK', 'APPROVED'];
@@ -1448,6 +2563,16 @@ function FormDetail(props) {
     const stepArray1 = ['ISSUED'];
     const stepArray2 = ['CHECK'];
     const stepArray3 = ['APPROVED'];
+    const SectionReceiveArray = ['PU', 'DD', 'EN', 'SQC', 'QC', 'QA'];
+    let SectionDocument = "";
+
+    if (dataModaldt[0]?.section == 'Purchasing') {
+        SectionDocument = 'PU';
+    }
+    else {
+        SectionDocument = 'DD';
+    }
+
 
 
 
@@ -1472,6 +2597,24 @@ function FormDetail(props) {
         setStep(event.target.value);
     };
 
+    const handleChangeRecSection = (event) => {
+        setMGReceiveSec(event.target.value);
+        let sec = event.target.value;
+
+
+
+        getDataSrvPermiss.getEmployeeReceiveSection(event.target.value).then((res) => {
+            try {
+                setemployeeArrayReceiveSection(res.data);
+                console.log(res.data)
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+
 
     const postAddNotifyTo = (ecR_NO, position, section) => {
         if (employee != "" && step != "" && position != "" && section != "") {
@@ -1484,7 +2627,7 @@ function FormDetail(props) {
                                 icon: "success",
                                 title: "เพิ่มผู้ดำเนินการเรียบร้อย",
                                 showConfirmButton: false,
-                                timer: 1500,
+                                timer: 800,
                             });
                             refresh();
                         }
@@ -1532,6 +2675,73 @@ function FormDetail(props) {
     };
 
 
+    const postAddMGBySection = (ecR_NO) => {
+        if (employee != "") {
+            getDataSrvPermiss.GetAddMGBySection(ecR_NO, employee, MGReceiveSec, empCode).then((res) => {
+                try {
+                    getDataSrvPermiss.getTableMGReceive(ecR_NO).then((res) => {
+                        try {
+                            settableMGReceive(res.data);
+                            Swal.fire({
+                                icon: "success",
+                                title: "Successfully",
+                                showConfirmButton: false,
+                                timer: 1500,
+                            });
+                            refresh();
+                        }
+                        catch (error) {
+                            console.log(error);
+                            return error;
+                        }
+                    });
+                }
+                catch (error) {
+                    console.log(error);
+                    return error;
+                }
+            });
+        }
+        else {
+            Swal.fire({
+                icon: "error",
+                title: "กรุณาระบุ ชื่อ และ Status ที่จะใช้ดำเนินการเอกสาร",
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
+    };
+
+    const getDeleteMGReceiveSection = (ecrno, code, section) => {
+        getDataSrvPermiss.GetDeleteMGReceiveSection(ecrno, code, section).then((res) => {
+            try {
+                getDataSrvPermiss.getTableMGReceive(ecrno).then((res) => {
+                    try {
+                        settableMGReceive(res.data);
+                        Swal.fire({
+                            icon: "success",
+                            title: "Successfully",
+                            showConfirmButton: false,
+                            timer: 1500,
+                        });
+                        refresh();
+                    }
+                    catch (error) {
+                        console.log(error);
+                        return error;
+                    }
+                });
+            }
+            catch (error) {
+                console.log(error);
+                return error;
+            }
+        });
+    };
+
+
+
+
     const handleChangeClass = (event) => {
         setClass([...dataModaldt])
         setClass(event.target.value)
@@ -1553,6 +2763,22 @@ function FormDetail(props) {
         setstrSection(event.target.value);
     };
 
+    const content = <div className='Loading' />;
+
+
+    const handleModalDetailClose = () => {
+        //if (tableMGReceive[0]?.fullName_PU != undefined && tableMGReceive[0]?.fullName_DD != undefined && tableMGReceive[0]?.fullName_EN != undefined && tableMGReceive[0]?.fullName_SQC != undefined && tableMGReceive[0]?.fullName_QC != undefined && tableMGReceive[0]?.fullName_QA != undefined) {
+        close(false)
+        // }
+        // else {
+        //     Swal.fire({
+        //         icon: "warning",
+        //         title: "Warning",
+        //         text: "Please select the manager assigned to handle ECR documents in each department.",
+        //     });
+        // }
+    }
+
 
 
 
@@ -1572,22 +2798,18 @@ function FormDetail(props) {
                     <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
                         <h3>ECR Detail</h3>
                     </DialogTitle>
-                    {/* <IconButton aria-label="close" onClick={() => close(false)}
-                        sx={{
-                            position: 'absolute',
-                            right: 8,
-                            top: 8,
-                            color: (theme) => theme.palette.grey[500],
-                        }}
-                    >
-                        <CloseIcon />
-                    </IconButton> */}
+
+                    {/* {
+                        JSON.stringify(dataModaldt)
+                    } */}
+
                     <DialogContent dividers>
-                        {/* {
-                            `LOAD ${load}`
-                        } */}
                         {
-                            load == true ? <div style={{ textAlign: 'center' }}><CircularProgress />กำลังโหลดข้อมูล</div> : <div>
+                            load == true ? <div class="text-center">
+                                <Spin tip="Loading" size="small">
+                                    {content}
+                                </Spin>
+                            </div> : <div>
                                 <div class="row">
                                     <div class="col-sm-2">  </div>
                                     <div class="col-sm-10">
@@ -1622,9 +2844,8 @@ function FormDetail(props) {
                                     </div>
                                 </Row>
 
-                                {/* {
-                                    JSON.stringify(dataHold)
-                                } */}
+
+
 
                                 <Accordion expanded={expanded === 'CREATE'} onChange={handleChangeCollapse('CREATE')}>
                                     <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
@@ -1990,13 +3211,15 @@ function FormDetail(props) {
                                                 </Col>
                                             </Row>
 
+
                                             <br></br>
                                             <hr></hr>
 
 
+
                                             {
                                                 dataHold.filter((value) => {
-                                                    return value.statusHold != "HOLD"
+                                                    return value.statusHold == "NOT DATA"
                                                 }).length ? <>
                                                     {
                                                         //// ISSUED  เลือก CHECK
@@ -2181,7 +3404,7 @@ function FormDetail(props) {
                                             }
 
 
-                                            {
+                                            {/* {
                                                 //// APPROVED
                                                 dataModaldt[0]?.create_ApprovedBit == "F" ? <>
                                                     <Row style={{ display: 'flex', justifyContent: 'center' }}>
@@ -2216,15 +3439,198 @@ function FormDetail(props) {
                                                     </Row>
                                                 </>
                                                     : ""
-                                            }
+                                            } */}
 
+
+                                            {/* <br></br>
+                                            <hr></hr> */}
+
+                                            {/* {
+                                                JSON.stringify(permission[0]?.grpRole)
+                                            } */}
+
+
+
+
+                                            {
+                                                (permission[0]?.grpRoleSect == 'ADMIN' || permission[0]?.grpRoleSect == SectionDocument) && permission[0]?.grpRole == "APPROVED" && tableNotify[0]?.cre_approvedBit == "F" ? <>
+
+                                                    <p style={{ color: '#fc5757', fontSize: '18px' }}> * Please select the manager assigned to handle ECR documents in each department.</p>
+
+                                                    <br></br>
+
+                                                    <Row style={{ display: 'flex', alignItems: 'center' }} >
+                                                        <Col xs={12} md={3}>
+                                                            <FormControl fullWidth >
+                                                                <InputLabel id="demo-simple-select-label">Section</InputLabel>
+                                                                <Select
+                                                                    labelId="demo-simple-select-label"
+                                                                    id="demo-simple-select"
+                                                                    value={MGReceiveSec}
+                                                                    label="Section"
+                                                                    onChange={handleChangeRecSection}>
+                                                                    {
+                                                                        SectionReceiveArray.map((item, index) =>
+                                                                            <MenuItem value={item}>{item}</MenuItem>
+                                                                        )
+                                                                    }
+                                                                </Select>
+                                                            </FormControl>
+                                                        </Col>
+                                                        <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
+                                                            <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                                                            <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
+                                                        </Col>
+                                                        <Col xs={12} md={4}>
+                                                            <FormControl fullWidth>
+                                                                <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
+                                                                <Select
+                                                                    labelId="demo-simple-select-label"
+                                                                    id="demo-simple-select"
+                                                                    value={employee}
+                                                                    label="EmpCode"
+                                                                    onChange={handleChangeEmployee}>
+                                                                    {
+                                                                        employeeArrayReceiveSection.map((item, index) =>
+                                                                            <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
+                                                                        )
+                                                                    }
+                                                                </Select>
+                                                            </FormControl>
+                                                        </Col>
+
+                                                        <Col xs={12} md={2}>
+                                                            <Button variant="success" onClick={() => postAddMGBySection(dataModaldt[0]?.ecR_NO) ? true : false}>
+                                                                ADD
+                                                            </Button>
+                                                        </Col>
+                                                    </Row>
+
+                                                    <br></br>
+                                                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
+                                                        <table className='ReceiveSection'>
+                                                            <tr>
+                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>PU</b></center></td>
+                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>DD</b></center></td>
+                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>EN</b></center></td>
+                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>SQC</b></center></td>
+                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>QC</b></center></td>
+                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>QA</b></center></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style={{ border: '1px solid black', color: tableMGReceive[0]?.fullName_PU != null ? 'black' : 'gainsboro' }}>
+                                                                    <center>{tableMGReceive[0]?.fullName_PU}<br></br> {tableMGReceive[0]?.fullName_PU != '' ? tableMGReceive[0]?.date_PU : ''}</center>
+                                                                    {
+                                                                        tableMGReceive[0]?.status_PU == "0" ?
+                                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'APPROVED' || permission[0]?.grpRole == 'ADMIN') && (permission[0]?.grpRoleSect == 'ADMIN' || permission[0]?.grpRoleSect == SectionDocument))) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteMGReceiveSection(dataModaldt[0]?.ecR_NO, tableMGReceive[0]?.empCode_PU, "PU")}>
+                                                                                ลบ
+                                                                            </Button>
+                                                                            : ''
+                                                                    }
+                                                                </td>
+                                                                <td style={{ border: '1px solid black', color: tableMGReceive[0]?.fullName_DD != "" ? 'black' : 'gainsboro' }}>
+                                                                    <center>{tableMGReceive[0]?.fullName_DD}<br></br>{tableMGReceive[0]?.fullName_DD != '' ? tableMGReceive[0]?.date_DD : ''}</center>
+                                                                    {
+                                                                        tableMGReceive[0]?.status_DD == "0" ?
+                                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'APPROVED' || permission[0]?.grpRole == 'ADMIN') && (permission[0]?.grpRoleSect == 'ADMIN' || permission[0]?.grpRoleSect == SectionDocument))) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteMGReceiveSection(dataModaldt[0]?.ecR_NO, tableMGReceive[0]?.empCode_DD, "DD")}>
+                                                                                ลบ
+                                                                            </Button>
+                                                                            : ''
+                                                                    }
+                                                                </td>
+                                                                <td style={{ border: '1px solid black', color: tableMGReceive[0]?.fullName_EN != "" ? 'black' : 'gainsboro' }}>
+                                                                    <center>{tableMGReceive[0]?.fullName_EN}<br></br> {tableMGReceive[0]?.fullName_EN != "" ? tableMGReceive[0]?.date_EN : ''}</center>
+                                                                    {
+                                                                        tableMGReceive[0]?.status_EN == "0" ?
+                                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'APPROVED' || permission[0]?.grpRole == 'ADMIN') && (permission[0]?.grpRoleSect == 'ADMIN' || permission[0]?.grpRoleSect == SectionDocument))) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteMGReceiveSection(dataModaldt[0]?.ecR_NO, tableMGReceive[0]?.empCode_EN, "EN")}>
+                                                                                ลบ
+                                                                            </Button>
+                                                                            : ''
+                                                                    }
+                                                                </td>
+                                                                <td style={{ border: '1px solid black', color: tableMGReceive[0]?.fullName_SQC != "" ? 'black' : 'gainsboro' }}>
+                                                                    <center>{tableMGReceive[0]?.fullName_SQC}<br></br>{tableMGReceive[0]?.fullName_SQC != "" ? tableMGReceive[0]?.date_SQC : ''}</center>
+                                                                    {
+                                                                        tableMGReceive[0]?.status_SQC == "0" ?
+                                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'APPROVED' || permission[0]?.grpRole == 'ADMIN') && (permission[0]?.grpRoleSect == 'ADMIN' || permission[0]?.grpRoleSect == SectionDocument))) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteMGReceiveSection(dataModaldt[0]?.ecR_NO, tableMGReceive[0]?.empCode_SQC, "SQC")}>
+                                                                                ลบ
+                                                                            </Button>
+                                                                            : ''
+                                                                    }
+                                                                </td>
+                                                                <td style={{ border: '1px solid black', color: tableMGReceive[0]?.fullName_QC != "" ? 'black' : 'gainsboro' }}>
+                                                                    <center>{tableMGReceive[0]?.fullName_QC}<br></br> {tableMGReceive[0]?.fullName_QC != "" ? tableMGReceive[0]?.date_QC : ''}</center>
+                                                                    {
+                                                                        tableMGReceive[0]?.status_QC == "0" ?
+                                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'APPROVED' || permission[0]?.grpRole == 'ADMIN') && (permission[0]?.grpRoleSect == 'ADMIN' || permission[0]?.grpRoleSect == SectionDocument))) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteMGReceiveSection(dataModaldt[0]?.ecR_NO, tableMGReceive[0]?.empCode_QC, "QC")}>
+                                                                                ลบ
+                                                                            </Button>
+                                                                            : ''
+                                                                    }
+                                                                </td>
+                                                                <td style={{ border: '1px solid black', color: tableMGReceive[0]?.fullName_QA != "" ? 'black' : 'gainsboro' }}>
+                                                                    <center>{tableMGReceive[0]?.fullName_QA}<br></br>{tableMGReceive[0]?.fullName_QA != "" ? tableMGReceive[0]?.date_QA : ''}</center>
+                                                                    {
+                                                                        tableMGReceive[0]?.status_QA == "0" ?
+                                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRole == 'APPROVED' || permission[0]?.grpRole == 'ADMIN') && (permission[0]?.grpRoleSect == 'ADMIN' || permission[0]?.grpRoleSect == SectionDocument))) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteMGReceiveSection(dataModaldt[0]?.ecR_NO, tableMGReceive[0]?.empCode_QA, "QA")}>
+                                                                                ลบ
+                                                                            </Button>
+                                                                            : ''
+                                                                    }
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </Row>
+                                                </>
+                                                    :
+                                                    <>
+                                                        {
+                                                            tableNotify[0]?.cre_approvedBit == "F" ?
+                                                                <>
+                                                                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
+                                                                        <table className='ReceiveSection'>
+                                                                            <tr>
+                                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>PU</b></center></td>
+                                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>DD</b></center></td>
+                                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>EN</b></center></td>
+                                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>SQC</b></center></td>
+                                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>QC</b></center></td>
+                                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>QA</b></center></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style={{ border: '1px solid black', color: tableMGReceive[0]?.fullName_PU != null ? 'black' : 'gainsboro' }}>
+                                                                                    <center>{tableMGReceive[0]?.fullName_PU}<br></br> {tableMGReceive[0]?.fullName_PU != '' ? tableMGReceive[0]?.date_PU : ''}</center>
+                                                                                </td>
+                                                                                <td style={{ border: '1px solid black', color: tableMGReceive[0]?.fullName_DD != "" ? 'black' : 'gainsboro' }}>
+                                                                                    <center>{tableMGReceive[0]?.fullName_DD}<br></br>{tableMGReceive[0]?.fullName_DD != '' ? tableMGReceive[0]?.date_DD : ''}</center>
+                                                                                </td>
+                                                                                <td style={{ border: '1px solid black', color: tableMGReceive[0]?.fullName_EN != "" ? 'black' : 'gainsboro' }}>
+                                                                                    <center>{tableMGReceive[0]?.fullName_EN}<br></br> {tableMGReceive[0]?.fullName_EN != "" ? tableMGReceive[0]?.date_EN : ''}</center>
+                                                                                </td>
+                                                                                <td style={{ border: '1px solid black', color: tableMGReceive[0]?.fullName_SQC != "" ? 'black' : 'gainsboro' }}>
+                                                                                    <center>{tableMGReceive[0]?.fullName_SQC}<br></br>{tableMGReceive[0]?.fullName_SQC != "" ? tableMGReceive[0]?.date_SQC : ''}</center>
+                                                                                </td>
+                                                                                <td style={{ border: '1px solid black', color: tableMGReceive[0]?.fullName_QC != "" ? 'black' : 'gainsboro' }}>
+                                                                                    <center>{tableMGReceive[0]?.fullName_QC}<br></br> {tableMGReceive[0]?.fullName_QC != "" ? tableMGReceive[0]?.date_QC : ''}</center>
+                                                                                </td>
+                                                                                <td style={{ border: '1px solid black', color: tableMGReceive[0]?.fullName_QA != "" ? 'black' : 'gainsboro' }}>
+                                                                                    <center>{tableMGReceive[0]?.fullName_QA}<br></br>{tableMGReceive[0]?.fullName_QA != "" ? tableMGReceive[0]?.date_QA : ''}</center>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </Row>
+                                                                </>
+                                                                : ''
+                                                        }
+                                                    </>
+                                            }
 
 
 
                                         </Typography>
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion expanded={expanded === 'PU'} disabled={dataModaldt[0]?.create_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('PU')}>
+                                <Accordion expanded={expanded === 'PU'} onChange={handleChangeCollapse('PU')}>
                                     <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
                                         <Typography>ส่วนที่ 2 PU</Typography>
                                     </AccordionSummary>
@@ -2280,9 +3686,6 @@ function FormDetail(props) {
 
                                                         <Col xs={12} md={12}>
                                                             <br></br>
-                                                            {/* {
-                                                        JSON.stringify(dataModaldt)
-                                                    } */}
                                                             <div className='styleCard'>
                                                                 <Form.Label>Request document (For PU)</Form.Label>
                                                                 <div>
@@ -2299,392 +3702,10 @@ function FormDetail(props) {
                                                     </Row>
                                                 </Col>
                                             </Row>
-
-                                            <hr></hr>
-                                            {/* <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-
-                                            <Row className='styleRowText'>
-                                                <Col xs={12} md={12}>
-                                                    <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: 'rgb(216 96 8)', backgroundColor: (position == "RECEIVED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} value={dataModaldt[0]?.pU_Receive_Remark}
-                                                        onChange={(e) => {
-                                                            dataModaldt[0].pU_Receive_Remark = e.target.value;
-                                                            setPU_Receive([...dataModaldt]);
-                                                        }} />
-                                                </Col>
-                                            </Row> */}
-
-
-                                            <br></br>
-
-                                            {
-                                                dataHold.filter((value) => {
-                                                    return value.statusHold != "HOLD"
-                                                }).length ? <>
-                                                    {
-                                                        ////  RECEIVE เลือก ISSUED
-                                                        (StatusDocList == 'RECEIVE' && (notifyStep.filter((oAssign) => oAssign.permission == 'RECEIVE' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Issued เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArrayPUIssued.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray1.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        permission.filter((item) => {
-                                                                            return ((permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.create_ApprovedBit == "F") || (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.create_ApprovedBit != "F"))
-                                                                        }).length ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "PU")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.pu_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.pu_approved}<br></br> {tableNotify[0]?.pu_approvedBit == 'F' ? tableNotify[0]?.pu_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.pu_approved != null && permission[0]?.grpRole != 'APPROVED' && tableNotify[0]?.pu_issuedBit == 'F' ?
-                                                                                    <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_approvedCode, tableNotify[0]?.pu_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.pu_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.pu_checked}<br></br>{tableNotify[0]?.pu_checkedBit == 'F' ? tableNotify[0]?.pu_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.pu_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED'))) && dataModaldt[0]?.pU_CheckBit != "F" && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_checkedCode, tableNotify[0]?.pu_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.pu_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.pu_issued}<br></br> {tableNotify[0]?.pu_issuedBit == 'F' ? tableNotify[0]?.pu_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.pu_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_issuedCode, tableNotify[0]?.pu_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-
-
-                                                    {
-                                                        /// ISSUED เลือก CHECK
-                                                        (StatusDocList == 'ISSUED' && (notifyStep.filter((oAssign) => oAssign.permission == 'ISSUED' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Check เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArrayPUCheck.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray2.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        permission.filter((item) => {
-                                                                            return ((permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.create_ApprovedBit == "F") || (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.create_ApprovedBit != "F"))
-                                                                        }).length ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "PU")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.pu_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.pu_approved}<br></br> {tableNotify[0]?.pu_approvedBit == 'F' ? tableNotify[0]?.pu_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.pu_approved != null && permission[0]?.grpRole != 'APPROVED' && tableNotify[0]?.pu_issuedBit == 'F' ?
-                                                                                    <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_approvedCode, tableNotify[0]?.pu_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.pu_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.pu_checked}<br></br>{tableNotify[0]?.pu_checkedBit == 'F' ? tableNotify[0]?.pu_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.pu_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED'))) && dataModaldt[0]?.pU_CheckBit != "F" && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_checkedCode, tableNotify[0]?.pu_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.pu_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.pu_issued}<br></br> {tableNotify[0]?.pu_issuedBit == 'F' ? tableNotify[0]?.pu_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.pu_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_issuedCode, tableNotify[0]?.pu_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-
-
-
-                                                    {
-                                                        //// CHECK  เลือก APPROVED
-                                                        (StatusDocList == 'CHECKED' && (notifyStep.filter((oAssign) => oAssign.permission == 'CHECK' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Approve เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArrayPUApproved.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray3.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        permission.filter((item) => {
-                                                                            return ((permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.create_ApprovedBit == "F") || (permission[0]?.grpRoleSect == "PU" && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.create_ApprovedBit != "F"))
-                                                                        }).length ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "PU")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.pu_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.pu_approved}<br></br> {tableNotify[0]?.pu_approvedBit == 'F' ? tableNotify[0]?.pu_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.pu_approved != null && permission[0]?.grpRole != 'APPROVED' && tableNotify[0]?.pu_issuedBit == 'F' ?
-                                                                                    <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_approvedCode, tableNotify[0]?.pu_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.pu_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.pu_checked}<br></br>{tableNotify[0]?.pu_checkedBit == 'F' ? tableNotify[0]?.pu_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.pu_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED'))) && dataModaldt[0]?.pU_CheckBit != "F" && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_checkedCode, tableNotify[0]?.pu_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.pu_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.pu_issued}<br></br> {tableNotify[0]?.pu_issuedBit == 'F' ? tableNotify[0]?.pu_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.pu_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.pU_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_issuedCode, tableNotify[0]?.pu_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-                                                </>
-                                                    : ""
-                                            }
-
-
-
-
-
-
-                                            {
-                                                ////  APPROVED
-                                                dataModaldt[0]?.pU_ApprovedBit == "F" ? <>
-                                                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                        <table className='notify'>
-                                                            <tr>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.pu_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.pu_approved}<br></br> {tableNotify[0]?.pu_approvedBit == 'F' ? tableNotify[0]?.pu_approvedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.pu_checkedBit != 'F' && tableNotify[0]?.pu_checkedCode != null && permission[0]?.grpRole != 'APPROVED' && tableNotify[0]?.pu_issuedBit == 'F' ?
-                                                                            <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_approvedCode, tableNotify[0]?.pu_approved_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.pu_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.pu_checked}<br></br>{tableNotify[0]?.pu_checkedBit == 'F' ? tableNotify[0]?.pu_checkedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.pu_checkedBit != 'F' ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED'))) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_checkedCode, tableNotify[0]?.pu_checked_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.pu_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.pu_issued}<br></br> {tableNotify[0]?.pu_issuedBit == 'F' ? tableNotify[0]?.pu_issuedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.pu_issued != null ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "PU" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.pU_ReceiveBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.pu_issuedCode, tableNotify[0]?.pu_issued_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </Row>
-                                                </> : ""
-                                            }
-
-
-
-
                                         </Typography>
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion expanded={expanded === 'DD'} disabled={dataModaldt[0]?.pU_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('DD')}>
+                                <Accordion expanded={expanded === 'DD'} onChange={handleChangeCollapse('DD')}>
                                     <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
                                         <Typography>ส่วนที่ 3 DD</Typography>
                                     </AccordionSummary>
@@ -2744,383 +3765,38 @@ function FormDetail(props) {
                                                 </Col>
                                             </Row>
 
-                                            {/* <hr></hr>
-                                            <Row className='styleRowText'>
-                                                <Col xs={12} md={12}>
-                                                    <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                                    <Form.Control as="textarea" disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} rows={5} style={{ color: 'rgb(216 96 8)', backgroundColor: (position == "RECEIVED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} value={dataModaldt[0]?.dD_Remark_Receive}
-                                                        onChange={(e) => {
-                                                            dataModaldt[0].dD_Remark_Receive = e.target.value;
-                                                            setDD_Receive([...dataModaldt]);
-                                                        }} />
-                                                </Col>
-                                            </Row> */}
+                                            <br></br>
                                             <hr></hr>
+                                            <h3 className='text-center'>SEND TO DIL</h3>
 
-                                            {
-                                                dataHold.filter((value) => {
-                                                    return value.statusHold != "HOLD"
-                                                }).length ? <>
-                                                    {
-                                                        ////  RECEIVE เลือก ISSUED
-                                                        (StatusDocList == 'RECEIVE' && (notifyStep.filter((oAssign) => oAssign.permission == 'RECEIVE' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Issued เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArrayDDIssued.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray1.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        permission.filter((item) => {
-                                                                            return (permission[0]?.grpRoleSect == "DD" || permission[0]?.grpRoleSect == "ADMIN") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.dD_ApprovedBit != "F"
-                                                                        }).length ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "DD")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.dd_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.dd_approved}<br></br> {tableNotify[0]?.dd_approvedBit == 'F' ? tableNotify[0]?.dd_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.dd_approved != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && (permission[0]?.grpRole == 'CHECK' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.dD_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_approvedCode, tableNotify[0]?.dd_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.dd_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.dd_checked}<br></br>{tableNotify[0]?.dd_checkedBit == 'F' ? tableNotify[0]?.dd_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.dd_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.dD_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_checkedCode, tableNotify[0]?.dd_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.dd_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.dd_issued}<br></br> {tableNotify[0]?.dd_issuedBit == 'F' ? tableNotify[0]?.dd_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.dd_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "DD" || permission[0]?.grpRoleSect == "ADMIN") && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.dD_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_issuedCode, tableNotify[0]?.dd_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-
-
-                                                    {
-                                                        ////  ISSUED เลือก CHECK
-                                                        (StatusDocList == 'ISSUED' && (notifyStep.filter((oAssign) => oAssign.permission == 'ISSUED' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Check เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArrayDDCheck.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray2.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        permission.filter((item) => {
-                                                                            return (permission[0]?.grpRoleSect == "DD" || permission[0]?.grpRoleSect == "ADMIN") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.dD_ApprovedBit != "F"
-                                                                        }).length ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "DD")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.dd_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.dd_approved}<br></br> {tableNotify[0]?.dd_approvedBit == 'F' ? tableNotify[0]?.dd_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.dd_approved != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && (permission[0]?.grpRole == 'CHECK' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.dD_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_approvedCode, tableNotify[0]?.dd_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.dd_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.dd_checked}<br></br>{tableNotify[0]?.dd_checkedBit == 'F' ? tableNotify[0]?.dd_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.dd_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.dD_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_checkedCode, tableNotify[0]?.dd_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.dd_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.dd_issued}<br></br> {tableNotify[0]?.dd_issuedBit == 'F' ? tableNotify[0]?.dd_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.dd_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "DD" || permission[0]?.grpRoleSect == "ADMIN") && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.dD_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_issuedCode, tableNotify[0]?.dd_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-
-
-
-                                                    {
-                                                        /// CHECK เลือก APPROVED
-                                                        (StatusDocList == 'CHECKED' && (notifyStep.filter((oAssign) => oAssign.permission == 'CHECK' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Approve เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(notifyStep.filter((oAssign) => oAssign.permission == 'APPROVED' && oAssign.empCode == empCode).length) ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArrayDDApproved.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={(notifyStep.filter((oAssign) => oAssign.permission == 'APPROVED' && oAssign.empCode == empCode).length) ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray3.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        (StatusDocList == 'CHECKED' && (notifyStep.filter((oAssign) => oAssign.permission == 'CHECK' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "DD")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.dd_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.dd_approved}<br></br> {tableNotify[0]?.dd_approvedBit == 'F' ? tableNotify[0]?.dd_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.dd_approved != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && (permission[0]?.grpRole == 'CHECK' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.dD_ApprovedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_approvedCode, tableNotify[0]?.dd_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.dd_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.dd_checked}<br></br>{tableNotify[0]?.dd_checkedBit == 'F' ? tableNotify[0]?.dd_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.dd_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.dD_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_checkedCode, tableNotify[0]?.dd_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.dd_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.dd_issued}<br></br> {tableNotify[0]?.dd_issuedBit == 'F' ? tableNotify[0]?.dd_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.dd_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "DD" || permission[0]?.grpRoleSect == "ADMIN") && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.dD_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_issuedCode, tableNotify[0]?.dd_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-                                                </>
-                                                    : ""
-                                            }
-
-
-
-                                            {
-                                                ///  APPROVED  == F
-                                                dataModaldt[0]?.dD_ApprovedBit == "F" && <>
-                                                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                        <table className='notify'>
-                                                            <tr>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.dd_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.dd_approved}<br></br> {tableNotify[0]?.dd_approvedBit == 'F' ? tableNotify[0]?.dd_approvedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.dd_approved != null ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && (permission[0]?.grpRole == 'CHECK' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.dD_ApprovedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_approvedCode, tableNotify[0]?.dd_approved_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.dd_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.dd_checked}<br></br>{tableNotify[0]?.dd_checkedBit == 'F' ? tableNotify[0]?.dd_checkedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.dd_checked != null ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "DD" && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.dD_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_checkedCode, tableNotify[0]?.dd_checked_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.dd_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.dd_issued}<br></br> {tableNotify[0]?.dd_issuedBit == 'F' ? tableNotify[0]?.dd_issuedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.dd_issued != null ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "DD" || permission[0]?.grpRoleSect == "ADMIN") && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.dD_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.dd_issuedCode, tableNotify[0]?.dd_issued_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </Row>
-                                                </>
-                                            }
-
-
-
+                                            <Row className='styleRowText'>
+                                                <Col xs={12} md={4}> </Col>
+                                                <Col xs={12} md={4}>
+                                                    <FormControl disabled={((permission[0]?.grpRoleSect == "DD" || permission[0]?.grpRoleSect == "ADMIN") && (permission[0]?.grpRole == 'APPROVED' || permission[0]?.grpRole == 'ADMIN') && dataModaldt[0]?.dD_CheckBit == "F" ? false : true)} >
+                                                        <FormLabel id="demo-controlled-radio-buttons-group"></FormLabel>
+                                                        <RadioGroup
+                                                            aria-labelledby="demo-controlled-radio-buttons-group"
+                                                            name="controlled-radio-buttons-group"
+                                                            value={detailDIL[0]?.remarkdd}
+                                                            onChange={(event) => {
+                                                                detailDIL[0].remarkdd = event.target.value;
+                                                                setRadioDILDD(detailDIL[0].remarkdd)
+                                                            }}
+                                                        >
+                                                            <div style={{ display: 'flex' }}>
+                                                                <FormControlLabel value="NEED" control={<Radio />} label="NEED" />
+                                                                <FormControlLabel value="NO NEED" control={<Radio />} label="NO NEED" />
+                                                            </div>
+                                                        </RadioGroup>
+                                                    </FormControl>
+                                                </Col>
+                                                <Col xs={12} md={4}> </Col>
+                                            </Row>
 
                                         </Typography>
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion expanded={expanded === 'EN'} disabled={dataModaldt[0]?.dD_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('EN')}>
+                                <Accordion expanded={expanded === 'EN'} onChange={handleChangeCollapse('EN')}>
                                     <AccordionSummary aria-controls="panel4d-content" id="panel4d-header">
                                         <Typography>ส่วนที่ 4 EN</Typography>
                                     </AccordionSummary>
@@ -3129,7 +3805,7 @@ function FormDetail(props) {
                                             <Row className='styleRowText'>
                                                 <Col xs={12} md={12}>
                                                     <Form.Label><span style={{ color: 'red', fontSize: '18px' }}>*</span>2.3  Engineer Section : Procesee effect , Tool life  , MQ,PC</Form.Label>
-                                                    <Form.Control as="textarea" style={{ backgroundColor: ((position == "ISSUED" || position == "ADMIN") && dataModaldt[0]?.eN_ReceiveBit == "F" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} disabled={((position == "ISSUED" || position == "ADMIN") && dataModaldt[0]?.eN_ReceiveBit == "F" ? false : true)} rows={5} value={dataModaldt[0]?.eN_Remark}
+                                                    <Form.Control as="textarea" style={{ backgroundColor: ((position == "ISSUED" || position == "ADMIN") ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} disabled={((position == "ISSUED" || position == "ADMIN") ? false : true)} rows={5} value={dataModaldt[0]?.eN_Remark}
                                                         onChange={(e) => {
                                                             dataModaldt[0].eN_Remark = e.target.value;
                                                             setRemarkEN([...dataModaldt]);
@@ -3137,387 +3813,10 @@ function FormDetail(props) {
                                                 </Col>
                                             </Row>
 
-                                            {/* <hr></hr>
-
-                                            <Row className='styleRowText'>
-                                                <Col xs={12} md={12}>
-                                                    <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                                    <Form.Control as="textarea" disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} rows={5} style={{ color: 'rgb(216 96 8)', backgroundColor: (position == "RECEIVED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} value={dataModaldt[0]?.eN_Remark_Receive}
-                                                        onChange={(e) => {
-                                                            dataModaldt[0].eN_Remark_Receive = e.target.value;
-                                                            setEN_Receive([...dataModaldt]);
-                                                        }} />
-                                                </Col>
-                                            </Row> */}
-                                            <hr></hr>
-
-
-                                            {
-                                                dataHold.filter((value) => {
-                                                    return value.statusHold != "HOLD"
-                                                }).length ? <>
-                                                    {
-                                                        ////  RECEIVE เลือก ISSUED
-                                                        (StatusDocList == 'RECEIVE' && (notifyStep.filter((oAssign) => oAssign.permission == 'RECEIVE' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Issued เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArrayENIssued.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray1.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        permission.filter((item) => {
-                                                                            return permission[0]?.grpRoleSect == "EN" && dataModaldt[0]?.eN_ApprovedBit != "F" && permission[0]?.grpRole != 'APPROVED'
-                                                                        }).length ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "EN")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.en_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.en_approved}<br></br> {tableNotify[0]?.en_approvedBit == 'F' ? tableNotify[0]?.en_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.en_approved != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'CHECK' && dataModaldt[0]?.eN_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_approvedCode, tableNotify[0]?.en_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.en_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.en_checked}<br></br>{tableNotify[0]?.en_checkedBit == 'F' ? tableNotify[0]?.en_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.en_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.eN_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_checkedCode, tableNotify[0]?.en_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.en_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.en_issued}<br></br> {tableNotify[0]?.en_issuedBit == 'F' ? tableNotify[0]?.en_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.en_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.eN_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_issuedCode, tableNotify[0]?.en_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-
-
-                                                    {
-                                                        // // ISSUED เลือก CHECK
-                                                        (StatusDocList == 'ISSUED' && (notifyStep.filter((oAssign) => oAssign.permission == 'ISSUED' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Check เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArrayENCheck.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray2.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        permission.filter((item) => {
-                                                                            return permission[0]?.grpRoleSect == "EN" && dataModaldt[0]?.eN_ApprovedBit != "F" && permission[0]?.grpRole != 'APPROVED'
-                                                                        }).length ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "EN")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.en_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.en_approved}<br></br> {tableNotify[0]?.en_approvedBit == 'F' ? tableNotify[0]?.en_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.en_approved != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'CHECK' && dataModaldt[0]?.eN_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_approvedCode, tableNotify[0]?.en_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.en_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.en_checked}<br></br>{tableNotify[0]?.en_checkedBit == 'F' ? tableNotify[0]?.en_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.en_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.eN_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_checkedCode, tableNotify[0]?.en_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.en_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.en_issued}<br></br> {tableNotify[0]?.en_issuedBit == 'F' ? tableNotify[0]?.en_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.en_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.eN_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_issuedCode, tableNotify[0]?.en_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-
-
-                                                    {
-                                                        // // CHECK เลือก APPROVED
-                                                        (StatusDocList == 'CHECKED' && (notifyStep.filter((oAssign) => oAssign.permission == 'CHECK' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Approve เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(notifyStep.filter((oAssign) => oAssign.permission == 'APPROVED' && oAssign.empCode == empCode).length) ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArrayENApproved.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={(notifyStep.filter((oAssign) => oAssign.permission == 'APPROVED' && oAssign.empCode == empCode).length) ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray3.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        (StatusDocList == 'CHECKED' && (notifyStep.filter((oAssign) => oAssign.permission == 'CHECK' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "EN")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.en_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.en_approved}<br></br> {tableNotify[0]?.en_approvedBit == 'F' ? tableNotify[0]?.en_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.en_approved != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'CHECK' && dataModaldt[0]?.eN_ApprovedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_approvedCode, tableNotify[0]?.en_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.en_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.en_checked}<br></br>{tableNotify[0]?.en_checkedBit == 'F' ? tableNotify[0]?.en_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.en_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.eN_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_checkedCode, tableNotify[0]?.en_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.en_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.en_issued}<br></br> {tableNotify[0]?.en_issuedBit == 'F' ? tableNotify[0]?.en_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.en_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.eN_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_issuedCode, tableNotify[0]?.en_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-                                                </>
-                                                    : ""
-                                            }
-
-
-
-
-
-                                            {
-                                                // //  APPROVED == "F"
-                                                dataModaldt[0]?.eN_ApprovedBit == "F" && <>
-                                                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                        <table className='notify'>
-                                                            <tr>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.en_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.en_approved}<br></br> {tableNotify[0]?.en_approvedBit == 'F' ? tableNotify[0]?.en_approvedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.en_approved != null ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'CHECK' && dataModaldt[0]?.eN_ApprovedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_approvedCode, tableNotify[0]?.en_approved_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.en_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.en_checked}<br></br>{tableNotify[0]?.en_checkedBit == 'F' ? tableNotify[0]?.en_checkedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.en_checked != null ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.eN_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_checkedCode, tableNotify[0]?.en_checked_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.en_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.en_issued}<br></br> {tableNotify[0]?.en_issuedBit == 'F' ? tableNotify[0]?.en_issuedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.en_issued != null ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && (permission[0]?.grpRoleSect == "EN" && (permission[0]?.grpRole == 'RECEIVED' || permission[0]?.grpRole == 'ISSUED') && dataModaldt[0]?.eN_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.en_issuedCode, tableNotify[0]?.en_issued_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </Row>
-                                                </>
-                                            }
-
-
-
-
-
                                         </Typography>
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion expanded={expanded === 'SQC'} disabled={dataModaldt[0]?.eN_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('SQC')}>
+                                <Accordion expanded={expanded === 'SQC'} onChange={handleChangeCollapse('SQC')}>
                                     <AccordionSummary aria-controls="panel5d-content" id="panel5d-header">
                                         <Typography>ส่วนที่ 5 SQC</Typography>
                                     </AccordionSummary>
@@ -3533,386 +3832,10 @@ function FormDetail(props) {
                                                         }} />
                                                 </Col>
                                             </Row>
-
-                                            {/* <hr></hr>
-
-                                            <Row className='styleRowText'>
-                                                <Col xs={12} md={12}>
-                                                    <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                                    <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: 'rgb(216 96 8)', backgroundColor: (position == "RECEIVED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} value={dataModaldt[0]?.sqC_Remark_Receive}
-                                                        onChange={(e) => {
-                                                            dataModaldt[0].sqC_Remark_Receive = e.target.value;
-                                                            setSQC_Receive([...dataModaldt]);
-                                                        }} />
-                                                </Col>
-                                            </Row> */}
-
-                                            <hr></hr>
-
-
-                                            {
-                                                dataHold.filter((value) => {
-                                                    return value.statusHold != "HOLD"
-                                                }).length ? <>
-                                                    {
-                                                        ////  RECEIVE เลือก ISSUED
-                                                        (StatusDocList == 'RECEIVE' && (notifyStep.filter((oAssign) => oAssign.permission == 'RECEIVE' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Issued เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArraySQCIssued.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray1.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        permission.filter((item) => {
-                                                                            return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.sqC_CheckBit != "F"
-                                                                        }).length ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "SQC")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.sqc_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.sqc_approved}<br></br> {tableNotify[0]?.sqc_approvedBit == 'F' ? tableNotify[0]?.sqc_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.sqc_approved != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.sqC_ApprovedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_approvedCode, tableNotify[0]?.sqc_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.sqc_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.sqc_checked}<br></br>{tableNotify[0]?.sqc_checkedBit == 'F' ? tableNotify[0]?.sqc_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.sqc_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.sqC_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_checkedCode, tableNotify[0]?.sqc_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.sqc_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.sqc_issued}<br></br> {tableNotify[0]?.sqc_issuedBit == 'F' ? tableNotify[0]?.sqc_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.sqc_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_issuedCode, tableNotify[0]?.sqc_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-
-                                                    {
-                                                        ////  ISSUED เลือก CHECK
-                                                        (StatusDocList == 'ISSUED' && (notifyStep.filter((oAssign) => oAssign.permission == 'ISSUED' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Check เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArraySQCCheck.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray2.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        permission.filter((item) => {
-                                                                            return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.sqC_CheckBit != "F"
-                                                                        }).length ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "SQC")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.sqc_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.sqc_approved}<br></br> {tableNotify[0]?.sqc_approvedBit == 'F' ? tableNotify[0]?.sqc_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.sqc_approved != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.sqC_ApprovedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_approvedCode, tableNotify[0]?.sqc_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.sqc_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.sqc_checked}<br></br>{tableNotify[0]?.sqc_checkedBit == 'F' ? tableNotify[0]?.sqc_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.sqc_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.sqC_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_checkedCode, tableNotify[0]?.sqc_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.sqc_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.sqc_issued}<br></br> {tableNotify[0]?.sqc_issuedBit == 'F' ? tableNotify[0]?.sqc_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.sqc_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_issuedCode, tableNotify[0]?.sqc_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-
-
-                                                    {
-                                                        ////  /// CHECK เลือก APPROVED
-                                                        (StatusDocList == 'CHECKED' && (notifyStep.filter((oAssign) => oAssign.permission == 'CHECK' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Approve เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(notifyStep.filter((oAssign) => oAssign.permission == 'APPROVED' && oAssign.empCode == empCode).length) ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArraySQCApproved.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={(notifyStep.filter((oAssign) => oAssign.permission == 'APPROVED' && oAssign.empCode == empCode).length) ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray3.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        (StatusDocList == 'CHECKED' && (notifyStep.filter((oAssign) => oAssign.permission == 'CHECK' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "SQC")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.sqc_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.sqc_approved}<br></br> {tableNotify[0]?.sqc_approvedBit == 'F' ? tableNotify[0]?.sqc_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.sqc_approved != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.sqC_ApprovedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_approvedCode, tableNotify[0]?.sqc_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.sqc_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.sqc_checked}<br></br>{tableNotify[0]?.sqc_checkedBit == 'F' ? tableNotify[0]?.sqc_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.sqc_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.sqC_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_checkedCode, tableNotify[0]?.sqc_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.sqc_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.sqc_issued}<br></br> {tableNotify[0]?.sqc_issuedBit == 'F' ? tableNotify[0]?.sqc_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.sqc_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_issuedCode, tableNotify[0]?.sqc_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-                                                </>
-                                                    : ""
-                                            }
-
-
-
-
-                                            {/* {
-                                                /// APPROVED == "F"
-                                                dataModaldt[0]?.sqC_ApprovedBit == "F" && <>
-                                                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                        <table className='notify'>
-                                                            <tr>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.sqc_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.sqc_approved}<br></br> {tableNotify[0]?.sqc_approvedBit == 'F' ? tableNotify[0]?.sqc_approvedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.sqc_approved != null ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.sqC_ApprovedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_approvedCode, tableNotify[0]?.sqc_approved_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.sqc_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.sqc_checked}<br></br>{tableNotify[0]?.sqc_checkedBit == 'F' ? tableNotify[0]?.sqc_checkedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.sqc_checked != null ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.sqC_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_checkedCode, tableNotify[0]?.sqc_checked_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.sqc_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.sqc_issued}<br></br> {tableNotify[0]?.sqc_issuedBit == 'F' ? tableNotify[0]?.sqc_issuedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.sqc_issued != null ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.sqC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.sqc_issuedCode, tableNotify[0]?.sqc_issued_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </Row>
-                                                </>
-                                            } */}
-
-
-
-
                                         </Typography>
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion expanded={expanded === 'QC'} disabled={dataModaldt[0]?.sqC_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('QC')}>
+                                <Accordion expanded={expanded === 'QC'} onChange={handleChangeCollapse('QC')}>
                                     <AccordionSummary aria-controls="panel6d-content" id="panel6d-header">
                                         <Typography>ส่วนที่ 6 QCD</Typography>
                                     </AccordionSummary>
@@ -3979,521 +3902,57 @@ function FormDetail(props) {
 
                                                 </Col>
                                             </Row>
-
-                                            {/* <hr></hr>
-
-                                            <Row className='styleRowText'>
-                                                <Col xs={12} md={12}>
-                                                    <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                                    <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: 'rgb(216 96 8)', backgroundColor: (position == "RECEIVED" ? 'rgb(250 249 114)' : 'rgb(228 228 228)') }} value={dataModaldt[0]?.qC_Remark_Receive}
-                                                        onChange={(e) => {
-                                                            dataModaldt[0].qC_Remark_Receive = e.target.value;
-                                                            setQC_Receive([...dataModaldt]);
-                                                        }} />
-                                                </Col>
-                                            </Row> */}
-
-                                            <hr></hr>
-
-                                            {
-                                                dataHold.filter((value) => {
-                                                    return value.statusHold != - "HOLD"
-                                                }).length ? <>
-                                                    {
-                                                        ////  RECEIVE เลือก ISSUED
-                                                        (StatusDocList == 'RECEIVE' && (notifyStep.filter((oAssign) => oAssign.permission == 'RECEIVE' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Issued เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArrayQCIssued.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={position == 'APPROVED' ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray1.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        permission.filter((item) => {
-                                                                            return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qC_CheckBit != "F"
-                                                                        }).length ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QC")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qc_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qc_approved}<br></br> {tableNotify[0]?.qc_approvedBit == 'F' ? tableNotify[0]?.qc_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qc_approved != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qC_ApprovedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_approvedCode, tableNotify[0]?.qc_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qc_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qc_checked}<br></br>{tableNotify[0]?.qc_checkedBit == 'F' ? tableNotify[0]?.qc_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qc_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.qC_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_checkedCode, tableNotify[0]?.qc_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qc_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qc_issued}<br></br> {tableNotify[0]?.qc_issuedBit == 'F' ? tableNotify[0]?.qc_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qc_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_issuedCode, tableNotify[0]?.qc_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-
-                                                    {
-                                                        /// ISSUED เลือก CHECK
-                                                        (StatusDocList == 'ISSUED' && (notifyStep.filter((oAssign) => oAssign.permission == 'ISSUED' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Check เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArrayQCCheck.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={position == 'APPROVED' ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray2.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        permission.filter((item) => {
-                                                                            return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED'
-                                                                        }).length ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QC")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qc_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qc_approved}<br></br> {tableNotify[0]?.qc_approvedBit == 'F' ? tableNotify[0]?.qc_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qc_approved != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qC_ApprovedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_approvedCode, tableNotify[0]?.qc_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qc_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qc_checked}<br></br>{tableNotify[0]?.qc_checkedBit == 'F' ? tableNotify[0]?.qc_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qc_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.qC_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_checkedCode, tableNotify[0]?.qc_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qc_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qc_issued}<br></br> {tableNotify[0]?.qc_issuedBit == 'F' ? tableNotify[0]?.qc_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qc_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_issuedCode, tableNotify[0]?.qc_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-
-
-                                                    {
-                                                        /// CHECK เลือก APPROVED
-                                                        (StatusDocList == 'CHECKED' && (notifyStep.filter((oAssign) => oAssign.permission == 'CHECK' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Approve เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(notifyStep.filter((oAssign) => oAssign.permission == 'APPROVED' && oAssign.empCode == empCode).length) ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArrayQCApproved.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={(notifyStep.filter((oAssign) => oAssign.permission == 'APPROVED' && oAssign.empCode == empCode).length) ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray3.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        (StatusDocList == 'CHECKED' && (notifyStep.filter((oAssign) => oAssign.permission == 'CHECK' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QC")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qc_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qc_approved}<br></br> {tableNotify[0]?.qc_approvedBit == 'F' ? tableNotify[0]?.qc_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qc_approved != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qC_ApprovedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_approvedCode, tableNotify[0]?.qc_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qc_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qc_checked}<br></br>{tableNotify[0]?.qc_checkedBit == 'F' ? tableNotify[0]?.qc_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qc_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.qC_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_checkedCode, tableNotify[0]?.qc_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qc_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qc_issued}<br></br> {tableNotify[0]?.qc_issuedBit == 'F' ? tableNotify[0]?.qc_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qc_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_issuedCode, tableNotify[0]?.qc_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-                                                </>
-                                                    : ""
-                                            }
-
-
-
-
-                                            {
-                                                /// CHECK เลือก APPROVED
-                                                dataModaldt[0]?.qC_ApprovedBit == "F" && <>
-                                                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                        <table className='notify'>
-                                                            <tr>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.qc_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.qc_approved}<br></br> {tableNotify[0]?.qc_approvedBit == 'F' ? tableNotify[0]?.qc_approvedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.qc_approved != null ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qC_ApprovedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_approvedCode, tableNotify[0]?.qc_approved_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.qc_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.qc_checked}<br></br>{tableNotify[0]?.qc_checkedBit == 'F' ? tableNotify[0]?.qc_checkedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.qc_checked != null ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.qC_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_checkedCode, tableNotify[0]?.qc_checked_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.qc_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.qc_issued}<br></br> {tableNotify[0]?.qc_issuedBit == 'F' ? tableNotify[0]?.qc_issuedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.qc_issued != null ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qC_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qc_issuedCode, tableNotify[0]?.qc_issued_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </Row>
-                                                </>
-                                            }
-
-
-
-
-
                                         </Typography>
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion expanded={expanded === 'DIL'} disabled={dataModaldt[0]?.qC_ApprovedBit == "F" ? false : true} onChange={handleChangeCollapse('DIL')}>
+                                <Accordion expanded={expanded === 'DIL'} onChange={handleChangeCollapse('DIL')}>
                                     <AccordionSummary aria-controls="panel7d-content" id="panel7d-header">
                                         <Typography>ส่วนที่ 7 DIL</Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         <Typography>
                                             <Form.Label>3. JUDGEMENT ( DIL Design Section )</Form.Label>
-                                            {/* {
-                                        JSON.stringify(dataModaldt)
-                                    } */}
+
                                             <Row className='styleRowText'>
                                                 <Col xs={12} md={12}>
-                                                    <FormControl disabled={(dataModaldt[0]?.diL_QC_ReceiveBit != "F" && (permission[0]?.grpRoleSect == "DD" || permission[0]?.grpRoleSect == "ADMIN") && (permission[0]?.grpRole == 'APPROVED' || permission[0]?.grpRole == 'ADMIN') ? false : true)} >
+                                                    <FormControl disabled={true}>
                                                         <FormLabel id="demo-controlled-radio-buttons-group"></FormLabel>
                                                         <RadioGroup
                                                             aria-labelledby="demo-controlled-radio-buttons-group"
                                                             name="controlled-radio-buttons-group"
-                                                            // value={radioDILDD}
-                                                            // onChange={handleChangeRadioDILDD}
                                                             value={detailDIL[0]?.remarkdd}
-                                                            onChange={(event) => {
-                                                                detailDIL[0].remarkdd = event.target.value;
-                                                                setRadioDILDD([...detailDIL])
-                                                            }}
                                                         >
                                                             <FormControlLabel value="NEED" control={<Radio />} label="NEED" />
                                                             <FormControlLabel value="NO NEED" control={<Radio />} label="NO NEED" />
                                                         </RadioGroup>
                                                     </FormControl>
-
-
-                                                    {/* <Form.Control as="textarea" style={{ backgroundColor: 'rgb(250 249 114)' }} rows={2} value={dataModaldt[0]?.diL_DD_REMARK}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].diL_DD_REMARK = event.target.value;
-                                                    setRemarkDILDD([...dataModaldt])
-                                                }}
-                                            /> */}
                                                 </Col>
                                             </Row>
 
-                                            {/* <Row className='styleRowText'>
-                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Issued </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_DD_IssuedBy} style={{ backgroundColor: 'rgb(250 249 114)' }}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].diL_DD_IssuedBy = event.target.value;
-                                                    setIssuedDILDD([...dataModaldt])
-                                                }} />
-                                        </Col>
-                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Check </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_DD_CheckBy} style={{ backgroundColor: 'rgb(250 249 114)' }}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].diL_DD_CheckBy = event.target.value;
-                                                    setCheckDILDD([...dataModaldt])
-                                                }} />
-                                        </Col>
-                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Approved </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_DD_ApproveBy} style={{ backgroundColor: 'rgb(250 249 114)' }}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].diL_DD_ApproveBy = event.target.value;
-                                                    setApprovedDILDD([...dataModaldt])
-                                                }} />
-                                        </Col>
-                                    </Row> */}
+
                                             <hr></hr>
                                             <Form.Label>4. JUDGEMENT ( DIL Quality Control Section ) [Incase necessary]</Form.Label>
                                             <Row className='styleRowText'>
                                                 <Col xs={12} md={12}>
-                                                    <FormControl disabled={(dataModaldt[0]?.diL_DD_ReceiveBit == "F" && (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA" || permission[0]?.grpRoleSect == "ADMIN" && (permission[0]?.grpRole == 'APPROVED' || permission[0]?.grpRole == 'ADMIN')) ? false : true)}>
+                                                    <FormControl disabled={true} >
                                                         <FormLabel id="demo-controlled-radio-buttons-group"></FormLabel>
                                                         <RadioGroup
                                                             aria-labelledby="demo-controlled-radio-buttons-group"
                                                             name="controlled-radio-buttons-group"
-                                                            // value={radioDILQC}
-                                                            // onChange={(event) => handleChangeRadioDILQC(event.target.value)}
-                                                            value={detailDIL[0]?.remarkqc}
-                                                            onChange={(event) => {
-                                                                detailDIL[0].remarkqc = event.target.value;
-                                                                setRadioDILQC([...detailDIL])
-                                                            }}
+                                                            value={detailDIL[0]?.remarkdd}
                                                         >
                                                             <FormControlLabel value="NEED" control={<Radio />} label="NEED" />
                                                             <FormControlLabel value="NO NEED" control={<Radio />} label="NO NEED" />
                                                         </RadioGroup>
                                                     </FormControl>
-
-
-
-                                                    {/* <Form.Control as="textarea" rows={2} style={{ backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.diL_QC_REMARK}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].diL_QC_REMARK = event.target.value;
-                                                    setRemarkDILQC([...dataModaldt])
-                                                }} /> */}
                                                 </Col>
                                             </Row>
 
-                                            {/* <Row className='styleRowText'>
-                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Issued </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_IssuedBy} style={{ backgroundColor: 'rgb(250 249 114)' }}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].diL_QC_IssuedBy = event.target.value;
-                                                    setIssuedDILQC([...dataModaldt])
-                                                }} />
-                                        </Col>
-                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Check </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_CheckBy} style={{ backgroundColor: 'rgb(250 249 114)' }}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].diL_QC_CheckBy = event.target.value;
-                                                    setCheckDILQC([...dataModaldt])
-                                                }} />
-                                        </Col>
-                                        <Col xs={12} md={4} style={{ display: 'flex' }}>
-                                            <b>Approved </b> &nbsp; &nbsp; <Form.Control value={dataModaldt[0]?.diL_QC_ApproveBy} style={{ backgroundColor: 'rgb(250 249 114)' }}
-                                                onChange={(event) => {
-                                                    dataModaldt[0].diL_QC_ApproveBy = event.target.value;
-                                                    setApprovedDILQC([...dataModaldt])
-                                                }} />
-                                        </Col>
-                                    </Row> */}
-
-                                            <hr></hr>
-
-                                            {/* <Row className='styleRowText'>
-                                        <Col xs={12} md={12}>
-                                            <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                            <Form.Control as="textarea" rows={5} disabled={(position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.diL_Remark_Receive}
-                                                onChange={(e) => {
-                                                    dataModaldt[0].diL_Remark_Receive = e.target.value;
-                                                    setDIL_Receive([...dataModaldt]);
-                                                }} />
-                                        </Col>
-                                    </Row> */}
 
                                         </Typography>
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion expanded={expanded === 'QA'} disabled={dataModaldt[0]?.diL_RECEIVEBIT == "F" ? false : true} onChange={handleChangeCollapse('QA')}>
+                                <Accordion expanded={expanded === 'QA'} onChange={handleChangeCollapse('QA')}>
                                     <AccordionSummary aria-controls="panel8d-content" id="panel8d-header">
                                         <Typography>ส่วนที่ 8 QA</Typography>
                                     </AccordionSummary>
@@ -4591,393 +4050,18 @@ function FormDetail(props) {
                                                     </div>
                                                 </Col>
                                             </Row>
-
-                                            {/* <hr></hr>
-
-                                            <Row className='styleRowText'>
-                                                <Col xs={12} md={12}>
-                                                    <h5 style={{ color: 'rgb(50 80 251)' }}>เหตุผลการรับเอกสาร (Receive)</h5>
-                                                    <Form.Control as="textarea" rows={5} disabled={(position == 'ISSUED' || position == 'CHECK' || position == 'APPROVED') ? true : false} style={{ color: '#db7428', backgroundColor: 'rgb(250 249 114)' }} value={dataModaldt[0]?.qA_Remark_Receive}
-                                                        onChange={(e) => {
-                                                            dataModaldt[0].qA_Remark_Receive = e.target.value;
-                                                            setQA_Receive([...dataModaldt]);
-                                                        }} />
-                                                </Col>
-                                            </Row> */}
-
-                                            <hr></hr>
-
-                                            {
-                                                dataHold.filter((value) => {
-                                                    return value.statusHold != "HOLD"
-                                                }).length ? <>
-                                                    {
-                                                        ////  RECEIVE เลือก ISSUED
-                                                        (StatusDocList == 'RECEIVE' && (notifyStep.filter((oAssign) => oAssign.permission == 'RECEIVE' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Issued เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArrayQAIssued.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray1.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        permission.filter((item) => {
-                                                                            return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qA_CheckBit != "F"
-                                                                        }).length ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QA")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14x', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qa_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qa_approved}<br></br> {tableNotify[0]?.qa_approvedBit == 'F' ? tableNotify[0]?.qa_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qa_approved != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qA_ApprovedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_approvedCode, tableNotify[0]?.qa_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qa_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qa_checked}<br></br>{tableNotify[0]?.qa_checkedBit == 'F' ? tableNotify[0]?.qa_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qa_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.qA_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_checkedCode, tableNotify[0]?.qa_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qa_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qa_issued}<br></br> {tableNotify[0]?.qa_issuedBit == 'F' ? tableNotify[0]?.qa_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qa_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_issuedCode, tableNotify[0]?.qa_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-
-
-                                                    {
-                                                        /// ISSUED เลือก CHECK
-                                                        (StatusDocList == 'ISSUED' && (notifyStep.filter((oAssign) => oAssign.permission == 'ISSUED' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Check เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArrayQACheck.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={(position == 'APPROVED') ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray2.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        permission.filter((item) => {
-                                                                            return (permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qA_CheckBit != "F"
-                                                                        }).length ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QA")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14x', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qa_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qa_approved}<br></br> {tableNotify[0]?.qa_approvedBit == 'F' ? tableNotify[0]?.qa_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qa_approved != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qA_ApprovedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_approvedCode, tableNotify[0]?.qa_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qa_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qa_checked}<br></br>{tableNotify[0]?.qa_checkedBit == 'F' ? tableNotify[0]?.qa_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qa_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.qA_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_checkedCode, tableNotify[0]?.qa_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qa_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qa_issued}<br></br> {tableNotify[0]?.qa_issuedBit == 'F' ? tableNotify[0]?.qa_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qa_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_issuedCode, tableNotify[0]?.qa_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-
-
-                                                    {
-                                                        /// CHECK เลือก APPROVED
-                                                        (StatusDocList == 'CHECKED' && (notifyStep.filter((oAssign) => oAssign.permission == 'CHECK' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                            <p style={{ color: '#fc5757', fontSize: '18px' }}> * กรุณาเลือกผู้ Approve เอกสาร ECR ใน Section ของคุณ</p><br></br>
-                                                            <Row style={{ display: 'flex', alignItems: 'center' }} >
-                                                                <Col xs={12} md={4}>
-                                                                    <FormControl fullWidth disabled={(notifyStep.filter((oAssign) => oAssign.permission == 'APPROVED' && oAssign.empCode == empCode).length) ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">EmpCode</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={employee}
-                                                                            label="EmpCode"
-                                                                            onChange={handleChangeEmployee}>
-                                                                            {
-                                                                                employeeArrayQAApproved.map((item, index) =>
-                                                                                    <MenuItem value={item?.employeeCode}>{item?.employeeFullName}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-                                                                <Col xs={12} md={3} style={{ marginTop: '-24px' }}>
-                                                                    <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                                                                    <Form.Control type="text" className='FormControl' value={posit} style={{ marginTop: '5px', marginLeft: '11px' }} readOnly />
-                                                                </Col>
-                                                                <Col xs={12} md={3}>
-                                                                    <FormControl fullWidth disabled={(notifyStep.filter((oAssign) => oAssign.permission == 'APPROVED' && oAssign.empCode == empCode).length) ? true : false}>
-                                                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-label"
-                                                                            id="demo-simple-select"
-                                                                            value={step}
-                                                                            label="Status"
-                                                                            onChange={handleChangeStep}>
-                                                                            {
-                                                                                stepArray3.map((item, index) =>
-                                                                                    <MenuItem value={item}>{item}</MenuItem>
-                                                                                )
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Col>
-
-                                                                <Col xs={12} md={2}>
-                                                                    {
-                                                                        (StatusDocList == 'CHECKED' && (notifyStep.filter((oAssign) => oAssign.permission == 'CHECK' && oAssign.empCode == empCode).length) && permission.filter(oPermis => oPermis.menuCode == 'NOTIFY01').length) ? <>
-                                                                            <Button variant="success" onClick={() => postAddNotifyTo(dataModaldt[0]?.ecR_NO, posit, "QA")}>
-                                                                                + เพิ่มผู้ดำเนินการ
-                                                                            </Button>
-                                                                        </> : ""
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <br></br>
-                                                            <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                <table className='notify'>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14x', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                        <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qa_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qa_approved}<br></br> {tableNotify[0]?.qa_approvedBit == 'F' ? tableNotify[0]?.qa_approvedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qa_approved != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qA_ApprovedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_approvedCode, tableNotify[0]?.qa_approved_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qa_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qa_checked}<br></br>{tableNotify[0]?.qa_checkedBit == 'F' ? tableNotify[0]?.qa_checkedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qa_checked != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.qA_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_checkedCode, tableNotify[0]?.qa_checked_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{ border: '1px solid black', color: tableNotify[0]?.qa_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                            <center>{tableNotify[0]?.qa_issued}<br></br> {tableNotify[0]?.qa_issuedBit == 'F' ? tableNotify[0]?.qa_issuedDate : ''}</center>
-                                                                            {
-                                                                                tableNotify[0]?.qa_issued != null ?
-                                                                                    (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_issuedCode, tableNotify[0]?.qa_issued_step)}>
-                                                                                        ลบ
-                                                                                    </Button>
-                                                                                    : ''
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </Row>
-                                                        </> : ""
-                                                    }
-                                                </>
-                                                    : ""
-                                            }
-
-
-
-                                            {
-                                                /// CHECK เลือก APPROVED
-                                                dataModaldt[0]?.qA_ApprovedBit == "F" && <>
-                                                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                                                        <table className='notify'>
-                                                            <tr>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Approved (AGM up)</b></center></td>
-                                                                <td style={{ border: '1px solid black', fontSize: '14x', width: '4pc' }}><center><b>Checked</b></center></td>
-                                                                <td style={{ border: '1px solid black', fontSize: '14px', width: '4pc' }}><center><b>Issued</b></center></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.qa_approvedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.qa_approved}<br></br> {tableNotify[0]?.qa_approvedBit == 'F' ? tableNotify[0]?.qa_approvedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.qa_approved != null ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole != 'APPROVED' && dataModaldt[0]?.qA_ApprovedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_approvedCode, tableNotify[0]?.qa_approved_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.qa_checkedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.qa_checked}<br></br>{tableNotify[0]?.qa_checkedBit == 'F' ? tableNotify[0]?.qa_checkedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.qa_checked != null ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'ISSUED' && dataModaldt[0]?.qA_CheckBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_checkedCode, tableNotify[0]?.qa_checked_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                                <td style={{ border: '1px solid black', color: tableNotify[0]?.qa_issuedBit == "F" ? 'black' : 'gainsboro' }}>
-                                                                    <center>{tableNotify[0]?.qa_issued}<br></br> {tableNotify[0]?.qa_issuedBit == 'F' ? tableNotify[0]?.qa_issuedDate : ''}</center>
-                                                                    {
-                                                                        tableNotify[0]?.qa_issued != null ?
-                                                                            (typeof permission == 'object' && Object.keys(permission).length && ((permission[0]?.grpRoleSect == "SQC" || permission[0]?.grpRoleSect == "QC" || permission[0]?.grpRoleSect == "QA") && permission[0]?.grpRole == 'RECEIVED' && dataModaldt[0]?.qA_IssuedBit != "F")) && <Button variant="danger" style={{ fontSize: '11px', padding: '0px 9px' }} onClick={() => getDeleteNotify(dataModaldt[0]?.ecR_NO, tableNotify[0]?.qa_issuedCode, tableNotify[0]?.qa_issued_step)}>
-                                                                                ลบ
-                                                                            </Button>
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </Row>
-                                                </>
-                                            }
-
-
-
                                         </Typography>
                                     </AccordionDetails>
                                 </Accordion>
 
 
 
+
                                 <hr></hr>
                                 <Row className='styleRowText'>
-                                    <Col xs={12} md={6}>
-                                        <p style={{ fontSize: '20px', fontWeight: '600', color: 'red' }}>เหตุผล RETURN / HOLD</p>
+                                    <Col xs={12} md={6} style={{ color: 'red' }}>
+                                        <p style={{ fontSize: '20px', fontWeight: '600', color: 'red', marginBottom: '-1px' }}>เหตุผล HOLD</p>
+                                        <p>HOLD (กรณี รอผลเทส ,รอSample ,รอแผนประกอบ,รอเอกสารเพิ่มเติม)</p>
                                         <Form.Control as="textarea" id='txtCancel' style={{ color: 'red' }} rows={5}
                                             onChange={(event) => setRemarkCancel(event.target.value)} />
                                     </Col>
@@ -4993,8 +4077,10 @@ function FormDetail(props) {
                                                     label="Section"
                                                     onChange={handleChangeSection}>
                                                     {
-                                                        sectionArray.map((item, index) =>
-                                                            <MenuItem value={item}>{item}</MenuItem>
+                                                        SectionHold.map((item, index) =>
+                                                            <MenuItem key={index} value={item.section || ""}>
+                                                                {item.section || "ไม่มีข้อมูล"}
+                                                            </MenuItem>
                                                         )
                                                     }
                                                 </Select>
@@ -5010,7 +4096,7 @@ function FormDetail(props) {
                         load == true ? "" :
                             <div className='styleButton'>
                                 <Stack direction={'row'} gap={3}>
-                                    <Button variant="secondary" onClick={() => close(false)}>
+                                    <Button variant="secondary" onClick={() => handleModalDetailClose()}>
                                         Close
                                     </Button>
                                     {
@@ -5055,14 +4141,17 @@ function FormDetail(props) {
                                     }
                                     {/* --------*******END ISSUED********------- */}
 
+                                    {/* {
+                                        JSON.stringify(permission)
+                                    } */}
 
                                     {/* --------******* CHECK********------- */}
                                     {
                                         permission.filter((item) => {
-                                            return (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_CheckCode)
+                                            return (item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_CheckCode && dataModaldt[0].create_ApprovedBit != "F")
                                         }).length ? <>
-                                            <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO)}>
-                                                <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) CREATE
+                                            <Button autoFocus variant="warning" onClick={() => postReturnCreCheck(dataModaldt[0].ecR_NO)}>
+                                                <FontAwesomeIcon icon={faRotateLeft} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม CREATE
                                             </Button>
                                         </> : ""
                                     }
@@ -5071,9 +4160,9 @@ function FormDetail(props) {
 
                                     {
                                         permission.filter((item) => {
-                                            return (item.menuCode == "BTN0057" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_CheckCode)
+                                            return (item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_CheckCode && dataModaldt[0].create_ApprovedBit != "F")
                                         }).length ?
-                                            <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit, 'cre')}>
+                                            <Button autoFocus variant="success" onClick={() => BtnCheckCreate(dataModaldt[0].ecR_NO)}>
                                                 <FontAwesomeIcon icon={faCheck} /> (Check OK) CREATE
                                             </Button>
                                             :
@@ -5086,19 +4175,21 @@ function FormDetail(props) {
                                     {/* --------******* APPROVED ********------- */}
                                     {
                                         permission.filter((item) => {
-                                            return item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode
+                                            return item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode && dataModaldt[0]?.pU_IssuedBit != "F"
+                                                && dataModaldt[0]?.dD_IssuedBit != "F"
                                         }).length ? <>
-                                            <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                                <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) CREATE
+                                            <Button autoFocus variant="warning" onClick={() => postReturnCreApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                                <FontAwesomeIcon icon={faRotateLeft} />   Hold รอเอกสาร/ข้อมูลเพิ่มเติม CREATE
                                             </Button>
                                         </> : ""
                                     }
 
                                     {
                                         permission.filter((item) => {
-                                            return item.menuCode == "BTN0058" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode
+                                            return item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode && dataModaldt[0]?.pU_IssuedBit != "F"
+                                                && dataModaldt[0]?.dD_IssuedBit != "F"
                                         }).length ?
-                                            <Button autoFocus variant="success" onClick={() => postApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                            <Button autoFocus variant="success" onClick={() => BtnApprovedCreate(dataModaldt[0].ecR_NO)}>
                                                 <FontAwesomeIcon icon={faCheck} /> อนุมัติ (GM Approved) CREATE
                                             </Button>
                                             :
@@ -5110,66 +4201,35 @@ function FormDetail(props) {
 
                                     {
                                         dataHold.filter((value) => {
-                                            return value.statusHold != "HOLD"
+                                            return value.statusHold == "NOT DATA"
                                         }).length ? <>
                                             {/* **********************************  BUTTON SECTION PU **************************************/}
-                                            {/* --------*******RECEIVE********------- */}
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0007" && item.rolE_VIEW == "True"
-                                                }).length ? (
-                                                    dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_IssuedBit != "F" && dataModaldt[0]?.pU_ReceiveBit != "R"
-                                                )
-                                                &&
-                                                <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return)  PU Receive
-                                                    </Button>
-                                                </> : ""
-                                            }
-
-
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0011" && item.rolE_VIEW == "True"
-                                                }).length ? (
-                                                    dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_ReceiveBit != "F"
-                                                )
-                                                && <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO, dataModaldt[0].create_ApprovedBit != "F" ? 'cre' : 'pu')}>
-                                                    <FontAwesomeIcon icon={faCheck} /> รับเอกสาร (Receive)  PU
-                                                </Button>
-                                                    :
-                                                    ""
-                                            }
-                                            {/* --------*******END RECEIVE********------- */}
-
-
                                             {/* --------*******ISSUED********------- */}
-                                            {
+                                            {/* {
                                                 permission.filter((item) => {
                                                     return (item.menuCode == "BTN0008" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_IssuedCode)
                                                 }).length ? (
-                                                    (dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F" && dataModaldt[0]?.pU_IssuedBit != "H")
+                                                    (dataModaldt[0]?.pU_CheckBit != "F")
                                                 )
                                                 &&
                                                 <>
-                                                    <Button autoFocus variant="warning" onClick={() => postHold(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                    <Button autoFocus variant="warning" onClick={() => postHoldPU(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
                                                         <FontAwesomeIcon icon={faTriangleExclamation} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม
                                                     </Button>
                                                 </> : ""
-                                            }
+                                            } */}
 
 
                                             {
                                                 permission.filter((item) => {
                                                     return (item.menuCode == "BTN0008" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_IssuedCode)
                                                 }).length ? (
-                                                    (dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F" && dataModaldt[0]?.pU_IssuedBit != "R")
+                                                    (dataModaldt[0]?.pU_CheckBit != "F" && dataModaldt[0]?.pU_IssuedBit != "R")
                                                 )
                                                 &&
                                                 <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) PU Issued
+                                                    <Button autoFocus variant="warning" onClick={() => postReturnPUIssued(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม
                                                     </Button>
                                                 </> : ""
                                             }
@@ -5178,7 +4238,7 @@ function FormDetail(props) {
                                                 permission.filter((item) => {
                                                     return (item.menuCode == "BTN0012" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_IssuedCode)
                                                 }).length ? (
-                                                    (dataModaldt[0]?.pU_ReceiveBit == "F" && dataModaldt[0]?.pU_CheckBit != "F" && dataModaldt[0]?.thingsPrePare != "")
+                                                    (dataModaldt[0]?.pU_CheckBit != "F" && dataModaldt[0]?.thingsPrePare != "")
                                                 )
                                                 && <>
                                                     <Button autoFocus variant="success" onClick={() => getIssuedPU(dataModaldt[0].ecR_NO, dataModaldt[0].create_ApprovedBit != "F" ? 'cre' : 'pu')}>
@@ -5195,14 +4255,10 @@ function FormDetail(props) {
                                                 permission.filter((item) => {
                                                     return (item.menuCode == "BTN0009" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_CheckCode) ||
                                                         (item.menuCode == "BTN0009" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_CheckCode)
-                                                }).length ? (
-                                                    (dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0]?.createBy != "") ||
-                                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F" && dataModaldt[0]?.pU_CheckBit != "R")
-                                                )
-                                                &&
+                                                }).length ? dataModaldt[0]?.create_ApprovedBit == "F" &&
                                                 <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} /> ตีกลับ (Return) PU
+                                                    <Button autoFocus variant="warning" onClick={() => postReturnPUCheck(dataModaldt[0].ecR_NO)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} /> Hold รอเอกสาร/ข้อมูลเพิ่มเติม
                                                     </Button>
                                                 </> : ""
                                             }
@@ -5212,12 +4268,8 @@ function FormDetail(props) {
                                                 permission.filter((item) => {
                                                     return (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_CheckCode) ||
                                                         (item.menuCode == "BTN0013" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_CheckCode)
-                                                }).length ? (
-                                                    (dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0]?.createBy != "") ||
-                                                    (dataModaldt[0]?.pU_IssuedBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F")
-                                                )
-                                                &&
-                                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit, dataModaldt[0].create_ApprovedBit != "F" ? 'cre' : 'pu')}>
+                                                }).length ? dataModaldt[0]?.create_ApprovedBit == "F" &&
+                                                <Button autoFocus variant="success" onClick={() => BtnCheckPU(dataModaldt[0].ecR_NO)}>
                                                     <FontAwesomeIcon icon={faCheck} /> (Check OK) PU
                                                 </Button>
                                                     :
@@ -5232,14 +4284,10 @@ function FormDetail(props) {
                                                 permission.filter((item) => {
                                                     return (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode) ||
                                                         (item.menuCode == "BTN0010" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_ApprovedCode)
-                                                }).length ? (
-                                                    (dataModaldt[0]?.pU_CheckBit == "F" && dataModaldt[0]?.dD_ReceiveBit != "F" && dataModaldt[0]?.pU_ApprovedBit != "R") ||
-                                                    (dataModaldt[0]?.create_CheckBit == "F" && dataModaldt[0]?.pU_ReceiveBit != "F" && dataModaldt[0]?.create_ApprovedBit != "R")
-                                                )
-                                                &&
+                                                }).length ? dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F" &&
                                                 <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return)  PU
+                                                    <Button autoFocus variant="warning" onClick={() => postReturnPUApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม
                                                     </Button>
                                                 </> : ""
                                             }
@@ -5249,11 +4297,8 @@ function FormDetail(props) {
                                                 permission.filter((item) => {
                                                     return (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode) ||
                                                         (item.menuCode == "BTN0014" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_ApprovedCode)
-                                                }).length ? (
-                                                    (dataModaldt[0]?.pU_CheckBit == "F" && dataModaldt[0]?.dD_ReceiveBit != "F" && dataModaldt[0]?.pU_ApprovedBit != "F") ||
-                                                    (dataModaldt[0]?.create_CheckBit == "F" && dataModaldt[0]?.pU_ReceiveBit != "F" && dataModaldt[0]?.create_ApprovedBit != "F")
-                                                )
-                                                && <Button autoFocus variant="success" onClick={() => postApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                                }).length ? dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.pU_CheckBit == "F" && dataModaldt[0]?.pU_ApprovedBit != "F" &&
+                                                <Button autoFocus variant="success" onClick={() => BtnApprovedPU(dataModaldt[0].ecR_NO)}>
                                                     <FontAwesomeIcon icon={faCheck} />  อนุมัติ (GM Approved) PU
                                                 </Button>
                                                     :
@@ -5265,79 +4310,42 @@ function FormDetail(props) {
 
 
                                             {/* **************************** BUTTON SECTION DD **************************/}
-                                            {/* RECEIVE  */}
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0015" && item.rolE_VIEW == "True"
-                                                    // return (item.menuCode == "BTN0015" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.pU_ApprovedCode)
-                                                }).length ? (
-                                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.dD_ReceiveBit != "R") ||
-                                                    (dataModaldt[0]?.pU_ApprovedBit == "F" && dataModaldt[0]?.dD_IssuedBit != "F" && dataModaldt[0]?.dD_ReceiveBit != "R")
-                                                )
-                                                &&
-                                                <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) DD
-                                                    </Button>
-                                                </> : ""
-                                            }
-
-
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0019" && item.rolE_VIEW == "True"
-                                                }).length ? (
-                                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ReceiveBit != "F") ||
-                                                    (dataModaldt[0]?.pU_ApprovedBit == "F" && dataModaldt[0]?.dD_IssuedBit != "F")
-                                                )
-                                                && <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO, dataModaldt[0].create_ApprovedBit != "F" ? 'cre' : 'dd')}>
-                                                    <FontAwesomeIcon icon={faCheck} /> รับเอกสาร (Receive) DD
-                                                </Button>
-                                                    :
-                                                    ""
-                                            }
-                                            {/* END RECEIVE  */}
-
-
-
                                             {/*  ISSUED  */}
-                                            {
+                                            {/* {
                                                 permission.filter((item) => {
                                                     return (item.menuCode == "BTN0016" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_IssuedCode)
                                                 }).length ? (
-                                                    (dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit != "F" && dataModaldt[0]?.dD_IssuedBit != "H") ||
-                                                    dataModaldt[0]?.create_CheckBit != "F"
+                                                    dataModaldt[0]?.dD_CheckBit != "F"
                                                 )
                                                 &&
                                                 <>
-                                                    <Button autoFocus variant="warning" onClick={() => postHold(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                    <Button autoFocus variant="warning" onClick={() => postHoldDD(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
                                                         <FontAwesomeIcon icon={faTriangleExclamation} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม
                                                     </Button>
                                                 </> : ""
-                                            }
+                                            } */}
 
 
                                             {
                                                 permission.filter((item) => {
                                                     return (item.menuCode == "BTN0016" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_IssuedCode)
                                                 }).length ? (
-                                                    (dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit != "F" && dataModaldt[0]?.dD_IssuedBit != "R") ||
-                                                    dataModaldt[0]?.create_CheckBit != "F" && dataModaldt[0]?.dD_IssuedBit != "H"
+                                                    dataModaldt[0]?.dD_CheckBit != "F"
                                                 )
                                                 &&
                                                 <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) DD
+                                                    <Button autoFocus variant="warning" onClick={() => postReturnDDIssued(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม DD
                                                     </Button>
                                                 </> : ""
                                             }
+
 
                                             {
                                                 permission.filter((item) => {
                                                     return (item.menuCode == "BTN0020" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_IssuedCode)
                                                 }).length ? (
-                                                    (dataModaldt[0]?.dD_ReceiveBit == "F" && dataModaldt[0]?.dD_CheckBit != "F") ||
-                                                    dataModaldt[0]?.create_CheckBit != "F"
+                                                    dataModaldt[0]?.dD_CheckBit != "F"
                                                 )
                                                 && <>
                                                     <Button autoFocus variant="success" onClick={() => getIssuedDD(dataModaldt[0].ecR_NO, dataModaldt[0].create_ApprovedBit != "F" ? 'cre' : 'dd')}>
@@ -5357,14 +4365,12 @@ function FormDetail(props) {
                                                     return (item.menuCode == "BTN0021" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_CheckCode) ||
                                                         ((item.menuCode == "BTN0021" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_CheckCode))
                                                 }).length ? (
-                                                    (dataModaldt[0]?.dD_CheckBit == "R") ||
-                                                    (dataModaldt[0]?.dD_CheckBit != "R" && dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0]?.dD_ApprovedBit != "F") ||
-                                                    (dataModaldt[0]?.dD_CheckBit != "R" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ApprovedBit != "F" && dataModaldt[0]?.dD_IssuedBit == "F")
+                                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ApprovedBit != "F")
                                                 )
                                                 &&
                                                 <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) DD
+                                                    <Button autoFocus variant="warning" onClick={() => postReturnDDCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม DD ch
                                                     </Button>
                                                 </> : ""
                                             }
@@ -5374,12 +4380,10 @@ function FormDetail(props) {
                                                     return (item.menuCode == "BTN0021" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_CheckCode) ||
                                                         ((item.menuCode == "BTN0021" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_CheckCode))
                                                 }).length ? (
-                                                    (dataModaldt[0]?.dD_CheckBit == "R") ||
-                                                    (dataModaldt[0]?.dD_CheckBit != "R" && dataModaldt[0]?.create_ApprovedBit != "F" && dataModaldt[0]?.dD_ApprovedBit != "F") ||
-                                                    (dataModaldt[0]?.dD_CheckBit != "R" && dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ApprovedBit != "F" && dataModaldt[0]?.dD_IssuedBit == "F")
+                                                    (dataModaldt[0]?.create_ApprovedBit == "F" && dataModaldt[0]?.dD_ApprovedBit != "F")
                                                 )
                                                 &&
-                                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit, dataModaldt[0].create_ApprovedBit != "F" ? 'cre' : 'dd')}>
+                                                <Button autoFocus variant="success" onClick={() => BtnCheckDD(dataModaldt[0].ecR_NO)}>
                                                     <FontAwesomeIcon icon={faCheck} /> (Check OK) DD
                                                 </Button>
                                                     :
@@ -5393,14 +4397,10 @@ function FormDetail(props) {
                                                 permission.filter((item) => {
                                                     return (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode) ||
                                                         (item.menuCode == "BTN0018" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_ApprovedCode)
-                                                }).length ? (
-                                                    (dataModaldt[0]?.create_CheckBit == "F" && dataModaldt[0]?.pU_ReceiveBit != "F" && dataModaldt[0].create_ApprovedBit != "R") ||
-                                                    (dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.eN_ReceiveBit == "U" && dataModaldt[0].dD_ApprovedBit != "R")
-                                                )
-                                                &&
+                                                }).length ? dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.dD_ApprovedBit != "F" &&
                                                 <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) DD
+                                                    <Button autoFocus variant="warning" onClick={() => postReturnDDApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม DD APP
                                                     </Button>
                                                 </> : ""
                                             }
@@ -5409,14 +4409,10 @@ function FormDetail(props) {
                                                 permission.filter((item) => {
                                                     return (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.crE_ApprovedCode) ||
                                                         (item.menuCode == "BTN0022" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.dD_ApprovedCode)
-                                                }).length ?
-                                                    (
-                                                        (dataModaldt[0]?.create_CheckBit == "F" && dataModaldt[0]?.pU_ReceiveBit != "F") ||
-                                                        (dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.eN_ReceiveBit == "U")
-                                                    )
-                                                    && <Button autoFocus variant="success" onClick={() => postApproved(dataModaldt[0]?.ecR_NO, dataModaldt[0]?.section, dataModaldt[0]?.create_ApprovedBit)}>
-                                                        <FontAwesomeIcon icon={faCheck} />  อนุมัติ (GM Approved) DD
-                                                    </Button>
+                                                }).length ? dataModaldt[0]?.dD_CheckBit == "F" && dataModaldt[0]?.dD_ApprovedBit != "F" &&
+                                                <Button autoFocus variant="success" onClick={() => BtnApprovedDD(dataModaldt[0]?.ecR_NO)}>
+                                                    <FontAwesomeIcon icon={faCheck} />  อนุมัติ (GM Approved) DD
+                                                </Button>
                                                     :
                                                     ""
                                             }
@@ -5425,59 +4421,34 @@ function FormDetail(props) {
 
 
                                             {/* **************************** BUTTON SECTION EN **************************/}
-                                            {/* RECEIVE  */}
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0023" && item.rolE_VIEW == "True" && dataModaldt[0]?.dD_ApprovedBit == "F" && dataModaldt[0]?.eN_IssuedBit != "F" && dataModaldt[0]?.eN_ReceiveBit != "R"
-                                                }).length ?
-                                                    <>
-                                                        <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                            <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) EN
-                                                        </Button>
-                                                    </> : ""
-                                            }
-
-
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0027" && item.rolE_VIEW == "True" && dataModaldt[0]?.dD_ApprovedBit == "F" && dataModaldt[0]?.eN_ReceiveBit != "F"
-                                                }).length ? <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO, 'en')}>
-                                                    <FontAwesomeIcon icon={faCheck} /> รับเอกสาร (Receive) EN
-                                                </Button>
-                                                    :
-                                                    ""
-                                            }
-                                            {/* END RECEIVE  */}
-
-
                                             {/*  ISSUED  */}
-                                            {
+                                            {/* {
                                                 permission.filter((item) => {
-                                                    return item.menuCode == "BTN0024" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_ReceiveBit == "F" && empCode == dataModaldt[0]?.eN_IssuedCode && dataModaldt[0]?.eN_IssuedBit != "H"
+                                                    return item.menuCode == "BTN0024" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.eN_IssuedCode
                                                 }).length ? dataModaldt[0]?.eN_CheckBit != "F" &&
                                                 <>
-                                                    <Button autoFocus variant="warning" onClick={() => postHold(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                    <Button autoFocus variant="warning" onClick={() => postHoldEN(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
                                                         <FontAwesomeIcon icon={faTriangleExclamation} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม
                                                     </Button>
                                                 </> : ""
-                                            }
+                                            } */}
 
 
                                             {
                                                 permission.filter((item) => {
-                                                    return item.menuCode == "BTN0024" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_ReceiveBit == "F" && empCode == dataModaldt[0]?.eN_IssuedCode
-                                                }).length ? dataModaldt[0]?.eN_CheckBit != "F" && dataModaldt[0]?.eN_IssuedBit != "R" &&
+                                                    return item.menuCode == "BTN0024" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.eN_IssuedCode
+                                                }).length ? dataModaldt[0]?.eN_CheckBit != "F" &&
                                                 <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) EN
+                                                    <Button autoFocus variant="warning" onClick={() => postReturnENIssued(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม EN
                                                     </Button>
                                                 </> : ""
                                             }
 
                                             {
                                                 permission.filter((item) => {
-                                                    return item.menuCode == "BTN0028" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_ReceiveBit == "F" && empCode == dataModaldt[0]?.eN_IssuedCode
-                                                }).length ? dataModaldt[0]?.eN_ReceiveBit == "F" && dataModaldt[0]?.eN_CheckBit != "F" &&
+                                                    return item.menuCode == "BTN0028" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.eN_IssuedCode
+                                                }).length ? dataModaldt[0]?.eN_CheckBit != "F" &&
                                                 <>
                                                     <Button autoFocus variant="success" onClick={() => getIssuedEN(dataModaldt[0].ecR_NO, 'en')}>
                                                         <FontAwesomeIcon icon={faCheck} />  ออกเอกสาร (Issued) EN
@@ -5495,8 +4466,8 @@ function FormDetail(props) {
                                                     return item.menuCode == "BTN0025" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_IssuedBit == "F" && empCode == dataModaldt[0]?.eN_CheckCode
                                                 }).length ? dataModaldt[0]?.eN_ApprovedBit != "F" && dataModaldt[0]?.eN_CheckBit != "R" &&
                                                 <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) EN
+                                                    <Button autoFocus variant="warning" onClick={() => postReturnENCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม EN
                                                     </Button>
                                                 </> : ""
                                             }
@@ -5505,7 +4476,7 @@ function FormDetail(props) {
                                                 permission.filter((item) => {
                                                     return item.menuCode == "BTN0029" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_IssuedBit == "F" && empCode == dataModaldt[0]?.eN_CheckCode
                                                 }).length ? dataModaldt[0]?.eN_CheckBit != "F" && dataModaldt[0]?.eN_ApprovedBit != "F" &&
-                                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit, 'en')}>
+                                                <Button autoFocus variant="success" onClick={() => BtnCheckEN(dataModaldt[0].ecR_NO)}>
                                                     <FontAwesomeIcon icon={faCheck} /> (Check OK) EN
                                                 </Button>
                                                     :
@@ -5518,10 +4489,10 @@ function FormDetail(props) {
                                             {
                                                 permission.filter((item) => {
                                                     return item.menuCode == "BTN0026" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_CheckBit == "F" && empCode == dataModaldt[0]?.eN_ApprovedCode
-                                                }).length ? dataModaldt[0]?.eN_ApprovedBit != "R" && dataModaldt[0]?.sqC_ReceiveBit != "F" &&
+                                                }).length ? dataModaldt[0]?.eN_ApprovedBit != "F" &&
                                                 <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} /> ตีกลับ (Return) EN
+                                                    <Button autoFocus variant="warning" onClick={() => postReturnENApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} /> Hold รอเอกสาร/ข้อมูลเพิ่มเติม EN
                                                     </Button>
                                                 </> : ""
                                             }
@@ -5529,8 +4500,8 @@ function FormDetail(props) {
                                             {
                                                 permission.filter((item) => {
                                                     return item.menuCode == "BTN0030" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_CheckBit == "F" && empCode == dataModaldt[0]?.eN_ApprovedCode
-                                                }).length ? dataModaldt[0]?.eN_ApprovedBit != "F" && dataModaldt[0]?.sqC_ReceiveBit != "F" &&
-                                                <Button autoFocus variant="success" onClick={() => postApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                                }).length ? dataModaldt[0]?.eN_ApprovedBit != "F" &&
+                                                <Button autoFocus variant="success" onClick={() => BtnApprovedEN(dataModaldt[0].ecR_NO)}>
                                                     อนุมัติ (GM Approved) EN
                                                 </Button>
                                                     :
@@ -5542,58 +4513,33 @@ function FormDetail(props) {
 
 
                                             {/* **************************** BUTTON SECTION SQC **************************/}
-                                            {/* RECEIVE  */}
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0031" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_ApprovedBit == "F"
-                                                }).length ? dataModaldt[0]?.sqC_IssuedBit != "F" && dataModaldt[0]?.sqC_ReceiveBit != "R" &&
-                                                <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} /> ตีกลับ (Return) SQC
-                                                    </Button>
-                                                </> : ""
-                                            }
-
-
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0035" && item.rolE_VIEW == "True" && dataModaldt[0]?.eN_ApprovedBit == "F"
-                                                }).length ? dataModaldt[0]?.sqC_ReceiveBit != "F" &&
-                                                <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO, 'sqc')}>
-                                                    <FontAwesomeIcon icon={faCheck} />   รับเอกสาร (Receive) SQC
-                                                </Button>
-                                                    :
-                                                    ""
-                                            }
-                                            {/* END RECEIVE  */}
-
                                             {/*  ISSUED  */}
-                                            {
+                                            {/* {
                                                 permission.filter((item) => {
-                                                    return item.menuCode == "BTN0032" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_ReceiveBit == "F" && empCode == dataModaldt[0]?.sqC_IssuedCode && dataModaldt[0]?.sqC_IssuedBit != "H"
+                                                    return item.menuCode == "BTN0032" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.sqC_IssuedCode
                                                 }).length ? dataModaldt[0]?.sqC_CheckBit != "F" &&
                                                 <>
-                                                    <Button autoFocus variant="warning" onClick={() => postHold(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                    <Button autoFocus variant="warning" onClick={() => postHoldSQC(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
                                                         <FontAwesomeIcon icon={faTriangleExclamation} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม
                                                     </Button>
                                                 </> : ""
-                                            }
+                                            } */}
 
 
                                             {
                                                 permission.filter((item) => {
-                                                    return item.menuCode == "BTN0032" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_ReceiveBit == "F" && empCode == dataModaldt[0]?.sqC_IssuedCode
+                                                    return item.menuCode == "BTN0032" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.sqC_IssuedCode
                                                 }).length ? dataModaldt[0]?.sqC_CheckBit != "F" && dataModaldt[0]?.sqC_IssuedBit != "R" &&
                                                 <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) SQC
+                                                    <Button autoFocus variant="warning" onClick={() => postReturnSQCIssued(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม SQC
                                                     </Button>
                                                 </> : ""
                                             }
 
                                             {
                                                 permission.filter((item) => {
-                                                    return item.menuCode == "BTN0036" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_ReceiveBit == "F" && empCode == dataModaldt[0]?.sqC_IssuedCode
+                                                    return item.menuCode == "BTN0036" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.sqC_IssuedCode
                                                 }).length ? dataModaldt[0]?.sqC_CheckBit != "F" &&
                                                 <>
                                                     <Button autoFocus variant="success" onClick={() => getIssuedSQC(dataModaldt[0].ecR_NO, 'sqc')}>
@@ -5610,10 +4556,10 @@ function FormDetail(props) {
                                             {
                                                 permission.filter((item) => {
                                                     return item.menuCode == "BTN0033" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_IssuedBit == "F" && empCode == dataModaldt[0]?.sqC_CheckCode
-                                                }).length ? dataModaldt[0]?.sqC_ApprovedBit != "F" && dataModaldt[0]?.sqC_CheckBit != "R" &&
+                                                }).length ? dataModaldt[0]?.sqC_CheckBit != "F" &&
                                                 <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) SQC
+                                                    <Button autoFocus variant="warning" onClick={() => postReturnSQCCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม SQC
                                                     </Button>
                                                 </> : ""
                                             }
@@ -5621,97 +4567,47 @@ function FormDetail(props) {
                                             {
                                                 permission.filter((item) => {
                                                     return item.menuCode == "BTN0037" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_IssuedBit == "F" && empCode == dataModaldt[0]?.sqC_CheckCode
-                                                }).length ? dataModaldt[0]?.sqC_CheckBit != "F" && dataModaldt[0]?.sqC_ApprovedBit != "F" &&
-                                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit, 'sqc')}>
+                                                }).length ? dataModaldt[0]?.sqC_CheckBit != "F" &&
+                                                <Button autoFocus variant="success" onClick={() => BtnCheckSQC(dataModaldt[0].ecR_NO)}>
                                                     <FontAwesomeIcon icon={faCheck} /> (Check OK) SQC
                                                 </Button>
                                                     :
                                                     ""
                                             }
                                             {/* ********END CHECK **********/}
-
-
-                                            {/* APPROVED */}
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0034" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_CheckBit == "F" && empCode == dataModaldt[0]?.sqC_ApprovedCode
-                                                }).length ? dataModaldt[0]?.sqC_ApprovedBit != "R" && dataModaldt[0]?.qC_ReceiveBit != "F" &&
-                                                <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />   ตีกลับ (Return) SQC
-                                                    </Button>
-                                                </> : ""
-                                            }
-
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0038" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_CheckBit == "F" && empCode == dataModaldt[0]?.sqC_ApprovedCode
-                                                }).length ? dataModaldt[0]?.sqC_ApprovedBit != "F" && dataModaldt[0]?.qC_ReceiveBit != "F" &&
-                                                <Button autoFocus variant="success" onClick={() => postApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                                    <FontAwesomeIcon icon={faCheck} />   อนุมัติ (GM Approved) SQC
-                                                </Button>
-                                                    :
-                                                    ""
-                                            }
-                                            {/* END APPROVED */}
                                             {/* ****************************END BUTTON SECTION SQC **************************/}
 
 
 
                                             {/* **************************** BUTTON SECTION QC **************************/}
-                                            {/* RECEIVE  */}
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0039" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_ApprovedBit == "F"
-                                                }).length ? dataModaldt[0]?.qC_IssuedBit != "F" && dataModaldt[0]?.qC_ReceiveBit != "R" &&
-                                                <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} /> ตีกลับ (Return) QC
-                                                    </Button>
-                                                </> : ""
-                                            }
-
-
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0043" && item.rolE_VIEW == "True" && dataModaldt[0]?.sqC_ApprovedBit == "F"
-                                                }).length ? dataModaldt[0]?.qC_ReceiveBit != "F" &&
-                                                <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO, 'qc')}>
-                                                    <FontAwesomeIcon icon={faCheck} />  รับเอกสาร (Receive) QC
-                                                </Button>
-                                                    :
-                                                    ""
-                                            }
-                                            {/* END RECEIVE  */}
-
                                             {/*  ISSUED  */}
-                                            {
+                                            {/* {
                                                 permission.filter((item) => {
-                                                    return item.menuCode == "BTN0040" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ReceiveBit == "F" && empCode == dataModaldt[0]?.qC_IssuedCode && dataModaldt[0]?.qC_IssuedBit != "H"
-                                                }).length ? dataModaldt[0]?.qC_CheckBit != "F" &&
+                                                    return item.menuCode == "BTN0040" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.qC_IssuedCode
+                                                }).length ? dataModaldt[0]?.qC_IssuedBit != "F" &&
                                                 <>
-                                                    <Button autoFocus variant="warning" onClick={() => postHold(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                    <Button autoFocus variant="warning" onClick={() => postHoldQC(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
                                                         <FontAwesomeIcon icon={faTriangleExclamation} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม
                                                     </Button>
                                                 </> : ""
-                                            }
+                                            } */}
 
 
                                             {
                                                 permission.filter((item) => {
-                                                    return item.menuCode == "BTN0040" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ReceiveBit == "F" && empCode == dataModaldt[0]?.qC_IssuedCode
-                                                }).length ? dataModaldt[0]?.qC_CheckBit != "F" && dataModaldt[0]?.qC_IssuedBit != "R" &&
+                                                    return item.menuCode == "BTN0040" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.qC_IssuedCode
+                                                }).length ? dataModaldt[0]?.qC_IssuedBit != "F" &&
                                                 <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) QC
+                                                    <Button autoFocus variant="warning" onClick={() => postReturnQCIssued(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม QC
                                                     </Button>
                                                 </> : ""
                                             }
 
                                             {
                                                 permission.filter((item) => {
-                                                    return item.menuCode == "BTN0044" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ReceiveBit == "F" && empCode == dataModaldt[0]?.qC_IssuedCode
-                                                }).length ? dataModaldt[0]?.qC_CheckBit != "F" &&
+                                                    return item.menuCode == "BTN0044" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.qC_IssuedCode
+                                                }).length ? dataModaldt[0]?.qC_IssuedBit != "F" &&
                                                 <>
                                                     <Button autoFocus variant="success" onClick={() => getIssuedQC(dataModaldt[0].ecR_NO, 'qc')}>
                                                         <FontAwesomeIcon icon={faCheck} />  ออกเอกสาร (Issued) QC
@@ -5727,10 +4623,10 @@ function FormDetail(props) {
                                             {
                                                 permission.filter((item) => {
                                                     return item.menuCode == "BTN0041" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_IssuedBit == "F" && empCode == dataModaldt[0]?.qC_CheckCode
-                                                }).length ? dataModaldt[0]?.qC_ApprovedBit != "F" && dataModaldt[0]?.qC_CheckBit != "R" &&
+                                                }).length ? dataModaldt[0]?.qC_CheckBit != "F" &&
                                                 <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) QC
+                                                    <Button autoFocus variant="warning" onClick={() => postReturnQCCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม QC
                                                     </Button>
                                                 </> : ""
                                             }
@@ -5738,39 +4634,14 @@ function FormDetail(props) {
                                             {
                                                 permission.filter((item) => {
                                                     return item.menuCode == "BTN0045" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_IssuedBit == "F" && empCode == dataModaldt[0]?.qC_CheckCode
-                                                }).length ? dataModaldt[0]?.qC_ApprovedBit != "F" && dataModaldt[0]?.qC_CheckBit != "F" &&
-                                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit, 'qc')}>
+                                                }).length ? dataModaldt[0]?.qC_CheckBit != "F" &&
+                                                <Button autoFocus variant="success" onClick={() => BtnCheckQC(dataModaldt[0].ecR_NO)}>
                                                     <FontAwesomeIcon icon={faCheck} /> (Check OK) QC
                                                 </Button>
                                                     :
                                                     ""
                                             }
                                             {/* ********END CHECK **********/}
-
-
-                                            {/* APPROVED */}
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0042" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_CheckBit == "F" && empCode == dataModaldt[0]?.qC_ApprovedCode
-                                                }).length ? dataModaldt[0]?.diL_DD_ReceiveBit != "F" && dataModaldt[0]?.qC_ApprovedBit != "R" &&
-                                                <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) QC
-                                                    </Button>
-                                                </> : ""
-                                            }
-
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0046" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_CheckBit == "F" && empCode == dataModaldt[0]?.qC_ApprovedCode
-                                                }).length ? dataModaldt[0]?.diL_DD_ReceiveBit != "F" && dataModaldt[0]?.qC_ApprovedBit != "F" &&
-                                                <Button autoFocus variant="success" onClick={() => postApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                                    <FontAwesomeIcon icon={faCheck} />  อนุมัติ (GM Approved) QC
-                                                </Button>
-                                                    :
-                                                    ""
-                                            }
-                                            {/* END APPROVED */}
                                             {/* ****************************END BUTTON SECTION QC **************************/}
 
 
@@ -5782,12 +4653,11 @@ function FormDetail(props) {
                             } */}
                                             {
                                                 permission.filter((item) => {
-                                                    return item.menuCode == "BTN0047" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ApprovedBit == "F"
-                                                        && dataModaldt[0]?.diL_QC_ReceiveBit != "F"
-                                                }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
+                                                    return item.menuCode == "BTN0047" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_CheckBit == "F" && dataModaldt[0]?.dD_ApprovedBit == "F"
+                                                }).length ? dataModaldt[0]?.qA_IssuedBit != "F" && dataModaldt[0]?.diL_DD_ReceiveBit != "F" &&
                                                 <>
-                                                    <Button autoFocus variant="danger" onClick={() => ReturnDIL(dataModaldt[0].ecR_NO)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) DIL
+                                                    <Button autoFocus variant="warning" onClick={() => ReturnDIL(dataModaldt[0].ecR_NO)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม DIL
                                                     </Button>
                                                 </> : ""
                                             }
@@ -5795,10 +4665,9 @@ function FormDetail(props) {
 
                                             {
                                                 permission.filter((item) => {
-                                                    return item.menuCode == "BTN0048" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_ApprovedBit == "F"
-                                                        && dataModaldt[0]?.diL_QC_ReceiveBit != "F"
-                                                }).length ? dataModaldt[0]?.qA_IssuedBit != "F" && dataModaldt[0]?.qA_IssuedBit != "F" &&
-                                                <Button autoFocus variant="success" onClick={() => ApprovedDIL(dataModaldt[0].ecR_NO)}>
+                                                    return item.menuCode == "BTN0048" && item.rolE_VIEW == "True" && dataModaldt[0]?.qC_CheckBit == "F" && dataModaldt[0]?.dD_ApprovedBit == "F"
+                                                }).length ? dataModaldt[0]?.qA_IssuedBit != "F" && dataModaldt[0]?.diL_DD_ReceiveBit != "F" &&
+                                                <Button autoFocus variant="success" onClick={() => BtnApprovedDILDD(dataModaldt[0].ecR_NO)}>
                                                     <FontAwesomeIcon icon={faCheck} />  อนุมัติ (GM Approved) DIL
                                                 </Button>
                                                     :
@@ -5813,10 +4682,10 @@ function FormDetail(props) {
                                             {
                                                 permission.filter((item) => {
                                                     return item.menuCode == "BTN0059" && item.rolE_VIEW == "True" && dataModaldt[0]?.diL_DD_ReceiveBit == "F"
-                                                }).length ? dataModaldt[0]?.qA_ReceiveBit != "F" &&
+                                                }).length ? dataModaldt[0]?.qA_CheckBit != "F" && dataModaldt[0]?.diL_QC_ReceiveBit != "F" &&
                                                 <>
-                                                    <Button autoFocus variant="danger" onClick={() => ReturnDIL(dataModaldt[0].ecR_NO)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) DIL
+                                                    <Button autoFocus variant="warning" onClick={() => ReturnDIL(dataModaldt[0].ecR_NO)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม DIL
                                                     </Button>
                                                 </> : ""
                                             }
@@ -5825,8 +4694,8 @@ function FormDetail(props) {
                                             {
                                                 permission.filter((item) => {
                                                     return item.menuCode == "BTN0060" && item.rolE_VIEW == "True" && dataModaldt[0]?.diL_DD_ReceiveBit == "F"
-                                                }).length ? dataModaldt[0]?.qA_ReceiveBit != "F" &&
-                                                <Button autoFocus variant="success" onClick={() => ApprovedDIL(dataModaldt[0].ecR_NO)}>
+                                                }).length ? dataModaldt[0]?.qA_CheckBit != "F" && dataModaldt[0]?.diL_QC_ReceiveBit != "F" &&
+                                                <Button autoFocus variant="success" onClick={() => BtnApprovedDILQC(dataModaldt[0].ecR_NO)}>
                                                     <FontAwesomeIcon icon={faCheck} /> อนุมัติ (GM Approved) DIL
                                                 </Button>
                                                     :
@@ -5839,86 +4708,23 @@ function FormDetail(props) {
 
 
                                             {/* **************************** BUTTON SECTION QA **************************/}
-                                            {/* RECEIVE  */}
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0049" && item.rolE_VIEW == "True" && dataModaldt[0]?.diL_RECEIVEBIT == "F"
-                                                }).length ? dataModaldt[0]?.qA_IssuedBit != "F" &&
-                                                <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) QA
-                                                    </Button>
-                                                </> : ""
-                                            }
-
-
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0053" && item.rolE_VIEW == "True" && dataModaldt[0]?.diL_RECEIVEBIT == "F"
-                                                }).length ? dataModaldt[0]?.qA_ReceiveBit != "F" &&
-                                                <Button autoFocus variant="success" onClick={() => getReceive(dataModaldt[0].ecR_NO, 'qa')}>
-                                                    <FontAwesomeIcon icon={faCheck} /> รับเอกสาร (Receive) QA
-                                                </Button>
-                                                    :
-                                                    ""
-                                            }
-                                            {/* END RECEIVE  */}
-
-                                            {/*  ISSUED  */}
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0050" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_ReceiveBit == "F" && empCode == dataModaldt[0]?.qA_IssuedCode && dataModaldt[0]?.qA_IssuedBit != "H"
-                                                }).length ? dataModaldt[0]?.qA_CheckBit != "F" &&
-                                                <>
-                                                    <Button autoFocus variant="warning" onClick={() => postHold(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faTriangleExclamation} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม
-                                                    </Button>
-                                                </> : ""
-                                            }
-
-
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0050" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_ReceiveBit == "F" && empCode == dataModaldt[0]?.qA_IssuedCode
-                                                }).length ? dataModaldt[0]?.qA_CheckBit != "F" &&
-                                                <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) QA
-                                                    </Button>
-                                                </> : ""
-                                            }
-
-                                            {
-                                                permission.filter((item) => {
-                                                    return item.menuCode == "BTN0054" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_ReceiveBit == "F" && empCode == dataModaldt[0]?.qA_IssuedCode
-                                                }).length ? dataModaldt[0]?.qA_CheckBit != "F" &&
-                                                <>
-                                                    <Button autoFocus variant="success" onClick={() => getIssuedQA(dataModaldt[0].ecR_NO, 'qa')}>
-                                                        <FontAwesomeIcon icon={faCheck} />  ออกเอกสาร (Issued) QA
-                                                    </Button>
-                                                </>
-                                                    : ""
-                                            }
-                                            {/* END ISSUED  */}
-
-
                                             {/* ******** CHECK **********/}
                                             {
                                                 permission.filter((item) => {
-                                                    return item.menuCode == "BTN0051" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_IssuedBit == "F" && empCode == dataModaldt[0]?.qA_CheckCode
-                                                }).length ? dataModaldt[0]?.qA_ApprovedBit != "F" &&
+                                                    return item.menuCode == "BTN0051" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.qA_CheckCode && dataModaldt[0]?.diL_QC_ReceiveBit == "F" && dataModaldt[0]?.qC_CheckBit == "F"
+                                                }).length ? dataModaldt[0]?.qA_CheckBit != "F" &&
                                                 <>
-                                                    <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                        <FontAwesomeIcon icon={faRotateLeft} />  ตีกลับ (Return) QA
+                                                    <Button autoFocus variant="warning" onClick={() => postReturnQACheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} />  Hold รอเอกสาร/ข้อมูลเพิ่มเติม QA
                                                     </Button>
                                                 </> : ""
                                             }
 
                                             {
                                                 permission.filter((item) => {
-                                                    return item.menuCode == "BTN0055" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_IssuedBit == "F" && empCode == dataModaldt[0]?.qA_CheckCode
-                                                }).length ? dataModaldt[0]?.qA_ApprovedBit != "F" &&
-                                                <Button autoFocus variant="success" onClick={() => getCheck(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit, 'qa')}>
+                                                    return item.menuCode == "BTN0055" && item.rolE_VIEW == "True" && empCode == dataModaldt[0]?.qA_CheckCode && dataModaldt[0]?.diL_QC_ReceiveBit == "F" && dataModaldt[0]?.qC_CheckBit == "F"
+                                                }).length ? dataModaldt[0]?.qA_CheckBit != "F" &&
+                                                <Button autoFocus variant="success" onClick={() => BtnCheckQA(dataModaldt[0].ecR_NO)}>
                                                     <FontAwesomeIcon icon={faCheck} /> (Check OK) QA
                                                 </Button>
                                                     :
@@ -5932,21 +4738,21 @@ function FormDetail(props) {
                                             {
                                                 permission.filter((item) => {
                                                     return item.menuCode == "BTN0052" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_CheckBit == "F" && empCode == dataModaldt[0]?.qA_ApprovedCode
-                                                }).length ?
-                                                    <>
-                                                        <Button autoFocus variant="danger" onClick={() => getReturn(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
-                                                            <FontAwesomeIcon icon={faRotateLeft} />   ตีกลับ (Return) QA
-                                                        </Button>
-                                                    </> : ""
+                                                }).length ? dataModaldt[0]?.qA_ApprovedBit != "F" &&
+                                                <>
+                                                    <Button autoFocus variant="warning" onClick={() => postReturnQAApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_CheckBit)}>
+                                                        <FontAwesomeIcon icon={faRotateLeft} />   Hold รอเอกสาร/ข้อมูลเพิ่มเติม QA
+                                                    </Button>
+                                                </> : ""
                                             }
 
                                             {
                                                 permission.filter((item) => {
                                                     return item.menuCode == "BTN0056" && item.rolE_VIEW == "True" && dataModaldt[0]?.qA_CheckBit == "F" && empCode == dataModaldt[0]?.qA_ApprovedCode
-                                                }).length ?
-                                                    <Button autoFocus variant="success" onClick={() => postApproved(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
-                                                        <FontAwesomeIcon icon={faCheck} />   อนุมัติ (GM Approved) QA
-                                                    </Button>
+                                                }).length ? dataModaldt[0]?.qA_ApprovedBit != "F" &&
+                                                <Button autoFocus variant="success" onClick={() => BtnApprovedGroupQC(dataModaldt[0].ecR_NO, dataModaldt[0].section, dataModaldt[0].create_ApprovedBit)}>
+                                                    <FontAwesomeIcon icon={faCheck} />   อนุมัติ (GM Approved) QA
+                                                </Button>
                                                     :
                                                     ""
                                             }

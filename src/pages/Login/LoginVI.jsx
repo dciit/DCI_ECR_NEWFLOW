@@ -38,7 +38,9 @@ function LoginVI() {
         //                     // ----- SET REDUX ----- //
 
         //                     setData(res.data);
-        //                     navigate("/ECR/createform");
+        //                     // navigate("/ECR/createform");
+        //                     navigate("/ECR_APP_TEST/createform");
+
         //                     location.reload();
         //                 }
         //                 catch (error) {
@@ -70,9 +72,8 @@ function LoginVI() {
                             // ----- SET REDUX ----- //
 
                             setData(res.data);
-                            navigate("/ECR/createform");
+                            navigate("/ECR_APP_TEST/createform");
                             location.reload();
-                            console.log(res.data)
                         }
                         catch (error) {
                             console.log(error); // You might send an exception to your error tracker like AppSignal
@@ -108,7 +109,7 @@ function LoginVI() {
                         </div>
 
                         <div className="d-flex flex-row align-items-center justify-content-center">
-                            <p className='Title' style={{ fontSize: '35px' }}>ECR Online </p>
+                            <p className='Title' style={{ fontSize: '35px' }}>ECR Online (Test New Flowchart)</p>
                         </div>
 
                         <div className="d-flex flex-row align-items-center justify-content-center">
@@ -119,7 +120,7 @@ function LoginVI() {
                         <div className="divider d-flex align-items-center my-4">
                         </div>
 
-                        <p><b>UserName</b></p>
+                        <p><b>UserName (รหัสพนักงาน)</b></p>
                         <MDBInput wrapperClass='mb-2' id='username' type='text' size="lg"
                             value={username}
                             autoComplete="username"
@@ -149,7 +150,7 @@ function LoginVI() {
                             <p style={{ color: 'blue' }}>Login ด้วย Username / Password เข้าเครื่องคอม</p>
                         </div>
 
-                        <p style={{ textAlign: 'center', fontSize: '14px', opacity: '0.5' }}>By : IP@NITA</p>
+                        <p style={{ textAlign: 'center', fontSize: '14px', opacity: '0.5' }}>By : i_P@NITA 2024</p>
                         <div className="d-flex flex-row align-items-center justify-content-center">
                             {failLogin && <h4 style={{ color: 'red' }}>รหัสผ่านไม่ถูกต้อง กรุณาลองอีกครั้ง !!!</h4>}    {/* ถ้าเปิดหน้า Login มา ตัวแปร failLogin มีค่าเป็น false ให้แสดงข้อความนี้ */}
                         </div>

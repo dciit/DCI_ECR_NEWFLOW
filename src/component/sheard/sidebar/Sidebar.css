@@ -14,7 +14,7 @@ ul li a:hover {
 .styleSidebar {
     background-color: rgb(52 58 64);
     margin-left: 15px;
-    width: 90%;
+    width: 100%;
 }
 
 .styleicon {
@@ -31,9 +31,9 @@ ul li a:hover {
     margin-top: -9px;
 }
 
-.styleWidthSide {
+/* .styleWidthSide {
     width: 12%;
-}
+} */
 
 .styleAreaLi {
     margin-top: 5px;
